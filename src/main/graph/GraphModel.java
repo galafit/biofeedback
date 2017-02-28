@@ -1,14 +1,11 @@
 package main.graph;
 
 import main.data.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class GraphModel {
-    private static final Log log = LogFactory.getLog(GraphModel.class);
 
     // bigger GAP - less precision need slot to start autoScroll
     private static final int AUTO_SCROLL_GAP = 2;

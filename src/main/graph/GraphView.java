@@ -2,8 +2,6 @@ package main.graph;
 
 import main.data.Scaling;
 import main.graph.painters.XAxisPainter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +15,6 @@ import java.util.ArrayList;
  */
 
 public class GraphView extends JPanel {
-    private static final Log log = LogFactory.getLog(GraphView.class);
-
     private int xIndent;
     private int yIndent;
     private Color bgColor = Color.BLACK;

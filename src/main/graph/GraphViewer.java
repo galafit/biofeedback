@@ -2,9 +2,6 @@ package main.graph;
 
 import main.data.CompressionType;
 import main.data.DataSeries;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,8 +9,6 @@ import java.awt.*;
  *
  */
 public class GraphViewer extends JPanel{
-    private static final Log log = LogFactory.getLog(GraphViewer.class);
-
     private static final int DEFAULT_GRAPH_PANEL_WEIGHT = 1;
     private static final int DEFAULT_PREVIEW_PANEL_WEIGHT = 1;
 
