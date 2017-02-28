@@ -1,16 +1,19 @@
-package main;
+package main.tmp;
+
+import main.Function;
 
 /**
- * Created by recovery on 13.02.2017.
+ * Created by gala on 28/02/17.
  */
-public class Harmonic extends Function {
+public class Harmonic1 extends Function {
     private double freq;
     private double pct;
 
-    public Harmonic(double freq, double pct) {
+    public Harmonic1(double freq, double pct) {
         this.freq = freq;
         this.pct = pct;
     }
+
     @Override
     public double value(double x) {
         x = x * 2 * freq;
@@ -22,14 +25,16 @@ public class Harmonic extends Function {
     }
 
     private double base(double x) {
-        double y = 0;
-        if (x > 0) {
-            y = (Math.min(Math.min((x / pct), 1), ((1 - x) / pct)));
+        if(Math.abs(x) < pct) {
+            return x/pct;
         }
-        if (x < 0) {
-            y = -(Math.min(Math.min(((-x) / pct), 1), ((1 + x) / pct)));
+        if(x > (1-pct)) {
+            return (1-x)/pct;
+        }
+        if(x < -(1-pct)) {
+            return -(1+x)/pct;
         }
 
-        return y;
+        return  Math.signum(x);
     }
 }
