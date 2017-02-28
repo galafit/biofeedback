@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jfugue-5.0.7" level="project" />
+    <orderEntry type="library" name="trove-3.0.3" level="project" />
+    <orderEntry type="library" name="commons-configuration-1.8" level="project" />
   </component>
 </module>

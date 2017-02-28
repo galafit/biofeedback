@@ -8,10 +8,18 @@ import java.io.File;
  */
 public class Start {
     public static void main(String[] args) {
-        play(10, 1);
+        double[] data = new double[1000];
+        for (int i = 0; i < data.length; i++) {
+            data[i] = Math.sin(2 * Math.PI * i * 10 /1000 );
+           // data[i] = Math.sin(2 * Math.PI * i / StdAudio.SAMPLE_RATE);
+
+        }
+
+        Viewer.show(data);
+       /* play(10, 1);
         File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
         StdAudio.playFile(file, 1);
-        StdAudio.playFile(file, 3);
+        StdAudio.playFile(file, 3); */
 
     }
 
@@ -34,8 +42,9 @@ public class Start {
         double[] a = new double[n+1];
 
         for (int i = 0; i <= n; i++) {
-            a[i] = Math.signum(Math.sin(2 * Math.PI * i * hz / StdAudio.SAMPLE_RATE));
-            a[i] = Math.sin((a[i]*2 * Math.PI * i) / n );
+            a[i] = Math.sin(2 * Math.PI * i * hz / StdAudio.SAMPLE_RATE);
+           // a[i] = Math.signum(Math.sin(2 * Math.PI * i * hz / StdAudio.SAMPLE_RATE));
+           // a[i] = Math.sin((a[i]*2 * Math.PI * i) / n );
             System.out.println(a[i]);
         }
         return a;
