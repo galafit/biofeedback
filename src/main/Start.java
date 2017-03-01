@@ -15,11 +15,14 @@ import java.awt.*;
 public class Start {
     public static void main(String[] args) {
 
-        //show(multi(sin(0.5), sin(4)), 2);
-        //show(harmonic(1, 0.2), 2);
-        show(multi(sin(0.5), harmonic(10, 0.3)), 2);
-        //play(sin(200), 2);
-        play(multi(sin(0.5), harmonic(10, 0.3)), 5,  4);
+        Function f1 = sin(5);
+        Function f2 = harmonic(2, 0.3);
+
+        Function f= multi(sin(0.5), harmonic(10, 0.4));
+
+
+        show(f, 2);
+        play(f, 5,  4);
 
 
        //File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
