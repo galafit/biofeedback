@@ -5,7 +5,6 @@ import main.data.DataSeries;
 import main.data.Scaling;
 import main.data.ScalingImpl;
 import main.graph.GraphViewer;
-import main.tmp.Sin;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,22 +15,70 @@ import java.awt.*;
 public class Start {
     public static void main(String[] args) {
 
-        //show(new Sin(1), 2);
-        show(new Harmonic(1, 0.2), 2);
-        //play(new Sin(200), 2);
-        play(new Harmonic(10, 0.2), 2);
-       // File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
+        //show(multi(sin(0.5), sin(4)), 2);
+        //show(harmonic(1, 0.2), 2);
+        show(multi(sin(0.5), harmonic(10, 0.3)), 2);
+        //play(sin(200), 2);
+        play(multi(sin(0.5), harmonic(10, 0.3)), 5,  4);
+
+
+       //File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
        // StdAudio.playFile(file, 1);
        // StdAudio.playFile(file, 3);
     }
 
+    static Function multi(Function f1, Function f2) {
+        return new Function() {
+            @Override
+            public double value(double x) {
+                return  f1.value(x) * f2.value(x);
+            }
+        };
+    }
 
-    public static void play(Function f, double duration) {
+    static Function sin(double freq) {
+        return  new Function() {
+            @Override
+            public double value(double x) {
+                return Math.sin(2 * Math.PI * x * freq);
+            }
+        };
+    }
+
+    static Function harmonic(double freq, double pct) {
+        return new Function() {
+            @Override
+            public double value(double x) {
+                x = x * 2 * freq;
+                int x_int = (int) x;
+                double x_double = x - x_int;
+
+                double t = x_int % 2 - 1 + x_double ;
+                return base(t);
+            }
+
+            private double base(double x) {
+                double y = 0;
+                if (x > 0) {
+                    y = (Math.min(Math.min((x / pct), 1), ((1 - x) / pct)));
+                }
+                if (x < 0) {
+                    y = -(Math.min(Math.min(((-x) / pct), 1), ((1 + x) / pct)));
+                }
+
+                return y;
+            }
+        };
+
+    }
+
+
+    static void play(Function f, double volume, double duration) {
         int sampleRate = StdAudio.SAMPLE_RATE;
         int n = (int) (sampleRate * duration);
         double[] a = new double[n+1];
         for (int i = 0; i <= n; i++) {
-            a[i] = f.value((double)i/sampleRate);
+            a[i] = volume * f.value((double)i/sampleRate);
 
         }
         StdAudio.play(a);

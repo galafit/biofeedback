@@ -5,7 +5,7 @@ import main.Function;
 /**
  * Created by gala on 28/02/17.
  */
-public class Harmonic1 extends Function {
+public class Harmonic1 implements Function {
     private double freq;
     private double pct;
 
