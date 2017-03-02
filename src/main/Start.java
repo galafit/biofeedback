@@ -8,26 +8,42 @@ import main.graph.GraphViewer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 /**
  * Created by gala on 11/02/17.
  */
 public class Start {
-    public static void main(String[] args) {
-
-        Function f1 = sin(5);
-        Function f2 = harmonic(2, 0.3);
-
-        Function f= multi(sin(0.5), harmonic(10, 0.4));
+    public static void main(String[] args) {;
 
 
-        show(f, 2);
-        play(f, 5,  4);
+        Function f1= multi(sin(0.5), harmonic(10, 0.4));
+        Function f2= multi(sin(0.5), harmonic(20, 0.4));
+
+        show(f1, 2);
+        play(f1, 10,  4);
+
+        File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
+        StdAudio.playFile(file, 1);
+
+        show(plus(f1, f2), 2);
+        play(plus(f1, f2), 10,  4);
 
 
-       //File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
-       // StdAudio.playFile(file, 1);
-       // StdAudio.playFile(file, 3);
+
+    }
+
+    static Function plus(Function... functions) {
+        return new Function() {
+            @Override
+            public double value(double x) {
+                double result = 0;
+                for (Function f: functions) {
+                    result += f.value(x);
+                }
+                return  result;
+            }
+        };
     }
 
     static Function multi(Function f1, Function f2) {
@@ -48,30 +64,10 @@ public class Start {
         };
     }
 
+
+
     static Function harmonic(double freq, double pct) {
-        return new Function() {
-            @Override
-            public double value(double x) {
-                x = x * 2 * freq;
-                int x_int = (int) x;
-                double x_double = x - x_int;
-
-                double t = x_int % 2 - 1 + x_double ;
-                return base(t);
-            }
-
-            private double base(double x) {
-                double y = 0;
-                if (x > 0) {
-                    y = (Math.min(Math.min((x / pct), 1), ((1 - x) / pct)));
-                }
-                if (x < 0) {
-                    y = -(Math.min(Math.min(((-x) / pct), 1), ((1 + x) / pct)));
-                }
-
-                return y;
-            }
-        };
+        return new Harmonic(freq,pct);
 
     }
 
@@ -87,7 +83,7 @@ public class Start {
         StdAudio.play(a);
     }
 
-    static void show(Function f,  double duration) {
+    static void show(Function f, double duration) {
         DataSeries dataSeries = new DataSeries() {
             int intScaling = 300;
             int numberOfPoints = 1000;
