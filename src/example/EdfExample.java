@@ -1,13 +1,10 @@
 package example;
 
 import com.biorecorder.edflib.*;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.EdfReader;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.EdfWriter;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.FileType;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.filters.DataRecordsJoiner;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.filters.DataRecordsSignalsManager;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.filters.SignalMovingAverageFilter;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.base.HeaderConfig;
+import com.biorecorder.edflib.filters.DataRecordsJoiner;
+import com.biorecorder.edflib.filters.DataRecordsSignalsManager;
+import com.biorecorder.edflib.filters.SignalMovingAverageFilter;
+import com.biorecorder.edflib.base.HeaderConfig;
 
 import java.io.*;
 

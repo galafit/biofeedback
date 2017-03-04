@@ -1,4 +1,4 @@
-package com.biorecorder.edflib.src.com.biorecorder.edflib;
+package com.biorecorder.edflib;
 
 /**
  * Signals that during parsing of EDF/BDF file header some sort of error has occurred

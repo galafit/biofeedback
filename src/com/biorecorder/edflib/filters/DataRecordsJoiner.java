@@ -1,7 +1,7 @@
-package com.biorecorder.edflib.src.com.biorecorder.edflib.filters;
+package com.biorecorder.edflib.filters;
 
-import com.biorecorder.edflib.src.com.biorecorder.edflib.base.DataRecordsWriter;
-import com.biorecorder.edflib.src.com.biorecorder.edflib.base.HeaderConfig;
+import com.biorecorder.edflib.base.DataRecordsWriter;
+import com.biorecorder.edflib.base.HeaderConfig;
 
 import java.io.IOException;
 

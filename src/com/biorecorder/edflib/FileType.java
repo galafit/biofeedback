@@ -1,4 +1,4 @@
-package com.biorecorder.edflib.src.com.biorecorder.edflib;
+package com.biorecorder.edflib;
 
 import java.nio.charset.Charset;
 

@@ -1,4 +1,4 @@
-package com.biorecorder.edflib.src.com.biorecorder.edflib.filters;
+package com.biorecorder.edflib.filters;
 
 /**
  * Signal filter describes some kind of transformation with stream data coming from
