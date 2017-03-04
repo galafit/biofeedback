@@ -17,17 +17,32 @@ public class Start {
     public static void main(String[] args) {;
 
 
-        Function f1= multi(sin(0.5), harmonic(10, 0.4));
-        Function f2= multi(sin(0.5), harmonic(20, 0.4));
 
-        show(f1, 2);
+
+        Function f0 = new Harmonic(1, 0.1);
+        Function fa = new Harmonic(2,0.1);
+
+
+        Function ft = new Function() {
+            @Override
+            public double value(double x) {
+                return f0.value(x) + fa.value(x);
+            }
+        };
+
+        Function fl = (x) -> {return f0.value(x) + fa.value(x);};
+
+
+    /*    show(f1, 2);
         play(f1, 10,  4);
 
         File file = new File(System.getProperty("user.dir"), "cat_purr.wav");
         StdAudio.playFile(file, 1);
 
         show(plus(f1, f2), 2);
-        play(plus(f1, f2), 10,  4);
+        play(plus(f1, f2), 10,  4); */
+
+        show(fl, 5);
 
 
 

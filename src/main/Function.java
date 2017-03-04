@@ -6,8 +6,7 @@ package main;
 public interface Function {
     double value (double x);
 
-    static Function sin(double freq) {
-        Function sin = (x) -> Math.sin(2 * Math.PI * x * freq);
-        return sin;
-    }
+
 }
+
+
