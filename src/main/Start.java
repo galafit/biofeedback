@@ -36,7 +36,8 @@ public class Start {
         File fileToRead = new File(recordsDir, "cardio.edf");
         try {
             EdfList edfList = new EdfList(fileToRead);
-            viewer.show(edfList);
+            viewer.show(edfList.getChannelSeries(0));
+            viewer.show(edfList.getChannelSeries(1));
 
         } catch (Exception e) {
             e.printStackTrace();
