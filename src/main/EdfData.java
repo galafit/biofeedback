@@ -62,7 +62,7 @@ public class EdfData {
 
             @Override
             public double start() {
-                return edfReader.getHeaderInfo().getRecordingStartTime();
+                return edfReader.getHeaderInfo().getRecordingStartTime() / 1000;
             }
 
             @Override
@@ -76,7 +76,7 @@ public class EdfData {
                 ScalingImpl scaling = new ScalingImpl();
                 scaling.setSamplingInterval(1.0 / sampleRate());
                 scaling.setTimeSeries(true);
-                scaling.setStart(start());
+                scaling.setStart(start() * 1000);
                 double gain = (signalConfig.getPhysicalMax() - signalConfig.getPhysicalMin()) / (signalConfig.getDigitalMax() - signalConfig.getDigitalMin());
                 double offset = signalConfig.getPhysicalMin() - signalConfig.getDigitalMin() * gain;
              //   scaling.setDataGain(gain);
@@ -95,6 +95,7 @@ public class EdfData {
         return channelMap.get(channelNumber).getBuffer()[(int) (index- channelMap.get(channelNumber).getPointer())];
     }
 
+    
 
     synchronized private void fullBuffer(long index, int channelNumber) {
         long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);

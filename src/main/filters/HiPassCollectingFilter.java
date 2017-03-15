@@ -73,7 +73,7 @@ public class HiPassCollectingFilter implements DataSeries {
 
     @Override
     public double start() {
-        return inputData.getScaling().getStart();
+        return inputData.start();
     }
 
     @Override

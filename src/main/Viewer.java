@@ -1,17 +1,15 @@
 package main;
 
-import main.data.CompressionType;
-import main.data.DataSeries;
-import main.data.Scaling;
-import main.data.ScalingImpl;
+import main.data.*;
 import main.graph.GraphType;
 import main.graph.GraphViewer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by gala on 04/03/17.
@@ -19,33 +17,35 @@ import java.io.File;
 public class Viewer extends JFrame {
     GraphViewer graphViewer;
     private final double PREVIEW_TIME_FREQUENCY = 50.0 / 750;
-    private DataSeries dataSeries;
+    private DataSeries lastDataSeries;
 
     public Viewer() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton playButton = new JButton("play");
         JTextField durationField = new JTextField(3);
-        JTextField maxField = new JTextField(6);
         playButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 long startIndex = graphViewer.getStartIndex();
-                double duration = new Double(durationField.getText());
-                double max = new Double(maxField.getText());
-                System.out.println("duration "+duration);
+                double startTime =  (lastDataSeries.start() + startIndex / lastDataSeries.sampleRate());
+                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                String timeStamp = dateFormat.format(new Date((long) (startTime * 1000)));
+
+                double duration = 10;
+                if(!durationField.getText().isEmpty()) {
+                    duration = new Double(durationField.getText());
+                }
                 graphViewer.requestFocusInWindow();
                 validate();
-                Function f = new SeriesFunction(dataSeries, startIndex, max);
-               /* Viewer viewer = new Viewer();
-                viewer.addGraph(f, duration);*/
-                StdAudio.play(f, duration, 5);
+                double[] test = lastDataSeries.toNormalizedArray(startTime, duration, 1, lastDataSeries.sampleRate());
+                Viewer viewer1 = new Viewer();
+                viewer1.addGraph(test, lastDataSeries.sampleRate());
+
+               // StdAudio.play(lastDataSeries, startTime, duration, 5);
             }
         });
         controlPanel.add(durationField);
         controlPanel.add(new JLabel("Sec"));
-        controlPanel.add(maxField);
-        controlPanel.add(new JLabel("Max"));
-
         controlPanel.add(playButton);
         add(controlPanel, BorderLayout.NORTH);
 
@@ -69,7 +69,7 @@ public class Viewer extends JFrame {
 
     public void addGraph(DataSeries dataSeries) {
         graphViewer.addGraph(dataSeries);
-        this.dataSeries = dataSeries;
+        this.lastDataSeries = dataSeries;
     }
 
 
@@ -151,7 +151,7 @@ public class Viewer extends JFrame {
         addGraph(dataSeries);
     }
 
-    public void addGraph(double[] data, int sampleRate) {
+    public void addGraph(double[] data, double sampleRate) {
         DataSeries dataSeries = new DataSeries() {
             int intScaling = 300;
 

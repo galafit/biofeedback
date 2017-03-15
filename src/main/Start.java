@@ -16,13 +16,18 @@ import java.io.File;
  */
 public class Start {
     public static void main(String[] args) {
+        filePlayTest();
+
+    }
+
+    static void current() {
         Viewer viewer = new Viewer();
         File recordsDir = new File(System.getProperty("user.dir"), "records");
         //File fileToRead = new File(recordsDir, "cardio.edf");
         File fileToRead = new File(recordsDir, "devochka_copy2.bdf");
         try {
             EdfData edfData = new EdfData(fileToRead);
-            DataSeries edfSeries1 = edfData.getChannelSeries(4);
+            DataSeries edfSeries1 = edfData.getChannelSeries(0);
             DataSeries edfSeries2 = edfData.getChannelSeries(1);
             viewer.addGraph(edfSeries1);
             viewer.addGraph(edfSeries2);
@@ -32,9 +37,7 @@ public class Start {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 
     static void simplePlayTest() {
         Viewer viewer = new Viewer();
@@ -63,6 +66,7 @@ public class Start {
         try {
             EdfData edfData = new EdfData(fileToRead);
             DataSeries edfSeries1 = edfData.getChannelSeries(0);
+
             DataSeries edfSeries = new FrequencyDivider(edfSeries1, 5);
             int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
             DataSeries eog = new HiPassCollectingFilter(edfSeries, eogCutOffPeriod);
@@ -77,7 +81,7 @@ public class Start {
     }
 
     static void play(Function f, double duration, double volume) {
-        StdAudio.play(f, duration, volume);
+        StdAudio.play(f, 0, duration, volume);
     }
 }
 

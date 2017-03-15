@@ -2,6 +2,10 @@ package main.data;
 
 import main.Function;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *  Scaling gives us actual dependency dataValue(indexValue)
  *  based on the given  dependency of integers: main.data(index)
@@ -26,7 +30,7 @@ public interface DataSeries extends Function {
     double sampleRate();
 
     default double value(double x) {
-        x = x  * sampleRate();
+        x = ((x - start())  * sampleRate());
         if (x < 0) {
             return 0;
         }

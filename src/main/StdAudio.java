@@ -127,8 +127,8 @@ public final class StdAudio {
 
 
 
-    public static void play(Function f, double duration, double volume) {
-        play(f.toArray(0, duration, volume, SAMPLE_RATE));
+    public static void play(Function f, double start, double duration, double volume) {
+        play(f.toNormalizedArray(start, duration, volume, SAMPLE_RATE));
     }
 
     /**
