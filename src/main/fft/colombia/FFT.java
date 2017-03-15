@@ -98,8 +98,8 @@ public class FFT {
   * n: length of Fourie: must be a power of two
   * m: n = 2**m 
   *   input/output 
-  * x: double array of length n with real part of data 
-  * y: double array of length n with imag part of data 
+  * x: double array of length n with real part of main.data
+  * y: double array of length n with imag part of main.data
   * 
   *   Permission to copy and use this program is granted 
   *   as long as this header is included. 

@@ -55,13 +55,13 @@ public enum FileType {
     /**
      * Tell how many bytes every sample in the file occupies
      *
-     * @return number of bytes per data sample in the file: 2 for EDF files and 3 for BDF files
+     * @return number of bytes per main.data sample in the file: 2 for EDF files and 3 for BDF files
      */
     public abstract int getNumberOfBytesPerSample();
 
 
     /**
-     * Create the version (minus first byte) of the data format
+     * Create the version (minus first byte) of the main.data format
      * for BDF or EDF file header respectively
      *
      * @return the version for the the BDF or EDF file header

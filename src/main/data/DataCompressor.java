@@ -35,18 +35,18 @@ public class DataCompressor implements DataSeries {
 
 
     @Override
-    public int get(int index) {
+    public int get(long index) {
         if(compression == 1) {
             return inputData.get(index);
         }
         if(compression < 1) {
-            int indexNew = Math.min(inputData.size() - 1, (int) (compression * index));
+            int indexNew = Math.min((int)inputData.size() - 1, (int) (compression * index));
             return inputData.get(indexNew);
         }
 
         long result = 0;
         int indexStart =  (int)((index) * compression);
-        int indexEnd = Math.min(inputData.size(), (int)((index+1) * compression));
+        int indexEnd = Math.min((int)inputData.size(), (int)((index+1) * compression));
         for(int i = indexStart; i < indexEnd; i++) {
             if(compressionType == CompressionType.BOOLEAN) {
                 if(inputData.get(i) == 0) {
@@ -70,7 +70,7 @@ public class DataCompressor implements DataSeries {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return (int)(inputData.size() / compression);
     }
 
@@ -83,5 +83,15 @@ public class DataCompressor implements DataSeries {
             return scalingOutput;
         }
         return null;
+    }
+
+    @Override
+    public double start() {
+        return (long)inputData.getScaling().getStart();
+    }
+
+    @Override
+    public double sampleRate() {
+        return 1.0 / (inputData.getScaling().getSamplingInterval() * compression);
     }
 }

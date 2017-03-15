@@ -38,7 +38,7 @@ public class PhysicalDigitalConverter {
      * Convert digital DataRecord to physical. Digital DataRecord are taken from digArray starting
      * at digArrayOffset position.
      *
-     * @param digArray        array with digital data
+     * @param digArray        array with digital main.data
      * @param digArrayOffset  offset within the array at which the digital DataRecord starts
      * @return physical DataRecord
      */
@@ -59,7 +59,7 @@ public class PhysicalDigitalConverter {
      * Convert physical DataRecord to digital. Physical DataRecord are taken from physArray starting
      * at physArrayOffset position.
      *
-     * @param physArray        array with physical data
+     * @param physArray        array with physical main.data
      * @param physArrayOffset  offset within the array at which the physical DataRecord starts
      * @return digital DataRecord
      */

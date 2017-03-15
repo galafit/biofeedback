@@ -1,7 +1,7 @@
 package com.biorecorder.edflib.filters;
 
 /**
- * Signal filter describes some kind of transformation with stream data coming from
+ * Signal filter describes some kind of transformation with stream main.data coming from
  * some measuring channel.
  */
 public interface SignalFilter {

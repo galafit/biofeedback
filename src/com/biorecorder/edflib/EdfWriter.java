@@ -98,10 +98,10 @@ public class EdfWriter extends DataRecordsWriter {
 
     /**
      * Write ONE digital DataRecord to the file.
-     * Take data from digitalData array starting at offset position.
+     * Take main.data from digitalData array starting at offset position.
      * Every int is converted to LITTLE_ENDIAN ordered bytes (2 bytes for EDF files and 3 bytes for BDF files).
      *
-     * @param digitalData array with digital data
+     * @param digitalData array with digital main.data
      * @param offset      offset within the array at which the DataRecord starts
      * @throws IOException
      */
@@ -157,8 +157,8 @@ public class EdfWriter extends DataRecordsWriter {
         StringBuilder stringBuilder = new StringBuilder("\n");
         stringBuilder.append("Start recording time = " + startTime + " (" + dateFormat.format(new Date(startTime)) + ") \n");
         stringBuilder.append("Stop recording time = " + stopTime + " (" + dateFormat.format(new Date(stopTime)) + ") \n");
-        stringBuilder.append("Number of data records = " + dataRecordsCounter + "\n");
-        stringBuilder.append("Duration of a data record = " + durationOfDataRecord);
+        stringBuilder.append("Number of main.data records = " + dataRecordsCounter + "\n");
+        stringBuilder.append("Duration of a main.data record = " + durationOfDataRecord);
         return stringBuilder.toString();
     }
 

@@ -15,8 +15,10 @@ public class ArrayFunction implements Function {
     @Override
     public double value(double x) {
         x = x * sampleRate;
-        if (x<0);
-        if (x>args.length){
+        if (x  < 0) {
+           return 0;
+        }
+        if (x > args.length){
             return 0;
         }
         return args[(int)x];

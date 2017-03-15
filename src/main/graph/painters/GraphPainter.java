@@ -22,7 +22,7 @@ public class GraphPainter {
         if (graphData != null && startIndex >= 0 && startIndex < graphData.size()) {
             int width = g.getClipBounds().width;
             int height = g.getClipBounds().height;
-            int endPoint = Math.min(width, (graphData.size() - startIndex));
+            int endPoint = Math.min(width, (int)(graphData.size() - startIndex));
             int value = graphData.get(startIndex);
             int y = (int) Math.round(zoom * value);
             VerticalLine vLine = new VerticalLine(y);

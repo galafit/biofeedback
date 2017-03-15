@@ -1,7 +1,7 @@
 package com.biorecorder.edflib.base;
 
 /**
- * Class (data-structure) that allows to store information about measuring channels (signals).
+ * Class (main.data-structure) that allows to store information about measuring channels (signals).
  * It has the following fields (and their corresponding getters and setters):
  *  <ul>
  *     <li>signal label</li>
@@ -12,7 +12,7 @@ package com.biorecorder.edflib.base;
  *     <li>digital minimum (e.g. -2048)</li>
  *     <li>digital maximum (e.g. 2047)</li>
  *     <li>prefiltering (e.g. HP:0.1Hz LP:75Hz)</li>
- *     <li>number of samples in each data record</li>
+ *     <li>number of samples in each main.data record</li>
  * </ul>
  *
  */

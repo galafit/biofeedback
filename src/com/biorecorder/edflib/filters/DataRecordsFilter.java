@@ -12,7 +12,7 @@ import java.io.IOException;
  * <p>
  * DataRecordsFilter itself simply overrides all methods of DataRecordsWriter
  * with versions that pass all requests to the underlying DataRecordsWriter. The only purpose of this class
- * is to be a superclass for real data DataRecord filters which normally modify incoming
+ * is to be a superclass for real main.data DataRecord main.filters which normally modify incoming
  * DataRecords before pass (write) them to underlying writer.
  * <p>
  * Full analog of {@link java.io.FilterOutputStream}
@@ -63,7 +63,7 @@ public class DataRecordsFilter extends DataRecordsWriter {
     /**
      * Calls the same method of its underlying DataRecordsWriter.
      *
-     * @param digitalData array with digital data
+     * @param digitalData array with digital main.data
      * @param offset      offset within the array at which the DataRecord starts
      * @throws IOException
      */

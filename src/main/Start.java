@@ -1,16 +1,15 @@
 package main;
 
 
-import com.biorecorder.edflib.HeaderParsingException;
-import main.data.DataSeries;
-import main.data.Scaling;
-import main.data.ScalingImpl;
-import main.graph.GraphViewer;
 
-import javax.swing.*;
-import java.awt.*;
+import main.data.DataList;
+import main.data.DataSeries;
+import main.filters.FilterDerivativeRem;
+import main.filters.FrequencyDivider;
+import main.filters.HiPassCollectingFilter;
+
 import java.io.File;
-import java.io.IOException;
+
 
 /**
  * Created by gala on 11/02/17.
@@ -18,26 +17,17 @@ import java.io.IOException;
 public class Start {
     public static void main(String[] args) {
         Viewer viewer = new Viewer();
-
-        Function f0 = new Harmonic(1, 0.1);
-        Function fa = new Harmonic(2,0.1);
-
-        Function ft = new Function() {
-            @Override
-            public double value(double x) {
-                return f0.value(x) + fa.value(x);
-            }
-        };
-
-        Function fl = (x) -> {return f0.value(x) + fa.value(x);};
-        // show(fl, 5);
-
         File recordsDir = new File(System.getProperty("user.dir"), "records");
-        File fileToRead = new File(recordsDir, "cardio.edf");
+        //File fileToRead = new File(recordsDir, "cardio.edf");
+        File fileToRead = new File(recordsDir, "devochka_copy2.bdf");
         try {
-            EdfList edfList = new EdfList(fileToRead);
-            viewer.show(edfList.getChannelSeries(0));
-            viewer.show(edfList.getChannelSeries(1));
+            EdfData edfData = new EdfData(fileToRead);
+            DataSeries edfSeries1 = edfData.getChannelSeries(0);
+            DataSeries edfSeries2 = edfData.getChannelSeries(1);
+            viewer.addGraph(edfSeries1);
+            viewer.addGraph(edfSeries2);
+
+            play(edfSeries1, 4, 5);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,35 +36,49 @@ public class Start {
     }
 
 
+    static void simplePlayTest() {
+        Viewer viewer = new Viewer();
 
-    static Function sin(double freq) {
-        return  new Function() {
+        Function harmonic = new Harmonic(10, 0.1);
+        Function sin = new Sin(0.5);
+
+        /*Function mix = new Function() {
             @Override
             public double value(double x) {
-                return Math.sin(2 * Math.PI * x * freq);
+                return harmonic.value(x) * sin.value(x);
             }
-        };
+        };*/
+
+        Function mix = (x) -> {return harmonic.value(x) * sin.value(x);};
+
+        viewer.addGraph(mix, 2);
+        play(mix, 4, 4);
     }
 
 
+    static void filePlayTest() {
+        Viewer viewer = new Viewer();
+        File recordsDir = new File(System.getProperty("user.dir"), "records");
+        File fileToRead = new File(recordsDir, "devochka_copy1.bdf");
+        try {
+            EdfData edfData = new EdfData(fileToRead);
+            DataSeries edfSeries1 = edfData.getChannelSeries(0);
+            DataSeries edfSeries = new FrequencyDivider(edfSeries1, 5);
+            int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
+            DataSeries eog = new HiPassCollectingFilter(edfSeries, eogCutOffPeriod);
 
-    static Function harmonic(double freq, double pct) {
-        return new Harmonic(freq,pct);
+            viewer.addGraph(eog);
+            viewer.addPreview(new FilterDerivativeRem(eog));
 
-    }
-
-
-    static void play(Function f, double volume, double duration) {
-        int sampleRate = StdAudio.SAMPLE_RATE;
-        int n = (int) (sampleRate * duration);
-        double[] a = new double[n+1];
-        for (int i = 0; i <= n; i++) {
-            a[i] = volume * f.value((double)i/sampleRate);
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        StdAudio.play(a);
+
     }
 
+    static void play(Function f, double duration, double volume) {
+        StdAudio.play(f, duration, volume);
+    }
 }
 
 

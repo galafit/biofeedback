@@ -13,8 +13,8 @@ public class Monad {
 
 
     public static void main(String[] args) {
-        ArrayList<Integer> l1 = new ArrayList();
-        ArrayList<Integer> l2 = new ArrayList();
+        List<Integer> l1 = new ArrayList();
+        List<Integer> l2 = new ArrayList();
 
         for (int i = 1; i < 10; i++) {
             l1.add(i);

@@ -50,7 +50,7 @@ public class DataRecordsJoiner extends DataRecordsFilter {
      * Accumulate and join the specified number of incoming DataRecords into one resultant
      * DataRecord and when it is ready write it to the underlying DataRecordsWriter
      *
-     * @param digitalData array with digital data
+     * @param digitalData array with digital main.data
      * @param offset      offset within the array at which the DataRecord starts
      * @throws IOException
      */
@@ -71,7 +71,7 @@ public class DataRecordsJoiner extends DataRecordsFilter {
 
         }
 
-        if (recordsCounter == numberOfRecordsToJoin) {  // when resulting data record is ready
+        if (recordsCounter == numberOfRecordsToJoin) {  // when resulting main.data record is ready
             out.writeDigitalDataRecord(outDataRecord);
             recordsCounter = 0;
         }

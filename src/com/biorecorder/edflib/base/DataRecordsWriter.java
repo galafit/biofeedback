@@ -28,7 +28,7 @@ public abstract class DataRecordsWriter {
 
     /**
      * Prepare the DataRecords writer for correct work.
-     * This function MUST be called before writing any data.
+     * This function MUST be called before writing any main.data.
      * After opening the configuration of the writer SHOULD NOT be changed.
      *
      * @param headerConfig - object with the information about DataRecords structure
@@ -109,9 +109,9 @@ public abstract class DataRecordsWriter {
 
     /**
      * Write ONE digital DataRecord.
-     * Take data from digitalData array starting at offset position.
+     * Take main.data from digitalData array starting at offset position.
      *
-     * @param digitalData array with digital data
+     * @param digitalData array with digital main.data
      * @param offset      offset within the array at which the DataRecord starts
      * @throws IOException
      */
@@ -121,9 +121,9 @@ public abstract class DataRecordsWriter {
     /**
      * Convert ONE physical DataRecord to digital one and write it. That is, it performs
      * writeDigitalDataRecord(physicalDigitalConverter.physicalRecordToDigital(physData, offset)).
-     * Take data from physData array starting at offset position.
+     * Take main.data from physData array starting at offset position.
      *
-     * @param physData array with physical data
+     * @param physData array with physical main.data
      * @param offset   offset within the array at which the DataRecord starts
      * @throws IOException
      */
@@ -175,7 +175,7 @@ public abstract class DataRecordsWriter {
      * Closes this writer and releases any system resources associated with
      * it. This writer may no longer be used for writing DataRecords.
      * This method MUST be called after finishing writing DataRecords.
-     * Failing to do so will cause unnessesary memory usage and corrupted and incomplete data writing.
+     * Failing to do so will cause unnessesary memory usage and corrupted and incomplete main.data writing.
      *
      * @throws IOException
      */

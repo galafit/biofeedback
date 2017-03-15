@@ -12,7 +12,7 @@ import java.util.Map;
 
 /**
  * Permit to omit samples from some channels (delete signal) or realize some kind of
- * transformation with the signal data (add some filter to the signal).
+ * transformation with the signal main.data (add some filter to the signal).
  * <p>
  * EdfExample:
  * <pre>{@code
@@ -56,7 +56,7 @@ public class DataRecordsSignalsManager extends DataRecordsFilter {
      * @param signalNumber number of channel (signal) in the input DataRecord
      *                     the filter should be applied to
      */
-    // TODO add the possibility to apply not one but several filters to the same channel
+    // TODO add the possibility to apply not one but several main.filters to the same channel
     public void addSignalPrefiltering(int signalNumber, SignalFilter signalFilter) {
         filters.put(signalNumber, signalFilter);
     }
@@ -92,7 +92,7 @@ public class DataRecordsSignalsManager extends DataRecordsFilter {
     }
 
     /**
-     * Apply filters specified for the channels, omit data from the "deleted" channels and
+     * Apply main.filters specified for the channels, omit main.data from the "deleted" channels and
      * create resultant output DataRecord
      *
      * @param digitalData
@@ -132,7 +132,7 @@ public class DataRecordsSignalsManager extends DataRecordsFilter {
      * Fulfills all indicated transformation with the signals samples and write
      * resultant DataRecord to the underlying DataRecordsWriter
      *
-     * @param digitalData - array with digital data
+     * @param digitalData - array with digital main.data
      * @param offset      - offset within the array at which the DataRecord starts
      * @throws IOException
      */

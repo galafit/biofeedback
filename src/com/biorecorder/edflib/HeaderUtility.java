@@ -16,16 +16,16 @@ import java.util.Date;
  * at a HeaderConfig object.
  *
  * <p>HEADER RECORD
- * <br>8 ascii : version of this data format (0)
+ * <br>8 ascii : version of this main.data format (0)
  * <br>80 ascii : local patient identification (mind item 3 of the additional EDF+ specs)
  * <br>80 ascii : local recording identification (mind item 4 of the additional EDF+ specs)
  * <br>8 ascii : startdate of recording (dd.mm.yy) (mind item 2 of the additional EDF+ specs)
  * <br>8 ascii : starttime of recording (hh.mm.ss)
  * <br>8 ascii : number of bytes in header record (The header record contains 256 + (ns * 256) bytes)
  * <br>44 ascii : reserved
- * <br>8 ascii : number of data records (-1 if unknown, obey item 10 of the additional EDF+ specs)
- * <br>8 ascii : duration of a data record, in seconds
- * <br>4 ascii : number of signals (ns) in data record
+ * <br>8 ascii : number of main.data records (-1 if unknown, obey item 10 of the additional EDF+ specs)
+ * <br>8 ascii : duration of a main.data record, in seconds
+ * <br>4 ascii : number of signals (ns) in main.data record
  * <br>ns * 16 ascii : ns * label (e.g. EEG Fpz-Cz or Body temp) (mind item 9 of the additional EDF+ specs)
  * <br>ns * 80 ascii : ns * transducer type (e.g. AgAgCl electrode)
  * <br>ns * 8 ascii : ns * physical dimension (e.g. uV or degreeC)
@@ -34,7 +34,7 @@ import java.util.Date;
  * <br>ns * 8 ascii : ns * digital minimum (e.g. -2048)
  * <br>ns * 8 ascii : ns * digital maximum (e.g. 2047)
  * <br>ns * 80 ascii : ns * prefiltering (e.g. HP:0.1Hz LP:75Hz)
- * <br>ns * 8 ascii : ns * nr of samples in each data record
+ * <br>ns * 8 ascii : ns * nr of samples in each main.data record
  * <br>ns * 32 ascii : ns * reserved
  *
  * <p>Detailed information about EDF/BDF format:

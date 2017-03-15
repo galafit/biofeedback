@@ -349,4 +349,14 @@ public class EdfReader {
     public void close() throws IOException {
         fileInputStream.close();
     }
+
+    public void printHeaderInfo() {
+        System.out.println("Duration of DataRecords = " + headerConfig.getDurationOfDataRecord());
+        System.out.println("Number of signals = " + headerConfig.getNumberOfSignals());
+        for (int i = 0; i < headerConfig.getNumberOfSignals(); i++) {
+            System.out.println(i + ": label = " + headerConfig.getSignalConfig(i).getLabel()
+                    + "; number of samples in data records = " + headerConfig.getSignalConfig(i).getNumberOfSamplesInEachDataRecord()
+                    + "; prefiltering = " + headerConfig.getSignalConfig(0).getPrefiltering());
+        }
+    }
 }

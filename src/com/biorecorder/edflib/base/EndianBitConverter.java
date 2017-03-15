@@ -42,8 +42,8 @@ public class EndianBitConverter {
      * Convert BIG_ENDIAN java int to LITTLE_ENDIAN ordered byte array.
      * Resultant array will contain specified number of bytes: 4, 3, 2 or 1.
      * <p>
-     * <p>3 bytes LITTLE_ENDIAN data format is used to write/read BDF files
-     * <br>2 bytes LITTLE_ENDIAN data format is used to write/read EDF files
+     * <p>3 bytes LITTLE_ENDIAN main.data format is used to write/read BDF files
+     * <br>2 bytes LITTLE_ENDIAN main.data format is used to write/read EDF files
      *
      * @param value                  the value to be converted to byte array, standard 32-bit signed java int (BIG_ENDIAN)
      * @param resultantNumberOfBytes number of bytes in resultant array. Can be: 4, 3, 2 or 1.

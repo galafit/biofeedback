@@ -169,14 +169,14 @@ class GraphModel {
         int graphsSize = 0;
         for (List<Graph> graphsList : graphClusterList) {
             for (Graph graph : graphsList) {
-                graphsSize = Math.max(graphsSize, graph.getGraphData().size());
+                graphsSize = Math.max(graphsSize, (int)graph.getGraphData().size());
             }
         }
 
         int previewsSize = 0;
         for (List<Graph> previewList : previewClusterList) {
             for (Graph preview : previewList) {
-                previewsSize = Math.max(previewsSize, preview.getGraphData().size());
+                previewsSize = Math.max(previewsSize, (int)preview.getGraphData().size());
             }
         }
         return (int)Math.max(graphsSize, previewsSize * getCompression());

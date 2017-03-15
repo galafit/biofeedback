@@ -9,11 +9,11 @@ import java.awt.*;
  *
  */
 public class GraphViewer extends JPanel{
-    private static final int DEFAULT_GRAPH_PANEL_WEIGHT = 1;
+    private static final int DEFAULT_GRAPH_PANEL_WEIGHT = 2;
     private static final int DEFAULT_PREVIEW_PANEL_WEIGHT = 1;
 
     private static final boolean IS_GRAPH_X_CENTERED_DEFAULT = true;
-    private static final boolean IS_PREVIEW_X_CENTERED_DEFAULT = true;
+    private static final boolean IS_PREVIEW_X_CENTERED_DEFAULT = false;
 
     private static final int X_INDENT_DEFAULT =50;
     private static final int Y_INDENT_DEFAULT = 10;
@@ -54,6 +54,11 @@ public class GraphViewer extends JPanel{
 
     public void setXIndent(int xIndent) {
         graphView.setXIndent(xIndent);
+
+    }
+
+    public long getStartIndex() {
+        return  graphModel.getStartIndex();
 
     }
 

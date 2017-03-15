@@ -10,12 +10,12 @@ import java.io.*;
 
 /**
  * This example program opens the EDF-file records/ekg.edf
- * (that contains data from two measuring channels - cardiogram and accelerometer) and
+ * (that contains main.data from two measuring channels - cardiogram and accelerometer) and
  * <ul>
  * <li>reads its records (one by one) and writes them to the new file ekgcopy1.edf as it is</li>
- * <li>reads data by samples (from both channels) and writes them to the new file ekgcopy2.edf as it is</li>
+ * <li>reads main.data by samples (from both channels) and writes them to the new file ekgcopy2.edf as it is</li>
  * <li>does some filtering
- * (that joins 10 data records first and then omits data from the first channel and averages samples
+ * (that joins 10 main.data records first and then omits main.data from the first channel and averages samples
  * from the second channel reducing the 50Hz noise)
  * and writes the resultant records to ekgcopy3.edf</li>
  * </ul>
@@ -41,7 +41,7 @@ public class EdfExample {
             }
             fileWriter1.close();
 
-            // read data by samples (from both channels) and write them to the new file ekgcopy2.edf as it is
+            // read main.data by samples (from both channels) and write them to the new file ekgcopy2.edf as it is
             File fileToWrite2 = new File(recordsDir, "ekgcopy2.edf");
             EdfWriter fileWriter2 = new EdfWriter(fileToWrite2, FileType.EDF_16BIT);
             fileWriter2.open(headerConfig);
@@ -53,7 +53,7 @@ public class EdfExample {
 
             /*
              *  do the filtering
-             * (that joins 10 data records first and then omits data from the first channel and averages samples
+             * (that joins 10 main.data records first and then omits main.data from the first channel and averages samples
              * from the second channel reducing the 50Hz noise)
              * and write the resultant records to ekgcopy3.edf
              */

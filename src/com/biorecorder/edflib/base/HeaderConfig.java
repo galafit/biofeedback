@@ -3,15 +3,15 @@ package com.biorecorder.edflib.base;
 import java.util.ArrayList;
 
 /**
- * Class (data-structure) that allows to store the information required to create EDF/BDF file header
- * and correctly extract data from the DataRecords. It has the following fields
+ * Class (main.data-structure) that allows to store the information required to create EDF/BDF file header
+ * and correctly extract main.data from the DataRecords. It has the following fields
  * (and their corresponding getters and setters):
  * <ul>
  *     <li>patient identification</li>
  *     <li>recording identification</li>
  *     <li>recording recordingStartTime</li>
- *     <li>number of data records</li>
- *     <li>duration of a data record (in seconds)</li>
+ *     <li>number of main.data records</li>
+ *     <li>duration of a main.data record (in seconds)</li>
  * </ul>
  * <p>
  * Configuration of every measuring channel is described by a separate
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * <p>
  * To get the signal configuration ( ! <b>the numbering starts at 0</b> ! ) - {@link #getSignalConfig(int)}
  * <p>
- * To get the number of the signals in data record - {@link #getNumberOfSignals()}
+ * To get the number of the signals in main.data record - {@link #getNumberOfSignals()}
  * <p>
  * To get the number of bytes in header record - {@link #getNumberOfBytesInHeaderRecord()}
  *
@@ -148,7 +148,7 @@ public class HeaderConfig {
 
 
     /**
-     * Helper method. cCalculate total number of samples from all channels (signals) in each data record
+     * Helper method. cCalculate total number of samples from all channels (signals) in each main.data record
      *
      * @return sum of samples from all channels
      */

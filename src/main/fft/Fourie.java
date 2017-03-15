@@ -16,8 +16,8 @@ public class Fourie {
             frequency = 1 / inputData.getScaling().getSamplingInterval();
         }
         int N = (int) (frequency * time);
-        N = Math.min(N, inputData.size() - index);
-        N = toPower2(N);  // length of input data for Fourie: must be a power of two
+        N = Math.min(N, (int)inputData.size() - index);
+        N = toPower2(N);  // length of input main.data for Fourie: must be a power of two
 
         double[] dataRe = new double[N];
         double[] dataIm = new double[N];
@@ -40,7 +40,7 @@ public class Fourie {
         }
         int N = (int) frequency * time;
         N = Math.min(N, index);
-        N = toPower2(N);  // length of input data for Fourie: must be a power of two
+        N = toPower2(N);  // length of input main.data for Fourie: must be a power of two
 
         double[] dataRe = new double[N];
         double[] dataIm = new double[N];

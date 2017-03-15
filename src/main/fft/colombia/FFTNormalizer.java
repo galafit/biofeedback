@@ -18,7 +18,7 @@ public class FFTNormalizer implements DataSeries {
         this.frequency = frequency;
     }
 
-    private int getN() { // number of data points for FFT
+    private int getN() { // number of main.data points for FFT
         return re.length;
     }
 
@@ -26,7 +26,7 @@ public class FFTNormalizer implements DataSeries {
         return frequency / getN();
     }
 
-    public int size() {
+    public long size() {
         return getN()/2;
     }
 
@@ -40,8 +40,8 @@ public class FFTNormalizer implements DataSeries {
     }
 
     @Override
-    public int get(int index) {
-        return (int) getAmplitude(index);
+    public int get(long index) {
+        return (int) getAmplitude((int)index);
     }
 
     @Override
@@ -49,6 +49,16 @@ public class FFTNormalizer implements DataSeries {
         ScalingImpl scaling = new ScalingImpl();
         scaling.setSamplingInterval(getFrequencyStep());
         return scaling;
+    }
+
+    @Override
+    public double start() {
+        return 0;
+    }
+
+    @Override
+    public double sampleRate() {
+        return 1.0/getFrequencyStep();
     }
 }
 

@@ -32,17 +32,27 @@ public class DataList  implements DataSeries {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return intArrayList.size();
     }
 
     @Override
-    public int get(int index) {
-        return intArrayList.get(index);
+    public int get(long index) {
+        return intArrayList.get((int)index);
     }
 
     @Override
     public Scaling getScaling() {
         return scaling;
+    }
+
+    @Override
+    public double start() {
+        return 0;
+    }
+
+    @Override
+    public double sampleRate() {
+        return 1;
     }
 }

@@ -64,7 +64,7 @@ public final class StdAudio {
             line.open(format, SAMPLE_BUFFER_SIZE * BYTES_PER_SAMPLE);
 
             // the internal buffer is a fraction of the actual buffer size, this choice is arbitrary
-            // it gets divided because we can't expect the buffered data to line up exactly with when
+            // it gets divided because we can't expect the buffered main.data to line up exactly with when
             // the sound card decides to push out its samples.
             buffer = new byte[SAMPLE_BUFFER_SIZE * BYTES_PER_SAMPLE / 3];
         } catch (LineUnavailableException e) {
@@ -125,6 +125,12 @@ public final class StdAudio {
         }
     }
 
+
+
+    public static void play(Function f, double duration, double volume) {
+        play(f.toArray(0, duration, volume, SAMPLE_RATE));
+    }
+
     /**
      * Reads audio samples from a file (in .wav or .au format) and returns
      * them as a double array with values between -1.0 and +1.0.
@@ -142,7 +148,7 @@ public final class StdAudio {
         return d;
     }
 
-    // return data as a byte array
+    // return main.data as a byte array
     private static byte[] readByte(String filename) {
         byte[] data = null;
         AudioInputStream ais = null;
