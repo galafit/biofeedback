@@ -22,7 +22,7 @@ public class Start {
         File fileToRead = new File(recordsDir, "devochka_copy2.bdf");
         try {
             EdfData edfData = new EdfData(fileToRead);
-            DataSeries edfSeries1 = edfData.getChannelSeries(0);
+            DataSeries edfSeries1 = edfData.getChannelSeries(4);
             DataSeries edfSeries2 = edfData.getChannelSeries(1);
             viewer.addGraph(edfSeries1);
             viewer.addGraph(edfSeries2);

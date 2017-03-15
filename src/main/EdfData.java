@@ -2,7 +2,6 @@ package main;
 
 
 import com.biorecorder.edflib.EdfReader;
-import com.biorecorder.edflib.EdfReader1;
 import com.biorecorder.edflib.HeaderParsingException;
 import com.biorecorder.edflib.base.SignalConfig;
 import main.data.DataSeries;
@@ -11,9 +10,8 @@ import main.data.ScalingImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.nio.channels.Channel;
+import java.util.*;
 
 /**
  * Created by hdablin on 04.03.17.
@@ -21,8 +19,12 @@ import java.util.List;
 public class EdfData {
     private EdfReader edfReader;
     private int bufferSize=1024*8;
-    private List<Long> samplePointersList  =  Collections.synchronizedList(new ArrayList<Long>());
-    private List<int[]> buffersList = Collections.synchronizedList(new ArrayList<int[]>());
+ //   private List<Long> samplePointersList  =  Collections.synchronizedList(new ArrayList<Long>());
+ //   private List<int[]> buffersList = Collections.synchronizedList(new ArrayList<int[]>());
+//    private Map<Integer, int[]> buffersMap =  Collections.synchronizedMap(new HashMap<Integer, int[]>());
+
+    private Map<Integer, Channel> channelMap = Collections.synchronizedMap(new HashMap<Integer, Channel>());
+
 
 
     public EdfData(File edfFile) throws IOException, HeaderParsingException {
@@ -31,8 +33,7 @@ public class EdfData {
     }
 
     synchronized public DataSeries getChannelSeries(int channelNumber){
-        buffersList.add(new int[bufferSize]);
-        samplePointersList.add(new Long(0));
+        channelMap.put(channelNumber, new Channel());
         final long  size;
         long size1;
         try {
@@ -44,7 +45,8 @@ public class EdfData {
 
 
         size = size1;
-        fullBuffer (samplePointersList.get(channelNumber), channelNumber, buffersList.get(channelNumber));
+
+        fullBuffer (channelMap.get(channelNumber).getPointer(), channelNumber);
 
         return new DataSeries() {
             @Override
@@ -87,22 +89,51 @@ public class EdfData {
     }
 
     synchronized private int get(int channelNumber, long index) {
-        if(index < samplePointersList.get(channelNumber) || index >= samplePointersList.get(channelNumber)+bufferSize){
-            fullBuffer(index, channelNumber, buffersList.get(channelNumber));
+        if(index < channelMap.get(channelNumber).getPointer() || index >= channelMap.get(channelNumber).getPointer()+bufferSize){
+            fullBuffer(index, channelNumber);
         }
-        return buffersList.get(channelNumber)[(int) (index-samplePointersList.get(channelNumber))];
+        return channelMap.get(channelNumber).getBuffer()[(int) (index- channelMap.get(channelNumber).getPointer())];
     }
 
 
-    synchronized private void fullBuffer(long index, int channelNumber, int[] bufferArray) {
-        long newPosition = Math.max(0, index - bufferArray.length/2);
+    synchronized private void fullBuffer(long index, int channelNumber) {
+        long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
         edfReader.setSamplePosition(channelNumber, newPosition);
-        samplePointersList.set(channelNumber,newPosition);
+        channelMap.get(channelNumber).setPointer(newPosition);
         try {
-            edfReader.readDigitalSamples(channelNumber, bufferArray, 0, bufferSize);
+            edfReader.readDigitalSamples(channelNumber, channelMap.get(channelNumber).getBuffer(), 0, bufferSize);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    class Channel {
+        private int[] buffer = new int[bufferSize];
+        private long pointer;
+        private long size;
+
+        public int[] getBuffer() {
+            return buffer;
+        }
+
+        public long getPointer() {
+            return pointer;
+        }
+
+        public long getSize() {
+            return size;
+        }
+
+        public void setPointer(long pointer) {
+            this.pointer = pointer;
+        }
+
+        public void setSize(long size) {
+            this.size = size;
+        }
+    }
+
 }
+
+
+
