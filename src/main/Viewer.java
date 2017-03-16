@@ -2,6 +2,7 @@ package main;
 
 import main.data.*;
 import main.graph.GraphType;
+import main.graph.GraphView;
 import main.graph.GraphViewer;
 
 import javax.swing.*;
@@ -22,14 +23,15 @@ public class Viewer extends JFrame {
     public Viewer() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton playButton = new JButton("play");
+        JButton showButton = new JButton("show");
         JTextField durationField = new JTextField(3);
         playButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 long startIndex = graphViewer.getStartIndex();
                 double startTime =  (lastDataSeries.start() + startIndex / lastDataSeries.sampleRate());
-                DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                String timeStamp = dateFormat.format(new Date((long) (startTime * 1000)));
+               // DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                // String timeStamp = dateFormat.format(new Date((long) (startTime * 1000)));
 
                 double duration = 10;
                 if(!durationField.getText().isEmpty()) {
@@ -37,16 +39,38 @@ public class Viewer extends JFrame {
                 }
                 graphViewer.requestFocusInWindow();
                 validate();
-                double[] test = lastDataSeries.toNormalizedArray(startTime, duration, 1, lastDataSeries.sampleRate());
-                Viewer viewer1 = new Viewer();
-                viewer1.addGraph(test, lastDataSeries.sampleRate());
+                StdAudio.play(lastDataSeries, startTime, duration, 5);
+            }
+        });
 
-               // StdAudio.play(lastDataSeries, startTime, duration, 5);
+        showButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                long startIndex = graphViewer.getStartIndex();
+                double startTime =  (lastDataSeries.start() + startIndex / lastDataSeries.sampleRate());
+                double duration = 10;
+                if(!durationField.getText().isEmpty()) {
+                    duration = new Double(durationField.getText());
+                }
+                graphViewer.requestFocusInWindow();
+                validate();
+                double[] graph = lastDataSeries.toNormalizedArray(startTime, duration, 1, lastDataSeries.sampleRate());
+                GraphViewer viewer = new GraphViewer(true, false);
+                viewer.setPreviewFrequency(PREVIEW_TIME_FREQUENCY);
+                JDialog dialog = new JDialog(Viewer.this);
+                dialog.setPreferredSize(new Dimension(1000, 500));
+                viewer.addGraph(arrToSeries(graph, lastDataSeries.sampleRate()));
+                dialog.add(viewer,  BorderLayout.CENTER);
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.show();
+
             }
         });
         controlPanel.add(durationField);
         controlPanel.add(new JLabel("Sec"));
         controlPanel.add(playButton);
+        controlPanel.add(showButton);
         add(controlPanel, BorderLayout.NORTH);
 
         setTitle("Graphic");
@@ -152,7 +176,11 @@ public class Viewer extends JFrame {
     }
 
     public void addGraph(double[] data, double sampleRate) {
-        DataSeries dataSeries = new DataSeries() {
+        addGraph(arrToSeries(data, sampleRate));
+    }
+
+    private DataSeries arrToSeries(double[] data, double sampleRate) {
+        return new DataSeries() {
             int intScaling = 300;
 
             @Override
@@ -183,9 +211,7 @@ public class Viewer extends JFrame {
                 return scaling;
             }
         };
-        addGraph(dataSeries);
     }
-
 
 
 }
