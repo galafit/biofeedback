@@ -10,7 +10,6 @@ import main.data.ScalingImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.channels.Channel;
 import java.util.*;
 
 /**
@@ -18,13 +17,8 @@ import java.util.*;
  */
 public class EdfData {
     private EdfReader edfReader;
-    private int bufferSize=1024*8;
- //   private List<Long> samplePointersList  =  Collections.synchronizedList(new ArrayList<Long>());
- //   private List<int[]> buffersList = Collections.synchronizedList(new ArrayList<int[]>());
-//    private Map<Integer, int[]> buffersMap =  Collections.synchronizedMap(new HashMap<Integer, int[]>());
-
+    private int defaultBufferSize =1024*8;
     private Map<Integer, Channel> channelMap = Collections.synchronizedMap(new HashMap<Integer, Channel>());
-
 
 
     public EdfData(File edfFile) throws IOException, HeaderParsingException {
@@ -32,27 +26,26 @@ public class EdfData {
         edfReader.printHeaderInfo();
     }
 
-    synchronized public DataSeries getChannelSeries(int channelNumber){
-        channelMap.put(channelNumber, new Channel());
-        final long  size;
-        long size1;
-        try {
-            size1 = edfReader.getNumberOfSamples(channelNumber);
-        } catch (IOException e) {
-            e.printStackTrace();
-            size1 = 0;
+     public DataSeries getChannelSeries(int channelNumber){
+         return getChannelSeries(channelNumber, defaultBufferSize);
+     }
+
+    synchronized public DataSeries getChannelSeries(int channelNumber, int bufferSize){
+
+        if (channelMap.get(channelNumber) == null) {
+            channelMap.put(channelNumber, new Channel(bufferSize));
+            try {
+                channelMap.get(channelNumber).setSize(edfReader.getNumberOfSamples(channelNumber));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fullBuffer (channelMap.get(channelNumber).getPointer(), channelNumber);
         }
-
-
-        size = size1;
-
-        fullBuffer (channelMap.get(channelNumber).getPointer(), channelNumber);
 
         return new DataSeries() {
             @Override
             public long size() {
-                return size;
-                //return edfReader.getNumberOfSamples(channelNumber);
+                return channelMap.get(channelNumber).getSize();
             }
 
             @Override
@@ -89,29 +82,43 @@ public class EdfData {
     }
 
     synchronized private int get(int channelNumber, long index) {
-        if(index < channelMap.get(channelNumber).getPointer() || index >= channelMap.get(channelNumber).getPointer()+bufferSize){
+        if(index < channelMap.get(channelNumber).getPointer() || index >= channelMap.get(channelNumber).getPointer()+ defaultBufferSize){
             fullBuffer(index, channelNumber);
         }
         return channelMap.get(channelNumber).getBuffer()[(int) (index- channelMap.get(channelNumber).getPointer())];
     }
 
-    
+    synchronized private void update(){
+        channelMap.forEach((k,v)->{
+            fullBuffer(v.getPointer(),k);
+            try {
+                v.setSize(edfReader.getNumberOfSamples(k));
+            } catch (IOException e) {
+
+            }
+        });
+    }
 
     synchronized private void fullBuffer(long index, int channelNumber) {
         long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
         edfReader.setSamplePosition(channelNumber, newPosition);
         channelMap.get(channelNumber).setPointer(newPosition);
         try {
-            edfReader.readDigitalSamples(channelNumber, channelMap.get(channelNumber).getBuffer(), 0, bufferSize);
+            edfReader.readDigitalSamples(channelNumber, channelMap.get(channelNumber).getBuffer(), 0, defaultBufferSize);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     class Channel {
-        private int[] buffer = new int[bufferSize];
+
+        private int[] buffer;
         private long pointer;
-        private long size;
+        private long size ;
+
+        public Channel(int bufferSize) {
+            buffer = new int[bufferSize];
+        }
 
         public int[] getBuffer() {
             return buffer;

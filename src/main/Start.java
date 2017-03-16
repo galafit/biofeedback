@@ -17,7 +17,7 @@ import java.io.File;
 public class Start {
     public static void main(String[] args) {
         filePlayTest();
-
+        //current();
     }
 
     static void current() {
@@ -32,7 +32,7 @@ public class Start {
             viewer.addGraph(edfSeries1);
             viewer.addGraph(edfSeries2);
 
-            play(edfSeries1, 4, 5);
+        //    play(edfSeries1, 4, 5);
 
         } catch (Exception e) {
             e.printStackTrace();
