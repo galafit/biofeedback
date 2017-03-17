@@ -169,11 +169,11 @@ public class GraphView extends JPanel {
         }
     }
 
-    public void setGraphStartIndex(int graphStartIndex) {
+    public void setGraphStartIndex(long graphStartIndex) {
         for (GraphPanel graphPanel : graphPanelList) {
             graphPanel.setStartIndex(graphStartIndex);
         }
-        graphScalePanel.setStartIndex(graphStartIndex);
+        graphScalePanel.setStartIndex((int)graphStartIndex);
     }
 
     public void setPreviewStartIndex(int previewStartIndex) {

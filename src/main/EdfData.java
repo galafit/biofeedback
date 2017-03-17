@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class EdfData {
     private EdfReader edfReader;
-    private int defaultBufferSize =1024*8;
+    private int defaultBufferSize =1024*16;
     private Map<Integer, Channel> channelMap = Collections.synchronizedMap(new HashMap<Integer, Channel>());
 
 

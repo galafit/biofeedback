@@ -38,7 +38,7 @@ public class GraphPanel extends JPanel {
     private double zoom = 0.5;
     private boolean isXCentered = true;
     private int weight = 1;
-    private int startIndex;
+    private long startIndex;
     private int slotWidth;
     private int slotPosition;
     private int indentX;
@@ -72,7 +72,7 @@ public class GraphPanel extends JPanel {
                 }
                 if (SwingUtilities.isRightMouseButton(e)) {
                     if(graphList.size() > 0) {
-                        notifyFourierListeners(graphList.get(0).getGraphData(), startIndex);
+                        notifyFourierListeners(graphList.get(0).getGraphData(), (int)startIndex);
                     }
                 }
             }
@@ -84,7 +84,7 @@ public class GraphPanel extends JPanel {
         this.graphList = graphList;
     }
 
-    public void setStartIndex(int startIndex) {
+    public void setStartIndex(long startIndex) {
         this.startIndex = startIndex;
     }
 
@@ -191,7 +191,7 @@ public class GraphPanel extends JPanel {
         transformCoordinate(g);
         if (graphList.size() > 0 && graphList.get(0) != null) {
             Scaling scaling = graphList.get(0).getGraphData().getScaling();
-            xAxisPainter.paint(g, startIndex, scaling);
+            xAxisPainter.paint(g, (int)startIndex, scaling);
             yAxisPainter.paint(g, zoom, scaling);
         }
 
@@ -200,7 +200,7 @@ public class GraphPanel extends JPanel {
             Color graphColor = graphColors[graph_number % graphColors.length];
             graph_number++;
             graphPainter.setDefaultColor(graphColor);
-            graphPainter.paint(g, zoom, startIndex, graph);
+            graphPainter.paint(g, zoom, (int)startIndex, graph);
         }
         paintSlot(g);
         restoreCoordinate(g);

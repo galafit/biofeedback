@@ -62,6 +62,18 @@ public class GraphViewer extends JPanel{
 
     }
 
+    public double getStart() {
+        return graphModel.getStart();
+    }
+
+    public long getGraphsSize() {
+        return graphModel.getGraphsSize();
+    }
+
+    public double getGraphsSamplingRate() {
+        return graphModel.getGraphsSamplingRate();
+    }
+
     public void setYIndent(int yIndent) {
         graphView.setYIndent(yIndent);
     }

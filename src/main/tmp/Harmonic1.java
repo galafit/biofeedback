@@ -1,6 +1,6 @@
 package main.tmp;
 
-import main.Function;
+import main.functions.Function;
 
 /**
  * Created by gala on 28/02/17.

@@ -12,7 +12,7 @@ class GraphModel {
 
     private double compression = 1;
     private double graphsSamplingRate;
-    private int startIndex;
+    private long startIndex;
     private int scrollPosition;
     private int drawingAreaWidth;
 
@@ -43,6 +43,10 @@ class GraphModel {
             return 1;
         }
         return compression;
+    }
+
+    public double getGraphsSamplingRate() {
+        return graphsSamplingRate;
     }
 
     public void addGraphCluster() {
@@ -134,7 +138,7 @@ class GraphModel {
     }
 
     public void setPreviewsSamplingRate(double samplingRate) {
-        int startIndex = getStartIndex();
+        long startIndex = getStartIndex();
         if(graphsSamplingRate != 0) {
             compression = graphsSamplingRate / samplingRate;
         }
@@ -164,22 +168,41 @@ class GraphModel {
         return drawingAreaWidth;
     }
 
-
-    public int getGraphsSize() {
-        int graphsSize = 0;
+    public double getStart() {
+        double start = Double.MAX_VALUE;
         for (List<Graph> graphsList : graphClusterList) {
             for (Graph graph : graphsList) {
-                graphsSize = Math.max(graphsSize, (int)graph.getGraphData().size());
+                start = Math.min(start, graph.getGraphData().start());
             }
         }
 
-        int previewsSize = 0;
         for (List<Graph> previewList : previewClusterList) {
             for (Graph preview : previewList) {
-                previewsSize = Math.max(previewsSize, (int)preview.getGraphData().size());
+                start = Math.max(start, preview.getGraphData().start());
             }
         }
-        return (int)Math.max(graphsSize, previewsSize * getCompression());
+        if(start == Double.MAX_VALUE) {
+            start = 0;
+        }
+        start = start + startIndex/getGraphsSamplingRate();
+        return start;
+    }
+
+    public long getGraphsSize() {
+        long graphsSize = 0;
+        for (List<Graph> graphsList : graphClusterList) {
+            for (Graph graph : graphsList) {
+                graphsSize = Math.max(graphsSize, graph.getGraphData().size());
+            }
+        }
+
+        long previewsSize = 0;
+        for (List<Graph> previewList : previewClusterList) {
+            for (Graph preview : previewList) {
+                previewsSize = Math.max(previewsSize, preview.getGraphData().size());
+            }
+        }
+        return Math.max(graphsSize, (long) (previewsSize * getCompression()));
     }
 
     public int getPreviewsSize() {
@@ -194,8 +217,8 @@ class GraphModel {
         return 0;
     }
 
-    private int getMaxStartIndex() {
-        int maxStartIndex = getGraphsSize() - 1 - getDrawingAreaWidth();
+    private long getMaxStartIndex() {
+        long maxStartIndex = getGraphsSize() - 1 - getDrawingAreaWidth();
         if (maxStartIndex < 0) {
             maxStartIndex = 0;
         }
@@ -252,7 +275,7 @@ class GraphModel {
         }
     }
 
-    public void setStartIndex(int startIndex) {
+    public void setStartIndex(long startIndex) {
         if (startIndex < 0) {
             startIndex = 0;
         }
@@ -298,7 +321,7 @@ class GraphModel {
 
     public void moveForward() {
         int shift = (int) (getDrawingAreaWidth() * 0.25);  //прокрутка
-        int newStartIndex = getStartIndex() + shift;
+        long newStartIndex = getStartIndex() + shift;
         setStartIndex(newStartIndex);
     }
 
@@ -311,7 +334,7 @@ class GraphModel {
             moveSlot(newSlotPosition);
         } else {
             int shift = (int) (getDrawingAreaWidth() * 0.25);
-            int newStartIndex = getStartIndex() - shift;
+            long newStartIndex = getStartIndex() - shift;
             setStartIndex(newStartIndex);
         }
     }
@@ -320,7 +343,7 @@ class GraphModel {
         return scrollPosition;
     }
 
-    public int getStartIndex() {
+    public long getStartIndex() {
         return startIndex;
     }
 

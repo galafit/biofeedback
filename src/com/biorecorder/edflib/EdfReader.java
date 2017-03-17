@@ -356,7 +356,7 @@ public class EdfReader {
         for (int i = 0; i < headerConfig.getNumberOfSignals(); i++) {
             System.out.println(i + ": label = " + headerConfig.getSignalConfig(i).getLabel()
                     + "; number of samples in data records = " + headerConfig.getSignalConfig(i).getNumberOfSamplesInEachDataRecord()
-                    + "; prefiltering = " + headerConfig.getSignalConfig(0).getPrefiltering());
+                    + "; frequency = " + headerConfig.getSignalConfig(i).getNumberOfSamplesInEachDataRecord() / headerConfig.getDurationOfDataRecord());
         }
     }
 }

@@ -38,7 +38,7 @@ public class FourierHandler implements FourierListener, GraphControllerListener 
 
     private DataSeries calculateFourierIntegral(DataSeries graph) {
         double time = 6; // sec
-        DataSeries fourier =  Fourie.fftForward(graph, graphModel.getStartIndex(), time);
+        DataSeries fourier =  Fourie.fftForward(graph, (int)graphModel.getStartIndex(), time);
        // DataSeries fourierIntegral = new FilterFourierIntegral(fourier);
 
 /*        System.out.println("has Alpha " +FourierAnalizer.hasAlfa(fourier));
@@ -55,7 +55,7 @@ public class FourierHandler implements FourierListener, GraphControllerListener 
 
     private DataSeries calculateFourier(DataSeries graph) {
         double time = 6; // sec
-        DataSeries fourier =  Fourie.fftForward(graph, graphModel.getStartIndex(), time);
+        DataSeries fourier =  Fourie.fftForward(graph, (int) graphModel.getStartIndex(), time);
 
 
 /*        System.out.println("has Alpha " +FourierAnalizer.hasAlfa(fourier));

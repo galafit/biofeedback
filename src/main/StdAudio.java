@@ -1,5 +1,7 @@
 package main;
 
+import main.functions.Function;
+
 import javax.sound.sampled.*;
 
 // for playing midi sound files on some older systems
@@ -121,6 +123,9 @@ public final class StdAudio {
     public static void play(double[] samples) {
         if (samples == null) throw new IllegalArgumentException("argument to play() is null");
         for (int i = 0; i < samples.length; i++) {
+            if (Double.isNaN(samples[i])) {
+                System.out.println(i+" "+ samples[i]);
+            }
             play(samples[i]);
         }
     }
@@ -128,7 +133,8 @@ public final class StdAudio {
 
 
     public static void play(Function f, double start, double duration, double volume) {
-        play(f.toNormalizedArray(start, duration, volume, SAMPLE_RATE));
+        play(f.toNormalizedArray(start, SAMPLE_RATE, duration, volume));
+        //StdAudio.close();
     }
 
     /**
@@ -384,7 +390,7 @@ public final class StdAudio {
 
     // create a note (sine wave) of the given frequency (Hz), for the given
     // duration (seconds) scaled to the given volume (amplitude)
-    private static double[] note(double hz, double duration, double amplitude) {
+    public static double[] note(double hz, double duration, double amplitude) {
         int n = (int) (StdAudio.SAMPLE_RATE * duration);
         double[] a = new double[n + 1];
         for (int i = 0; i <= n; i++)

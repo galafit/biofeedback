@@ -1,10 +1,6 @@
 package main.data;
 
-import main.Function;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import main.functions.Function;
 
 /**
  *  Scaling gives us actual dependency dataValue(indexValue)

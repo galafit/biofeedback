@@ -1,8 +1,8 @@
 package main;
 
 import main.data.*;
+import main.functions.Function;
 import main.graph.GraphType;
-import main.graph.GraphView;
 import main.graph.GraphViewer;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ import java.util.Date;
 public class Viewer extends JFrame {
     GraphViewer graphViewer;
     private final double PREVIEW_TIME_FREQUENCY = 50.0 / 750;
-    private DataSeries lastDataSeries;
+    private Function lastFunction;
 
     public Viewer() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -28,38 +28,37 @@ public class Viewer extends JFrame {
         playButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                long startIndex = graphViewer.getStartIndex();
-                double startTime =  (lastDataSeries.start() + startIndex / lastDataSeries.sampleRate());
-               // DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                // String timeStamp = dateFormat.format(new Date((long) (startTime * 1000)));
-
-                double duration = 10;
+                double startTime = graphViewer.getStart();
+                double duration = 3;
                 if(!durationField.getText().isEmpty()) {
                     duration = new Double(durationField.getText());
                 }
                 graphViewer.requestFocusInWindow();
                 validate();
-                StdAudio.play(lastDataSeries, startTime, duration, 5);
+                StdAudio.play(lastFunction, startTime, duration, 3);
             }
         });
 
         showButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                long startIndex = graphViewer.getStartIndex();
-                double startTime =  (lastDataSeries.start() + startIndex / lastDataSeries.sampleRate());
-                double duration = 10;
+                double startTime = graphViewer.getStart();
+                double duration = 3;
+               // DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+               // String timeStamp = dateFormat.format(new Date((long) (startTime * 1000)));
+               // System.out.println("time "+timeStamp);
+
                 if(!durationField.getText().isEmpty()) {
                     duration = new Double(durationField.getText());
                 }
                 graphViewer.requestFocusInWindow();
                 validate();
-                double[] graph = lastDataSeries.toNormalizedArray(startTime, duration, 1, lastDataSeries.sampleRate());
+                double[] graph = lastFunction.toNormalizedArray(startTime, graphViewer.getGraphsSamplingRate(), duration, 1);
                 GraphViewer viewer = new GraphViewer(true, false);
                 viewer.setPreviewFrequency(PREVIEW_TIME_FREQUENCY);
                 JDialog dialog = new JDialog(Viewer.this);
                 dialog.setPreferredSize(new Dimension(1000, 500));
-                viewer.addGraph(arrToSeries(graph, lastDataSeries.sampleRate()));
+                viewer.addGraph(arrToSeries(graph, graphViewer.getGraphsSamplingRate()));
                 dialog.add(viewer,  BorderLayout.CENTER);
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
@@ -77,7 +76,7 @@ public class Viewer extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         graphViewer = new GraphViewer(true, false);
         graphViewer.setPreviewFrequency(PREVIEW_TIME_FREQUENCY);
-        setPreferredSize(new Dimension(1100, 600));
+        setPreferredSize(new Dimension(1100, 800));
         add(graphViewer, BorderLayout.CENTER);
         pack();
         setVisible(true);
@@ -92,30 +91,42 @@ public class Viewer extends JFrame {
 
 
     public void addGraph(DataSeries dataSeries) {
+        graphViewer.addGraphPanel(2, true);
         graphViewer.addGraph(dataSeries);
-        this.lastDataSeries = dataSeries;
+        this.lastFunction = dataSeries;
+    }
+
+    public void addGraph(Function f) {
+        double from = 0;
+        double sampleRate = 1;
+        double duration = 1000;
+        if(lastFunction != null) {
+            from = graphViewer.getStart();
+            sampleRate = graphViewer.getGraphsSamplingRate();
+            duration = graphViewer.getGraphsSize() / sampleRate;
+         }
+        addGraph(f, from, sampleRate, duration);
     }
 
 
-    public void addGraph(Function f, double from, double duration, double sampleRate) {
+    public void addGraph(Function f, double from, double sampleRate, double duration) {
         DataSeries dataSeries = new DataSeries() {
             int intScaling = 300;
 
             @Override
             public long size() {
-                return (int) (duration * sampleRate);
+                return (long) (duration * sampleRate);
             }
 
             @Override
             public int get(long index) {
-                double x = (double) (index) / sampleRate;
-
+                double x =  index / sampleRate + from;
                 return (int) (f.value(x) * intScaling);
             }
 
             @Override
             public double start() {
-                return (long) from;
+                return from;
             }
 
             @Override
@@ -126,13 +137,16 @@ public class Viewer extends JFrame {
             @Override
             public Scaling getScaling() {
                 ScalingImpl scaling = new ScalingImpl();
-                scaling.setStart(from);
+                scaling.setStart(from * 1000);
+                scaling.setTimeSeries(true);
                 scaling.setDataGain(1.0 / intScaling);
                 scaling.setSamplingInterval(1.0 / sampleRate);
                 return scaling;
             }
         };
-        addGraph(dataSeries);
+        graphViewer.addGraphPanel(2, true);
+        graphViewer.addGraph(dataSeries);
+        this.lastFunction = f;
     }
 
 
@@ -172,7 +186,9 @@ public class Viewer extends JFrame {
                 return scaling;
             }
         };
-        addGraph(dataSeries);
+        graphViewer.addGraphPanel(2, true);
+        graphViewer.addGraph(dataSeries);
+        this.lastFunction = f;
     }
 
     public void addGraph(double[] data, double sampleRate) {

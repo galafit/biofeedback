@@ -87,7 +87,7 @@ public class DataCompressor implements DataSeries {
 
     @Override
     public double start() {
-        return (long)inputData.getScaling().getStart();
+        return inputData.start();
     }
 
     @Override
