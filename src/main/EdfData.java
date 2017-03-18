@@ -4,6 +4,7 @@ package main;
 import com.biorecorder.edflib.EdfReader;
 import com.biorecorder.edflib.HeaderParsingException;
 import com.biorecorder.edflib.base.SignalConfig;
+import com.github.rjeschke.neetutils.audio.FIRUtils;
 import main.data.DataSeries;
 import main.data.Scaling;
 import main.data.ScalingImpl;
@@ -19,6 +20,7 @@ public class EdfData {
     private EdfReader edfReader;
     private int defaultBufferSize =1024*16;
     private Map<Integer, Channel> channelMap = Collections.synchronizedMap(new HashMap<Integer, Channel>());
+
 
 
     public EdfData(File edfFile) throws IOException, HeaderParsingException {
@@ -100,6 +102,7 @@ public class EdfData {
     }
 
     synchronized private void fullBuffer(long index, int channelNumber) {
+
         long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
         edfReader.setSamplePosition(channelNumber, newPosition);
         channelMap.get(channelNumber).setPointer(newPosition);
@@ -114,10 +117,12 @@ public class EdfData {
 
         private int[] buffer;
         private long pointer;
-        private long size ;
+        private long size;
+        private double[] fir;
 
         public Channel(int bufferSize) {
             buffer = new int[bufferSize];
+            fir = FIRUtils.createLowpass(10, 0.1, 250);
         }
 
         public int[] getBuffer() {

@@ -2,10 +2,7 @@ package main;
 
 
 import main.data.DataSeries;
-import main.filters.AccelerometerMovement;
-import main.filters.FilterDerivativeRem;
-import main.filters.FrequencyDivider;
-import main.filters.HiPassCollectingFilter;
+import main.filters.*;
 import main.functions.Function;
 import main.functions.Harmonic;
 import main.functions.Sin;
@@ -19,27 +16,9 @@ import java.io.File;
 public class Start {
     public static void main(String[] args) {
         filePlayTest();
-        //current();
 
     }
 
-    static void current() {
-        Viewer viewer = new Viewer();
-        File recordsDir = new File(System.getProperty("user.dir"), "records");
-        //File fileToRead = new File(recordsDir, "cardio.edf");
-        File fileToRead = new File(recordsDir, "devochka.bdf");
-        try {
-            EdfData edfData = new EdfData(fileToRead);
-            DataSeries edfSeries1 = edfData.getChannelSeries(0);
-            DataSeries edfSeries2 = edfData.getChannelSeries(1);
-            viewer.addGraph(edfSeries1);
-            viewer.addGraph(edfSeries2);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     static void filePlayTest() {
@@ -65,22 +44,26 @@ public class Start {
                     new FrequencyDivider(accZ, 5));
 
 
+
+            DataSeries alfa = new FilterHiPass(new FilterBandPass_Alfa(eog), 2);
+
+            DataSeries alfa_contur = new FilterAlfa(eog);
+
+
             Function sin = new Sin(80);
 
 
             Function mix = (x) -> {
-                return eog.value(x) + acc.value(x) + 15000 * sin.value(x);
+                return   alfa_contur.value(x) * sin.value(x);
             };
-
             /* Function mix1 = new Function() {
                 @Override
                 public double value(double x) {
                     return eog.value(x) * sin.value(x);
                 }
             }; */
-
             viewer.addGraph(eog);
-            viewer.addGraph(acc);
+            viewer.addGraph(alfa);
             viewer.addGraph(mix);
             viewer.addPreview(new FilterDerivativeRem(eog));
 
