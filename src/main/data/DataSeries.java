@@ -30,9 +30,24 @@ public interface DataSeries extends Function {
         if (x < 0) {
             return 0;
         }
-        if (x > size()){
+        if (x + 1 > size()){
             return 0;
         }
-        return get((int)x);
+        long x_int = (int) x;
+        double x_double = x - x_int;
+        double value = (get(x_int + 1) - get(x_int)) * x_double + get(x_int);
+        return value;
+    }
+
+    default double value_old(double x) {
+        x = ((x - start())  * sampleRate());
+        if (x < 0) {
+            return 0;
+        }
+        if (x + 1 > size()){
+            return 0;
+        }
+
+        return get((int) x);
     }
 }
