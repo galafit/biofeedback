@@ -15,7 +15,8 @@ public class Harmonic implements Function {
     @Override
     public double value(double x) {
         x = x * 2 * freq;
-        int x_int = (int) x;
+        System.out.println(x - (long) x +" x ");
+        long x_int = (long) x;
         double x_double = x - x_int;
 
         double t = x_int % 2 - 1 + x_double ;
