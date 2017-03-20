@@ -98,7 +98,7 @@ public class Viewer extends JFrame {
 
     public void addGraph(Function f) {
         double from = 0;
-        double sampleRate = 1;
+        double sampleRate = 1000;
         double duration = 1000;
         if(lastFunction != null) {
             from = graphViewer.getStart();

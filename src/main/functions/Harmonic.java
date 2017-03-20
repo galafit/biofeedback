@@ -1,21 +1,33 @@
 package main.functions;
 
 /**
- * Created by gala on 02/03/17.
+ * Created by gala on 20/03/17.
  */
-public class Harmonic implements Function {
-    private double freq;
-    private double pct;
+public abstract class Harmonic implements Function {
+    protected double freq;
+    protected double start;
+    protected double end;
 
-    public Harmonic(double freq, double pct) {
+    public Harmonic(double freq, double start, double end) {
         this.freq = freq;
-        this.pct = pct;
+        this.start = start;
+        this.end = end;
     }
 
-    @Override
+
     public double value(double x) {
         x = x * 2 * freq;
-        System.out.println(x - (long) x +" x ");
+        long x_int = (long) x;
+        double x_double = x - x_int;
+        double shift = start * 2 / (end - start);
+        double t = x_int % 2 + shift + x_double ;
+        t = t * (end - start) / 2;
+        return base(t);
+    }
+
+
+    public double value_0ld(double x) {
+        x = x * 2 * freq;
         long x_int = (long) x;
         double x_double = x - x_int;
 
@@ -23,16 +35,7 @@ public class Harmonic implements Function {
         return base(t);
     }
 
-    private double base(double x) {
-        double y = 0;
-        if (x > 0) {
-            y = (Math.min(Math.min((x / pct), 1), ((1 - x) / pct)));
-        }
-        if (x < 0) {
-            y = -(Math.min(Math.min(((-x) / pct), 1), ((1 + x) / pct)));
-        }
 
-        return y;
-    }
+    protected abstract double base(double x);
 
 }

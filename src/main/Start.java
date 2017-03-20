@@ -4,7 +4,8 @@ package main;
 import main.data.DataSeries;
 import main.filters.*;
 import main.functions.Function;
-import main.functions.Harmonic;
+import main.functions.HarmonicPick;
+import main.functions.HarmonicRect;
 import main.functions.Sin;
 
 import java.io.File;
@@ -15,7 +16,40 @@ import java.io.File;
  */
 public class Start {
     public static void main(String[] args) {
-        filePlayTest();
+        //filePlayTest();
+        funcitonTest();
+
+    }
+
+    static void funcitonTest() {
+        HarmonicRect harmonicRect = new HarmonicRect(1, 0);
+        HarmonicPick harmonic = new HarmonicPick(1, 0.1);
+        Viewer viewer = new Viewer();
+        viewer.addGraph(harmonicRect, 2);
+        viewer.addGraph(harmonic, 2);
+
+    }
+
+    static void filterTest() {
+        int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
+
+
+        Viewer viewer = new Viewer();
+        File recordsDir = new File(System.getProperty("user.dir"), "records");
+        File fileToRead = new File(recordsDir, "devochka.bdf");
+        try {
+            EdfData edfData = new EdfData(fileToRead);
+            DataSeries eog_full = edfData.getChannelSeries(0);
+          /* DataSeries eog = new HiPassCollectingFilter(
+                    eog_full, eogCutOffPeriod);*/
+
+            viewer.addGraph(eog_full);
+            viewer.addPreview(new FilterDerivativeRem(eog_full));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -43,18 +77,18 @@ public class Start {
                     new FrequencyDivider(accY, 5),
                     new FrequencyDivider(accZ, 5));
 
+            Function test = new FrequencyDivider(accX, 10);
+
 
 
             DataSeries alfa = new FilterHiPass(new FilterBandPass_Alfa(eog), 2);
-
             DataSeries alfa_contur = new FilterAlfa(eog);
 
-
-            Function sin = new Sin(80);
+            Function harmonic = new HarmonicRect(10, 0.1);
 
 
             Function mix = (x) -> {
-                return   alfa_contur.value(x) * sin.value(x);
+                return   alfa_contur.value(x) * harmonic.value(x);
             };
             /* Function mix1 = new Function() {
                 @Override
@@ -63,7 +97,7 @@ public class Start {
                 }
             }; */
             viewer.addGraph(eog);
-            viewer.addGraph(alfa);
+            viewer.addGraph(alfa_contur);
             viewer.addGraph(mix);
             viewer.addPreview(new FilterDerivativeRem(eog));
 

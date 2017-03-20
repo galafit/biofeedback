@@ -4,10 +4,10 @@ package main;
 import com.biorecorder.edflib.EdfReader;
 import com.biorecorder.edflib.HeaderParsingException;
 import com.biorecorder.edflib.base.SignalConfig;
-import com.github.rjeschke.neetutils.audio.FIRUtils;
 import main.data.DataSeries;
 import main.data.Scaling;
 import main.data.ScalingImpl;
+import uk.me.berndporr.iirj.Butterworth;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,8 @@ public class EdfData {
     synchronized public DataSeries getChannelSeries(int channelNumber, int bufferSize){
 
         if (channelMap.get(channelNumber) == null) {
-            channelMap.put(channelNumber, new Channel(bufferSize));
+            double sampleRate = edfReader.getHeaderInfo().getSignalConfig(channelNumber).getNumberOfSamplesInEachDataRecord()/ edfReader.getHeaderInfo().getDurationOfDataRecord();
+            channelMap.put(channelNumber, new Channel(bufferSize, sampleRate));
             try {
                 channelMap.get(channelNumber).setSize(edfReader.getNumberOfSamples(channelNumber));
             } catch (IOException e) {
@@ -84,6 +85,7 @@ public class EdfData {
     }
 
     synchronized private int get(int channelNumber, long index) {
+
         if(index < channelMap.get(channelNumber).getPointer() || index >= channelMap.get(channelNumber).getPointer()+ defaultBufferSize){
             fullBuffer(index, channelNumber);
         }
@@ -102,6 +104,26 @@ public class EdfData {
     }
 
     synchronized private void fullBuffer(long index, int channelNumber) {
+        long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
+        edfReader.setSamplePosition(channelNumber, newPosition);
+        channelMap.get(channelNumber).setPointer(newPosition);
+        try {
+            int[] tmpBuffer =  edfReader.readDigitalSamples(channelNumber, defaultBufferSize);
+            for(int i = 0; i < tmpBuffer.length; i++) {
+                //channelMap.get(channelNumber).getBuffer()[i] = (int)channelMap.get(channelNumber).getFilter().filter(tmpBuffer[i]);
+                double sample = channelMap.get(channelNumber).getFilter().filter(tmpBuffer[i]);
+                channelMap.get(channelNumber).getBuffer()[i] = (int) sample;
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    synchronized private void fullBuffer_old(long index, int channelNumber) {
 
         long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
         edfReader.setSamplePosition(channelNumber, newPosition);
@@ -118,11 +140,16 @@ public class EdfData {
         private int[] buffer;
         private long pointer;
         private long size;
-        private double[] fir;
+        private Butterworth butterworth = new Butterworth();
 
-        public Channel(int bufferSize) {
+        public Channel(int bufferSize, double sampleRate) {
             buffer = new int[bufferSize];
-            fir = FIRUtils.createLowpass(10, 0.1, 250);
+            butterworth.highPass(1,sampleRate,0.1);
+
+        }
+
+        public Butterworth getFilter() {
+            return butterworth;
         }
 
         public int[] getBuffer() {
