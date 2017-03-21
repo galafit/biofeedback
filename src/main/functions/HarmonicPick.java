@@ -11,6 +11,11 @@ public class HarmonicPick extends Harmonic {
         this.pct = pct;
     }
 
+    public HarmonicPick(Function freq, double pct) {
+        super(x -> {return freq.value(x)/ 2;}, 0, 2);
+        this.pct = pct;
+    }
+
     @Override
     protected double base(double x) {
         if(x < pct) {

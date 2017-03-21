@@ -17,43 +17,21 @@ import java.io.File;
 public class Start {
     public static void main(String[] args) {
         //filePlayTest();
+        //StdAudio.play(StdAudio.note(10, 2, 4));
         funcitonTest();
 
     }
 
     static void funcitonTest() {
         HarmonicRect harmonicRect = new HarmonicRect(1, 0);
-        HarmonicPick harmonic = new HarmonicPick(1, 0.1);
-        Viewer viewer = new Viewer();
-        viewer.addGraph(harmonicRect, 2);
-        viewer.addGraph(harmonic, 2);
-
-    }
-
-    static void filterTest() {
-        int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
-
+       // HarmonicPick harmonic = new HarmonicPick(10, 1);
+        Function freq = x -> {return 1 + x;};
+        HarmonicPick harmonic = new HarmonicPick(freq, 1);
 
         Viewer viewer = new Viewer();
-        File recordsDir = new File(System.getProperty("user.dir"), "records");
-        File fileToRead = new File(recordsDir, "devochka.bdf");
-        try {
-            EdfData edfData = new EdfData(fileToRead);
-            DataSeries eog_full = edfData.getChannelSeries(0);
-          /* DataSeries eog = new HiPassCollectingFilter(
-                    eog_full, eogCutOffPeriod);*/
-
-            viewer.addGraph(eog_full);
-            viewer.addPreview(new FilterDerivativeRem(eog_full));
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        viewer.addGraph(harmonic, 3 );
 
     }
-
-
 
     static void filePlayTest() {
         int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
@@ -84,7 +62,7 @@ public class Start {
             DataSeries alfa = new FilterHiPass(new FilterBandPass_Alfa(eog), 2);
             DataSeries alfa_contur = new FilterAlfa(eog);
 
-            Function harmonic = new HarmonicRect(10, 0.1);
+            Function harmonic = new HarmonicPick(10, 0.2);
 
 
             Function mix = (x) -> {
@@ -98,8 +76,30 @@ public class Start {
             }; */
             viewer.addGraph(eog);
             viewer.addGraph(alfa_contur);
-            viewer.addGraph(mix);
+            viewer.addGraph(harmonic);
             viewer.addPreview(new FilterDerivativeRem(eog));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    static void filterTest() {
+        int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
+
+
+        Viewer viewer = new Viewer();
+        File recordsDir = new File(System.getProperty("user.dir"), "records");
+        File fileToRead = new File(recordsDir, "devochka.bdf");
+        try {
+            EdfData edfData = new EdfData(fileToRead);
+            DataSeries eog_full = edfData.getChannelSeries(0);
+          /* DataSeries eog = new HiPassCollectingFilter(
+                    eog_full, eogCutOffPeriod);*/
+
+            viewer.addGraph(eog_full);
+            viewer.addPreview(new FilterDerivativeRem(eog_full));
 
 
         } catch (Exception e) {
@@ -107,6 +107,8 @@ public class Start {
         }
 
     }
+
+
 }
 
 

@@ -35,7 +35,7 @@ public class Viewer extends JFrame {
                 }
                 graphViewer.requestFocusInWindow();
                 validate();
-                StdAudio.play(lastFunction, startTime, duration, 3);
+                StdAudio.play(lastFunction, startTime, duration, 1);
             }
         });
 
