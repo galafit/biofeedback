@@ -25,11 +25,19 @@ public class Start {
     static void funcitonTest() {
         HarmonicRect harmonicRect = new HarmonicRect(1, 0);
        // HarmonicPick harmonic = new HarmonicPick(10, 1);
-        Function freq = x -> {return 1 + x;};
-        HarmonicPick harmonic = new HarmonicPick(freq, 1);
+        Function freqFunction = x -> {return 1 + x;};
+        Function pctFunction = x -> {
+            long x_int = (long) x + 1;
+            double pct = x_int  * 0.05;
+            if(pct > 0.5) {
+                pct = 0.5;
+            }
+            return pct;
+        };
+        HarmonicPick harmonic = new HarmonicPick(2, pctFunction);
 
         Viewer viewer = new Viewer();
-        viewer.addGraph(harmonic, 3 );
+        viewer.addGraph(harmonic, 6 );
 
     }
 
@@ -61,6 +69,18 @@ public class Start {
 
             DataSeries alfa = new FilterHiPass(new FilterBandPass_Alfa(eog), 2);
             DataSeries alfa_contur = new FilterAlfa(eog);
+
+            Function alfa_time = (x) -> {
+                double f = alfa_contur.value(x) / 600;
+                if (f > 0.5) {
+                    f = 0.5;
+                }
+                if (f < 0.01) {
+                    f = 0.01;
+                }
+                return f;
+            };
+
 
             Function harmonic = new HarmonicPick(10, 0.2);
 
