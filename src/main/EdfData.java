@@ -18,9 +18,8 @@ import java.util.*;
  */
 public class EdfData {
     private EdfReader edfReader;
-    private int defaultBufferSize =1024*16;
-    private Map<Integer, Channel> channelMap = Collections.synchronizedMap(new HashMap<Integer, Channel>());
-
+    private int defaultBufferSize = 1024 * 16;
+    private List<Channel> channelList = new ArrayList<>();
 
 
     public EdfData(File edfFile) throws IOException, HeaderParsingException {
@@ -28,33 +27,105 @@ public class EdfData {
         edfReader.printHeaderInfo();
     }
 
-     public DataSeries getChannelSeries(int channelNumber){
-         return getChannelSeries(channelNumber, defaultBufferSize);
-     }
+    public DataSeries getChannelSeries(int channelNumber){
+        return getChannelSeries(channelNumber,defaultBufferSize);
+    }
 
-    synchronized public DataSeries getChannelSeries(int channelNumber, int bufferSize){
+    public DataSeries getChannelSeries(int channelNumber, int bufferSize) {
+        Channel channel = new Channel(bufferSize, channelNumber);
+        channelList.add(channel);
+        return channel.getChannelSeries(bufferSize);
+    }
 
-        if (channelMap.get(channelNumber) == null) {
-            double sampleRate = edfReader.getHeaderInfo().getSignalConfig(channelNumber).getNumberOfSamplesInEachDataRecord()/ edfReader.getHeaderInfo().getDurationOfDataRecord();
-            channelMap.put(channelNumber, new Channel(bufferSize, sampleRate));
+
+    synchronized private void update() {
+        channelList.forEach(channel -> channel.update());
+    }
+
+ /*   synchronized private void fullBuffer(long index, int channelNumber) {
+        long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length / 2);
+        edfReader.setSamplePosition(channelNumber, newPosition);
+        channelMap.get(channelNumber).setPointer(newPosition);
+        try {
+            int[] tmpBuffer = edfReader.readDigitalSamples(channelNumber, defaultBufferSize);
+            for (int i = 0; i < tmpBuffer.length; i++) {
+                //channelMap.get(channelNumber).getBuffer()[i] = (int)channelMap.get(channelNumber).getFilter().filter(tmpBuffer[i]);
+                double sample = channelMap.get(channelNumber).getFilter().filter(tmpBuffer[i]);
+                channelMap.get(channelNumber).getBuffer()[i] = (int) sample;
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } */
+
+
+    class Channel {
+
+        private int[] buffer;
+        private long pointer;
+        private long size;
+        private Butterworth butterworth = new Butterworth();
+        private int channelNumber;
+
+        public Channel(int bufferSize, int channelNumber) {
+            buffer = new int[bufferSize];
+            this.channelNumber = channelNumber;
+
             try {
-                channelMap.get(channelNumber).setSize(edfReader.getNumberOfSamples(channelNumber));
+                size = edfReader.getNumberOfSamples(channelNumber);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            fullBuffer (channelMap.get(channelNumber).getPointer(), channelNumber);
+            fullBuffer(pointer);
+            //butterworth.highPass(1,sampleRate,0.1);
+
         }
+
+        synchronized private void update() {
+
+            fullBuffer(pointer);
+            try {
+                size = edfReader.getNumberOfSamples(channelNumber);
+            } catch (IOException e) {
+
+            }
+        }
+
+
+
+    synchronized private void fullBuffer(long index) {
+
+        pointer = Math.max(0, index - buffer.length / 2);
+        edfReader.setSamplePosition(channelNumber, pointer);
+        try {
+            edfReader.readDigitalSamples(channelNumber, buffer, 0, defaultBufferSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    synchronized private int get(long index) {
+
+        if (index < pointer || index >= pointer + defaultBufferSize) {
+            fullBuffer(index);
+        }
+        return buffer[(int) (index - pointer)];
+    }
+
+    synchronized public DataSeries getChannelSeries(int bufferSize) {
 
         return new DataSeries() {
             @Override
             public long size() {
-                return channelMap.get(channelNumber).getSize();
+                return size;
             }
 
             @Override
             public int get(long index) {
-                return EdfData.this.get(channelNumber, index);
-             }
+                return Channel.this.get(index);
+            }
 
             @Override
             public double start() {
@@ -75,103 +146,17 @@ public class EdfData {
                 scaling.setStart(start() * 1000);
                 double gain = (signalConfig.getPhysicalMax() - signalConfig.getPhysicalMin()) / (signalConfig.getDigitalMax() - signalConfig.getDigitalMin());
                 double offset = signalConfig.getPhysicalMin() - signalConfig.getDigitalMin() * gain;
-             //   scaling.setDataGain(gain);
-             //   scaling.setDataOffset(offset);
-             //   scaling.setDataDimension(signalConfig.getPhysicalDimension());
+                //   scaling.setDataGain(gain);
+                //   scaling.setDataOffset(offset);
+                //   scaling.setDataDimension(signalConfig.getPhysicalDimension());
                 return scaling;
             }
         };
 
     }
 
-    synchronized private int get(int channelNumber, long index) {
+}
 
-        if(index < channelMap.get(channelNumber).getPointer() || index >= channelMap.get(channelNumber).getPointer()+ defaultBufferSize){
-            fullBuffer(index, channelNumber);
-        }
-        return channelMap.get(channelNumber).getBuffer()[(int) (index- channelMap.get(channelNumber).getPointer())];
-    }
-
-    synchronized private void update(){
-        channelMap.forEach((k,v)->{
-            fullBuffer(v.getPointer(),k);
-            try {
-                v.setSize(edfReader.getNumberOfSamples(k));
-            } catch (IOException e) {
-
-            }
-        });
-    }
-
-    synchronized private void fullBuffer_new(long index, int channelNumber) {
-        long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
-        edfReader.setSamplePosition(channelNumber, newPosition);
-        channelMap.get(channelNumber).setPointer(newPosition);
-        try {
-            int[] tmpBuffer =  edfReader.readDigitalSamples(channelNumber, defaultBufferSize);
-            for(int i = 0; i < tmpBuffer.length; i++) {
-                //channelMap.get(channelNumber).getBuffer()[i] = (int)channelMap.get(channelNumber).getFilter().filter(tmpBuffer[i]);
-                double sample = channelMap.get(channelNumber).getFilter().filter(tmpBuffer[i]);
-                channelMap.get(channelNumber).getBuffer()[i] = (int) sample;
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    synchronized private void fullBuffer(long index, int channelNumber) {
-
-        long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
-        edfReader.setSamplePosition(channelNumber, newPosition);
-        channelMap.get(channelNumber).setPointer(newPosition);
-        try {
-            edfReader.readDigitalSamples(channelNumber, channelMap.get(channelNumber).getBuffer(), 0, defaultBufferSize);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    class Channel {
-
-        private int[] buffer;
-        private long pointer;
-        private long size;
-        private Butterworth butterworth = new Butterworth();
-
-        public Channel(int bufferSize, double sampleRate) {
-            buffer = new int[bufferSize];
-            butterworth.highPass(1,sampleRate,0.1);
-
-        }
-
-        public Butterworth getFilter() {
-            return butterworth;
-        }
-
-        public int[] getBuffer() {
-            return buffer;
-        }
-
-        public long getPointer() {
-            return pointer;
-        }
-
-        public long getSize() {
-            return size;
-        }
-
-        public void setPointer(long pointer) {
-            this.pointer = pointer;
-        }
-
-        public void setSize(long size) {
-            this.size = size;
-        }
-    }
 
 }
 
