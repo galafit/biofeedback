@@ -103,7 +103,7 @@ public class EdfData {
         });
     }
 
-    synchronized private void fullBuffer(long index, int channelNumber) {
+    synchronized private void fullBuffer_new(long index, int channelNumber) {
         long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
         edfReader.setSamplePosition(channelNumber, newPosition);
         channelMap.get(channelNumber).setPointer(newPosition);
@@ -123,7 +123,7 @@ public class EdfData {
 
 
 
-    synchronized private void fullBuffer_old(long index, int channelNumber) {
+    synchronized private void fullBuffer(long index, int channelNumber) {
 
         long newPosition = Math.max(0, index - channelMap.get(channelNumber).getBuffer().length/2);
         edfReader.setSamplePosition(channelNumber, newPosition);

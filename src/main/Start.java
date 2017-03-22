@@ -16,9 +16,27 @@ import java.io.File;
  */
 public class Start {
     public static void main(String[] args) {
-        //filePlayTest();
-        //StdAudio.play(StdAudio.note(10, 2, 4));
-        funcitonTest();
+       filterTest();
+    }
+
+    static void filterTest() {
+        int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
+
+
+        Viewer viewer = new Viewer();
+        File recordsDir = new File(System.getProperty("user.dir"), "records");
+        File fileToRead = new File(recordsDir, "devochka.bdf");
+        try {
+            EdfData edfData = new EdfData(fileToRead);
+            DataSeries eog = edfData.getChannelSeries(0);
+
+            viewer.addGraph(eog);
+            viewer.addPreview(new FilterDerivativeRem(eog));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -82,7 +100,7 @@ public class Start {
             };
 
 
-            Function harmonic = new HarmonicPick(10, 0.2);
+            Function harmonic = new HarmonicPick(10, alfa_time);
 
 
             Function mix = (x) -> {
@@ -104,31 +122,6 @@ public class Start {
         }
 
     }
-
-    static void filterTest() {
-        int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
-
-
-        Viewer viewer = new Viewer();
-        File recordsDir = new File(System.getProperty("user.dir"), "records");
-        File fileToRead = new File(recordsDir, "devochka.bdf");
-        try {
-            EdfData edfData = new EdfData(fileToRead);
-            DataSeries eog_full = edfData.getChannelSeries(0);
-          /* DataSeries eog = new HiPassCollectingFilter(
-                    eog_full, eogCutOffPeriod);*/
-
-            viewer.addGraph(eog_full);
-            viewer.addPreview(new FilterDerivativeRem(eog_full));
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
 }
 
 
