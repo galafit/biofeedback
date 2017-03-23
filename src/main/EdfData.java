@@ -7,7 +7,7 @@ import com.biorecorder.edflib.base.SignalConfig;
 import main.data.DataSeries;
 import main.data.Scaling;
 import main.data.ScalingImpl;
-import uk.me.berndporr.iirj.Butterworth;
+import uk.me.berndporr.iirj.Cascade;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,7 @@ import java.util.*;
  */
 public class EdfData {
     private EdfReader edfReader;
-    private int defaultBufferSize = 1024 * 16;
-    private List<Channel> channelList = new ArrayList<>();
+    private List<ChannelData> channelDataList = new ArrayList<>();
 
 
     public EdfData(File edfFile) throws IOException, HeaderParsingException {
@@ -27,19 +26,21 @@ public class EdfData {
         edfReader.printHeaderInfo();
     }
 
-    public DataSeries getChannelData(int channelNumber){
-        return getChannelData(channelNumber,defaultBufferSize);
+    public ChannelData getChannelData(int channelNumber) {
+        ChannelData channelData = new ChannelData(channelNumber, edfReader);
+        channelDataList.add(channelData);
+        return channelData;
     }
 
-    public DataSeries getChannelData(int channelNumber, int bufferSize) {
-        Channel channel = new Channel(bufferSize, channelNumber);
-        channelList.add(channel);
-        return channel;
+    public ChannelData getChannelData(int channelNumber, int bufferSize) {
+        ChannelData channelData = new ChannelData(bufferSize, channelNumber, edfReader);
+        channelDataList.add(channelData);
+        return channelData;
     }
 
 
     synchronized private void update() {
-        channelList.forEach(channel -> channel.update());
+        channelDataList.forEach(channelData -> channelData.update());
     }
 
  /*   synchronized private void fullBuffer(long index, int channelNumber) {
@@ -60,84 +61,6 @@ public class EdfData {
         }
     } */
 
-
-    class Channel  implements DataSeries {
-        private int[] buffer;
-        private long pointer;
-        private long size;
-        private int channelNumber;
-
-        public Channel(int bufferSize, int channelNumber) {
-            buffer = new int[bufferSize];
-            this.channelNumber = channelNumber;
-
-            try {
-                size = edfReader.getNumberOfSamples(channelNumber);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            fullBuffer(pointer);
-
-        }
-
-        synchronized private void update() {
-            fullBuffer(pointer);
-            try {
-                size = edfReader.getNumberOfSamples(channelNumber);
-            } catch (IOException e) {
-
-            }
-        }
-
-        synchronized private void fullBuffer(long index) {
-
-            pointer = Math.max(0, index - buffer.length / 2);
-            edfReader.setSamplePosition(channelNumber, pointer);
-            try {
-                edfReader.readDigitalSamples(channelNumber, buffer, 0, defaultBufferSize);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public synchronized int get(long index) {
-            if (index < pointer || index >= pointer + defaultBufferSize) {
-                fullBuffer(index);
-            }
-            return buffer[(int) (index - pointer)];
-        }
-
-        @Override
-        public long size() {
-            return size;
-        }
-
-        @Override
-        public double start() {
-            return edfReader.getHeaderInfo().getRecordingStartTime() / 1000;
-        }
-
-        @Override
-        public double sampleRate() {
-            return edfReader.getHeaderInfo().getSignalConfig(channelNumber).getNumberOfSamplesInEachDataRecord() / edfReader.getHeaderInfo().getDurationOfDataRecord();
-        }
-
-        @Override
-        public Scaling getScaling() {
-            SignalConfig signalConfig = edfReader.getHeaderInfo().getSignalConfig(channelNumber);
-            ScalingImpl scaling = new ScalingImpl();
-            scaling.setSamplingInterval(1.0 / sampleRate());
-            scaling.setTimeSeries(true);
-            scaling.setStart(start() * 1000);
-            double gain = (signalConfig.getPhysicalMax() - signalConfig.getPhysicalMin()) / (signalConfig.getDigitalMax() - signalConfig.getDigitalMin());
-            double offset = signalConfig.getPhysicalMin() - signalConfig.getDigitalMin() * gain;
-            //   scaling.setDataGain(gain);
-            //   scaling.setDataOffset(offset);
-            //   scaling.setDataDimension(signalConfig.getPhysicalDimension());
-            return scaling;
-        }
-    }
 
 }
 

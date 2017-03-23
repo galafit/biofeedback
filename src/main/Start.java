@@ -7,6 +7,7 @@ import main.functions.Function;
 import main.functions.HarmonicPick;
 import main.functions.HarmonicRect;
 import main.functions.Sin;
+import uk.me.berndporr.iirj.Butterworth;
 
 import java.io.File;
 
@@ -28,9 +29,15 @@ public class Start {
         File fileToRead = new File(recordsDir, "devochka.bdf");
         try {
             EdfData edfData = new EdfData(fileToRead);
-            DataSeries eog = edfData.getChannelData(0);
+            ChannelData eog = edfData.getChannelData(0);
+            Butterworth bw = new Butterworth();
+            bw.highPass(1,eog.sampleRate(),1);
+            eog.setFilter(bw);
+
+            ChannelData eog1 = edfData.getChannelData(0);
 
             viewer.addGraph(eog);
+            viewer.addGraph(eog1);
             viewer.addPreview(new FilterDerivativeRem(eog));
 
 
