@@ -40,8 +40,11 @@ public class DataCompressor implements DataSeries {
             return inputData.get(index);
         }
         if(compression < 1) {
-            int indexNew = Math.min((int)inputData.size() - 1, (int) (compression * index));
-            return inputData.get(indexNew);
+            //int indexNew = Math.min((int)inputData.size() - 1, (int) (compression * index));
+            //return inputData.get(indexNew);
+            double x = index * compression / sampleRate()  + start();
+
+            return (int)inputData.value(x);
         }
 
         long result = 0;

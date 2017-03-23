@@ -27,14 +27,14 @@ public class EdfData {
         edfReader.printHeaderInfo();
     }
 
-    public DataSeries getChannelSeries(int channelNumber){
-        return getChannelSeries(channelNumber,defaultBufferSize);
+    public DataSeries getChannelData(int channelNumber){
+        return getChannelData(channelNumber,defaultBufferSize);
     }
 
-    public DataSeries getChannelSeries(int channelNumber, int bufferSize) {
+    public DataSeries getChannelData(int channelNumber, int bufferSize) {
         Channel channel = new Channel(bufferSize, channelNumber);
         channelList.add(channel);
-        return channel.getChannelSeries(bufferSize);
+        return channel;
     }
 
 
@@ -61,12 +61,10 @@ public class EdfData {
     } */
 
 
-    class Channel {
-
+    class Channel  implements DataSeries {
         private int[] buffer;
         private long pointer;
         private long size;
-        private Butterworth butterworth = new Butterworth();
         private int channelNumber;
 
         public Channel(int bufferSize, int channelNumber) {
@@ -79,12 +77,10 @@ public class EdfData {
                 e.printStackTrace();
             }
             fullBuffer(pointer);
-            //butterworth.highPass(1,sampleRate,0.1);
 
         }
 
         synchronized private void update() {
-
             fullBuffer(pointer);
             try {
                 size = edfReader.getNumberOfSamples(channelNumber);
@@ -93,72 +89,59 @@ public class EdfData {
             }
         }
 
+        synchronized private void fullBuffer(long index) {
 
-
-    synchronized private void fullBuffer(long index) {
-
-        pointer = Math.max(0, index - buffer.length / 2);
-        edfReader.setSamplePosition(channelNumber, pointer);
-        try {
-            edfReader.readDigitalSamples(channelNumber, buffer, 0, defaultBufferSize);
-        } catch (IOException e) {
-            e.printStackTrace();
+            pointer = Math.max(0, index - buffer.length / 2);
+            edfReader.setSamplePosition(channelNumber, pointer);
+            try {
+                edfReader.readDigitalSamples(channelNumber, buffer, 0, defaultBufferSize);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
-    synchronized private int get(long index) {
-
-        if (index < pointer || index >= pointer + defaultBufferSize) {
-            fullBuffer(index);
+        @Override
+        public synchronized int get(long index) {
+            if (index < pointer || index >= pointer + defaultBufferSize) {
+                fullBuffer(index);
+            }
+            return buffer[(int) (index - pointer)];
         }
-        return buffer[(int) (index - pointer)];
-    }
 
-    synchronized public DataSeries getChannelSeries(int bufferSize) {
+        @Override
+        public long size() {
+            return size;
+        }
 
-        return new DataSeries() {
-            @Override
-            public long size() {
-                return size;
-            }
+        @Override
+        public double start() {
+            return edfReader.getHeaderInfo().getRecordingStartTime() / 1000;
+        }
 
-            @Override
-            public int get(long index) {
-                return Channel.this.get(index);
-            }
+        @Override
+        public double sampleRate() {
+            return edfReader.getHeaderInfo().getSignalConfig(channelNumber).getNumberOfSamplesInEachDataRecord() / edfReader.getHeaderInfo().getDurationOfDataRecord();
+        }
 
-            @Override
-            public double start() {
-                return edfReader.getHeaderInfo().getRecordingStartTime() / 1000;
-            }
-
-            @Override
-            public double sampleRate() {
-                return edfReader.getHeaderInfo().getSignalConfig(channelNumber).getNumberOfSamplesInEachDataRecord() / edfReader.getHeaderInfo().getDurationOfDataRecord();
-            }
-
-            @Override
-            public Scaling getScaling() {
-                SignalConfig signalConfig = edfReader.getHeaderInfo().getSignalConfig(channelNumber);
-                ScalingImpl scaling = new ScalingImpl();
-                scaling.setSamplingInterval(1.0 / sampleRate());
-                scaling.setTimeSeries(true);
-                scaling.setStart(start() * 1000);
-                double gain = (signalConfig.getPhysicalMax() - signalConfig.getPhysicalMin()) / (signalConfig.getDigitalMax() - signalConfig.getDigitalMin());
-                double offset = signalConfig.getPhysicalMin() - signalConfig.getDigitalMin() * gain;
-                //   scaling.setDataGain(gain);
-                //   scaling.setDataOffset(offset);
-                //   scaling.setDataDimension(signalConfig.getPhysicalDimension());
-                return scaling;
-            }
-        };
-
+        @Override
+        public Scaling getScaling() {
+            SignalConfig signalConfig = edfReader.getHeaderInfo().getSignalConfig(channelNumber);
+            ScalingImpl scaling = new ScalingImpl();
+            scaling.setSamplingInterval(1.0 / sampleRate());
+            scaling.setTimeSeries(true);
+            scaling.setStart(start() * 1000);
+            double gain = (signalConfig.getPhysicalMax() - signalConfig.getPhysicalMin()) / (signalConfig.getDigitalMax() - signalConfig.getDigitalMin());
+            double offset = signalConfig.getPhysicalMin() - signalConfig.getDigitalMin() * gain;
+            //   scaling.setDataGain(gain);
+            //   scaling.setDataOffset(offset);
+            //   scaling.setDataDimension(signalConfig.getPhysicalDimension());
+            return scaling;
+        }
     }
 
 }
 
 
-}
 
 
 

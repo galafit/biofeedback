@@ -6,7 +6,8 @@ import main.data.DataSeries;
  *
  */
 public class FilterBandPass_Alfa extends Filter {
-    private int period = 4;
+   // private int period = 4; // 50 Hz
+    private int period = 4 * 5; // 250 Hz
     private int bufferHalf = period * 4;
     public FilterBandPass_Alfa(DataSeries inputData) {
         super(inputData);
