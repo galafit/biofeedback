@@ -17,9 +17,22 @@ public class LineChart {
         this.yAxis = yAxis;
     }
 
-    public void draw(Graphics g){
+    public void draw(Graphics g) {
 
+        g.setColor(Color.BLUE);
 
+        for (int i = 0; i < chartItemList.size(); i++) {
+
+            if (i > 0) {
+                int pointX = xAxis.valueToPoint(chartItemList.get(i).getX());
+                int pointY = yAxis.valueToPoint(chartItemList.get(i).getY());
+
+                int previousPointX = xAxis.valueToPoint(chartItemList.get(i - 1).getX());
+                int previousPointY = yAxis.valueToPoint(chartItemList.get(i - 1).getY());
+
+                g.drawLine(previousPointX, previousPointY, pointX, pointY);
+            }
+        }
     }
 
     public Axis getxAxis() {

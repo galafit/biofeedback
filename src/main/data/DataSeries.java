@@ -13,7 +13,7 @@ import main.functions.Function;
  *
  *  dataValue(indexValue) = get(index) * gain + offset
  *  where:
- *  gain = getScaling().getGain();
+ *  gain = getScaling().pointsPerUnit();
  *  offset = getScaling().getOffset();
  */
 
