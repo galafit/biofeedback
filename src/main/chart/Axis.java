@@ -1,30 +1,26 @@
 package main.chart;
 
+import java.awt.*;
+
 /**
  * Created by hdablin on 05.04.17.
  */
 public abstract class Axis {
     protected double min;
     protected double max;
-    protected int pointMin;
-    protected int pointMax;
 
-    public Axis(double min, double max, int pointMin, int pointMax) {
+
+    public Axis(double min, double max) {
         this.min = min;
         this.max = max;
-        this.pointMin = pointMin;
-        this.pointMax = pointMax;
+
     }
 
-    public double pointsPerUnit(){
-        return (pointMax-pointMin)/(max-min);
-    }
+    abstract public double pointsPerUnit(Rectangle area);
 
-    abstract public int valueToPoint(double value);
+    abstract public int valueToPoint(double value, Rectangle area);
 
-    public double getMin() {
-        return min;
-    }
+    public double getMin() {return min;}
 
     public void setMin(double min) {
         this.min = min;
@@ -38,19 +34,4 @@ public abstract class Axis {
         this.max = max;
     }
 
-    public int getPointMin() {
-        return pointMin;
-    }
-
-    public void setPointMin(int pointMin) {
-        this.pointMin = pointMin;
-    }
-
-    public int getPointMax() {
-        return pointMax;
-    }
-
-    public void setPointMax(int pointMax) {
-        this.pointMax = pointMax;
-    }
 }

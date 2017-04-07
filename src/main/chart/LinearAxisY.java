@@ -1,19 +1,26 @@
 package main.chart;
 
+import java.awt.*;
+
 /**
  * Created by hdablin on 06.04.17.
  */
 public class LinearAxisY extends Axis {
 
-    public LinearAxisY(double min, double max, int pointMin, int pointMax) {
-        super(min, max, pointMin, pointMax);
+    public LinearAxisY(double min, double max) {
+        super(min, max);
     }
 
 
     @Override
-    public int valueToPoint(double value) {
+    public int valueToPoint(double value, Rectangle area) {
 
-        return (int)(pointMin + (value - min) * pointsPerUnit());
+        return (int)(area.getY() + (value - min) * pointsPerUnit(area));
 
+    }
+
+    @Override
+    public double pointsPerUnit(Rectangle area)   {
+        return (area.getHeight())/(max-min);
     }
 }

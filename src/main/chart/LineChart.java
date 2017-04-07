@@ -17,18 +17,18 @@ public class LineChart {
         this.yAxis = yAxis;
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Rectangle area) {
 
         g.setColor(Color.BLUE);
 
         for (int i = 0; i < chartItemList.size(); i++) {
 
             if (i > 0) {
-                int pointX = xAxis.valueToPoint(chartItemList.get(i).getX());
-                int pointY = yAxis.valueToPoint(chartItemList.get(i).getY());
+                int pointX = xAxis.valueToPoint(chartItemList.get(i).getX(), area);
+                int pointY = yAxis.valueToPoint(chartItemList.get(i).getY(), area);
 
-                int previousPointX = xAxis.valueToPoint(chartItemList.get(i - 1).getX());
-                int previousPointY = yAxis.valueToPoint(chartItemList.get(i - 1).getY());
+                int previousPointX = xAxis.valueToPoint(chartItemList.get(i - 1).getX(), area);
+                int previousPointY = yAxis.valueToPoint(chartItemList.get(i - 1).getY(), area);
 
                 g.drawLine(previousPointX, previousPointY, pointX, pointY);
             }
