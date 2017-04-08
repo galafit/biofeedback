@@ -8,7 +8,7 @@ import java.awt.*;
 public abstract class Axis {
     protected double min;
     protected double max;
-
+    protected int MinTickInterval=30;
 
     public Axis(double min, double max) {
         this.min = min;
@@ -33,5 +33,7 @@ public abstract class Axis {
     public void setMax(double max) {
         this.max = max;
     }
+
+    abstract public  Tick[] getTicks(Rectangle area);
 
 }

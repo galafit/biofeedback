@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * Created by hdablin on 06.04.17.
  */
-public class LinearAxisX extends Axis {
+public class LinearAxisX extends LinearAxis {
 
 
     public LinearAxisX(double min, double max) {

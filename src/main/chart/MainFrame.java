@@ -2,6 +2,7 @@ package main.chart;
 
 import javax.swing.*;
 import java.awt.*;
+import java.math.BigDecimal;
 
 /**
  * Created by hdablin on 24.03.17.
@@ -9,6 +10,8 @@ import java.awt.*;
 public class MainFrame extends JFrame {
 
     public MainFrame() throws HeadlessException {
+
+
 
         setTitle("Test title");
 
