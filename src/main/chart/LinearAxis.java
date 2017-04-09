@@ -4,6 +4,8 @@ import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import static java.lang.Math.pow;
+
 /**
  * Created by hdablin on 08.04.17.
  */
@@ -43,53 +45,72 @@ public abstract class LinearAxis extends Axis {
     }
 
 
+    private int getPower(double value){
+        double power = Math.log10(value);
+        int powerInt = (int) power;
+        if ((power < 0) && (power != powerInt)) {
+            powerInt = powerInt - 1;
+        }
+        return powerInt;
+    }
+
+
+    private int getFirstDigit(double value){
+
+        return (int) (value/Math.pow(10,getPower(value)));
+    }
+
+    private double getClosestTickPrev(double value, double tickInterval){
+        return ((int)(value / tickInterval))*tickInterval;
+    }
+
+    private double getClosestTickNext(double value, double tickInterval){
+        return getClosestTickPrev(value,tickInterval) + tickInterval;
+    }
+
     @Override
     public Tick[] getTicks(Rectangle area) {
-
-        double step = (max - min)/10;
-
-        int[] baseSteps = {2,5,10};
-
-        int power = (int) Math.log10(step);
-        if(Math.log10(step) < 0) {
-            power = power - 1;
+        double tickInterval = (max - min)/10;
+        // firstDigit is in {2,5,10};
+        int power = getPower(tickInterval);
+        int firstDigit = getFirstDigit(tickInterval);
+        switch (firstDigit){
+            case 3 : firstDigit = 2;
+                    break;
+            case 4 : firstDigit = 5;
+                    break;
+            case 6 : firstDigit = 5;
+                    break;
+            case 7 : firstDigit = 5;
+                     break;
+            case 8 : firstDigit = 1;
+                     power++;
+                     break;
+            case 9 : firstDigit = 1;
+                     power++;
+                     break;
         }
 
-        int firstStepDigit = (int) (step / Math.pow(10,power));
-
-        System.out.println("step: " + step);
-        System.out.println("power: " + power);
-        System.out.println("firstStepDigit: " + firstStepDigit);
-
-        int difference = baseSteps[baseSteps.length-1];
-        for (int i = 0; i < baseSteps.length ; i++) {
-            int newDifference = firstStepDigit - baseSteps[i];
-            if (Math.abs(newDifference) < Math.abs(difference)){
-                difference = newDifference;
-            }
-            //System.out.println("difference: " + "i=" + i  + difference);
-        }
-
-        firstStepDigit = firstStepDigit - difference;
-        //     if (firstStepDigit == baseSteps[baseSteps.length-1]){
-        // power++;
-        //   }
+        tickInterval = (firstDigit * pow(10,power));
+        NumberFormat numberFormat = getTickLabelFormat(power);
 
 
-        step = (firstStepDigit * Math.pow(10,power));
+        double roundMin = getClosestTickNext(min, tickInterval);
+        double roundMax = getClosestTickPrev(max, tickInterval);
+        System.out.println("roundMax: " + roundMax);
 
 
-        Tick[] ticks = new Tick[10];
+        int ticksAmount = (int)Math.round((roundMax - roundMin) / tickInterval) + 1;
+        System.out.println("ticksAmount: " + ticksAmount);
+        Tick[] ticks = new Tick[ticksAmount];
+        double value = 0;
 
-        double roundMin = ((int)(min / step))*step;
-        System.out.println("roundMin: " + roundMin);
+        for (int i = 0; i < ticksAmount; i++) {
 
-        for (int i = 0; i < 10; i++) {
-
-            //TODO: change 10
-            String value =  getTickLabelFormat(power).format(i*firstStepDigit);
-            System.out.println("value: " + value);
-           // ticks[i] = new Tick(valueToPoint(value, area), String.valueOf(value));
+            value = roundMin + tickInterval * i;
+            String lable =  numberFormat.format(value);
+            System.out.println("lable: " + lable);
+            ticks[i] = new Tick(valueToPoint(value, area), lable);
 
         }
         return ticks;

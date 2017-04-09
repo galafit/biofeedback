@@ -23,7 +23,7 @@ public class PaintPanel extends JPanel {
 
     public PaintPanel(Point2d[] points) {
         setPreferredSize(new Dimension(width, height));
-        xAxis = new LinearAxisX(0.01,1);
+        xAxis = new LinearAxisX(0.01,950);
         yAxis = new LinearAxisY(0,1);
         xAxisPainter = new XAxisPainter(xAxis,yAxis);
         lineChart = new LineChart(new ChartItems2DList(points),xAxis, yAxis);
