@@ -45,20 +45,7 @@ public abstract class LinearAxis extends Axis {
     }
 
 
-    private int getPower(double value){
-        double power = Math.log10(value);
-        int powerInt = (int) power;
-        if ((power < 0) && (power != powerInt)) {
-            powerInt = powerInt - 1;
-        }
-        return powerInt;
-    }
 
-
-    private int getFirstDigit(double value){
-
-        return (int) (value/Math.pow(10,getPower(value)));
-    }
 
     private double getClosestTickPrev(double value, double tickInterval){
         return ((int)(value / tickInterval))*tickInterval;
@@ -72,8 +59,10 @@ public abstract class LinearAxis extends Axis {
     public Tick[] getTicks(Rectangle area) {
         double tickInterval = (max - min)/10;
         // firstDigit is in {2,5,10};
-        int power = getPower(tickInterval);
-        int firstDigit = getFirstDigit(tickInterval);
+        NormalizedNumber tick = new NormalizedNumber(tickInterval);
+
+        int power = tick.getPower();
+        int firstDigit = (int)(tick.getDigits());
         switch (firstDigit){
             case 3 : firstDigit = 2;
                     break;
@@ -109,8 +98,7 @@ public abstract class LinearAxis extends Axis {
 
             value = roundMin + tickInterval * i;
             String lable =  numberFormat.format(value);
-            System.out.println("lable: " + lable);
-            ticks[i] = new Tick(valueToPoint(value, area), lable);
+            ticks[i] = new Tick(value, lable);
 
         }
         return ticks;

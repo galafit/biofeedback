@@ -1,7 +1,5 @@
 package main.chart;
 
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
 
 /**
@@ -9,25 +7,37 @@ import java.awt.*;
  */
 public class XAxisPainter {
     private LinearAxisX xAxis;
-    private LinearAxisY yAxis;
+    private int tickSize = 5;
 
 
-    public XAxisPainter(LinearAxisX xAxis, LinearAxisY yAxis) {
+
+    public XAxisPainter(LinearAxisX xAxis) {
         this.xAxis = xAxis;
-        this.yAxis = yAxis;
+
     }
 
-    public void draw(Graphics g, Rectangle area){
+    public void draw(Graphics g, Rectangle area, int anchorPoint){
         g.setColor(Color.YELLOW);
-        g.drawLine(area.x,area.y,area.width+area.x,area.y);
+        g.drawLine(area.x,anchorPoint,area.width+area.x,anchorPoint);
 
         Tick[] ticks = xAxis.getTicks(area);
 
         for (Tick tick : ticks) {
-            g.drawString(tick.getLabel(), tick.getPoint(),area.y);
+            int tickPoint =  xAxis.valueToPoint(tick.getValue(),area);
+            drawLable(g,anchorPoint,tickPoint,tick.getLabel());
+            drawTick(g,anchorPoint,tickPoint);
         }
 
 
     }
 
+    private void drawTick(Graphics g, int anchorPoint, int tickPoint){
+
+        g.drawLine(tickPoint,anchorPoint,tickPoint,anchorPoint - tickSize);
+    }
+
+    private void drawLable(Graphics g, int anchorPoint, int tickPoint, String lable){
+        int stringWidth = g.getFontMetrics().stringWidth(lable);
+        g.drawString(lable,tickPoint - stringWidth / 2, anchorPoint - tickSize);
+    }
 }

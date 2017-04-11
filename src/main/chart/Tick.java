@@ -4,16 +4,16 @@ package main.chart;
  * Created by hdablin on 08.04.17.
  */
 public class Tick {
-    private int point;
+    private double value;
     private String label;
 
-    public Tick(int point, String label) {
-        this.point = point;
+    public Tick(double value, String label) {
+        this.value = value;
         this.label = label;
     }
 
-    public int getPoint() {
-        return point;
+    public double getValue() {
+        return value;
     }
 
     public String getLabel() {
