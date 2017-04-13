@@ -25,7 +25,7 @@ public class PaintPanel extends JPanel {
         setPreferredSize(new Dimension(width, height));
         xAxis = new LinearAxisX(0.01,950);
         yAxis = new LinearAxisY(0,1);
-        xAxisPainter = new XAxisPainter(xAxis);
+        xAxisPainter = new XAxisPainter(xAxis, new AxisViewSettings());
         lineChart = new LineChart(new ChartItems2DList(points),xAxis, yAxis);
     }
 

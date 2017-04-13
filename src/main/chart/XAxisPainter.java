@@ -1,5 +1,7 @@
 package main.chart;
 
+import main.graph.Graph;
+
 import java.awt.*;
 
 /**
@@ -7,24 +9,31 @@ import java.awt.*;
  */
 public class XAxisPainter {
     private LinearAxisX xAxis;
-    private int tickSize = 5;
+    private AxisViewSettings axisViewSettings;
+    private int tickLabelPadding = 2;
 
 
-
-    public XAxisPainter(LinearAxisX xAxis) {
+    public XAxisPainter(LinearAxisX xAxis, AxisViewSettings axisViewSettings) {
         this.xAxis = xAxis;
-
+        this.axisViewSettings = axisViewSettings;
     }
 
     public void draw(Graphics g, Rectangle area, int anchorPoint){
-        g.setColor(Color.YELLOW);
+        g.setColor(axisViewSettings.getAxisColor());
+        Font font = g.getFont();
+        g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
         g.drawLine(area.x,anchorPoint,area.width+area.x,anchorPoint);
 
-        Tick[] ticks = xAxis.getTicks(area);
+        Tick[] ticks = xAxis.getTicks(area,axisViewSettings.getTickPixelInterval());
+        int maxTickSize = getMaxTickSize(g,ticks);
+
+        if (maxTickSize > axisViewSettings.getTickPixelInterval()){
+            ticks = xAxis.getTicks1(area, maxTickSize);
+        }
 
         for (Tick tick : ticks) {
             int tickPoint =  xAxis.valueToPoint(tick.getValue(),area);
-            drawLable(g,anchorPoint,tickPoint,tick.getLabel());
+            drawLabel(g,anchorPoint,tickPoint,tick.getLabel());
             drawTick(g,anchorPoint,tickPoint);
         }
 
@@ -33,11 +42,22 @@ public class XAxisPainter {
 
     private void drawTick(Graphics g, int anchorPoint, int tickPoint){
 
-        g.drawLine(tickPoint,anchorPoint,tickPoint,anchorPoint - tickSize);
+        g.drawLine(tickPoint,anchorPoint + axisViewSettings.getTickSize() / 2,tickPoint,anchorPoint - axisViewSettings.getTickSize() / 2);
     }
 
-    private void drawLable(Graphics g, int anchorPoint, int tickPoint, String lable){
-        int stringWidth = g.getFontMetrics().stringWidth(lable);
-        g.drawString(lable,tickPoint - stringWidth / 2, anchorPoint - tickSize);
+    private void drawLabel(Graphics g, int anchorPoint, int tickPoint, String label) {
+        g.drawString(label,tickPoint - getLabelSize(g, label) / 2, anchorPoint - axisViewSettings.getTickSize() /2 - tickLabelPadding);
+    }
+
+    private int getLabelSize(Graphics g, String label){
+        return g.getFontMetrics().stringWidth(label);
+    }
+
+    private int getMaxTickSize(Graphics g, Tick[] ticks){
+        int maxSize = 0;
+        for (Tick tick : ticks) {
+           maxSize = Math.max(maxSize,getLabelSize(g,tick.getLabel()));
+        }
+        return maxSize;
     }
 }

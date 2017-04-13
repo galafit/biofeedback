@@ -45,7 +45,51 @@ public abstract class LinearAxis extends Axis {
     }
 
 
+    @Override
+    public Tick[] getTicks1(Rectangle area, int minTickPixelInterval) {
 
+        double tickInterval = minTickPixelInterval / pointsPerUnit(area);
+        // firstDigit is in {2,5,10};
+        NormalizedNumber tick = new NormalizedNumber(tickInterval);
+
+        int power = tick.getPower();
+        int firstDigit = (int)(tick.getDigits() + 1);
+        switch (firstDigit){
+            case 3 : firstDigit = 5;
+                break;
+            case 4 : firstDigit = 5;
+                break;
+            case 6 : firstDigit = 1;
+                power++;
+                break;
+            case 7 : firstDigit = 1;
+                power++;
+                break;
+            case 8 : firstDigit = 1;
+                power++;
+                break;
+            case 9 : firstDigit = 1;
+                power++;
+                break;
+        }
+
+        tickInterval = (firstDigit * pow(10,power));
+        NumberFormat numberFormat = getTickLabelFormat(power);
+        double roundMin = getClosestTickNext(min, tickInterval);
+        double roundMax = getClosestTickPrev(max, tickInterval);
+        int ticksAmount = (int)Math.round((roundMax - roundMin) / tickInterval) + 1;
+        Tick[] ticks = new Tick[ticksAmount];
+        double value = 0;
+
+        for (int i = 0; i < ticksAmount; i++) {
+
+            value = roundMin + tickInterval * i;
+            String label =  numberFormat.format(value);
+            ticks[i] = new Tick(value, label);
+
+        }
+        return ticks;
+    }
 
     private double getClosestTickPrev(double value, double tickInterval){
         return ((int)(value / tickInterval))*tickInterval;
@@ -56,8 +100,8 @@ public abstract class LinearAxis extends Axis {
     }
 
     @Override
-    public Tick[] getTicks(Rectangle area) {
-        double tickInterval = (max - min)/10;
+    public Tick[] getTicks(Rectangle area, int tickPixelInterval) {
+        double tickInterval = tickPixelInterval / pointsPerUnit(area);
         // firstDigit is in {2,5,10};
         NormalizedNumber tick = new NormalizedNumber(tickInterval);
 
@@ -82,15 +126,9 @@ public abstract class LinearAxis extends Axis {
 
         tickInterval = (firstDigit * pow(10,power));
         NumberFormat numberFormat = getTickLabelFormat(power);
-
-
         double roundMin = getClosestTickNext(min, tickInterval);
         double roundMax = getClosestTickPrev(max, tickInterval);
-        System.out.println("roundMax: " + roundMax);
-
-
         int ticksAmount = (int)Math.round((roundMax - roundMin) / tickInterval) + 1;
-        System.out.println("ticksAmount: " + ticksAmount);
         Tick[] ticks = new Tick[ticksAmount];
         double value = 0;
 
