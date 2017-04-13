@@ -17,8 +17,26 @@ import java.io.File;
  */
 public class Start {
     public static void main(String[] args) {
-       filterTest();
+       edfTest();
     }
+
+    static void edfTest() {
+        Viewer viewer = new Viewer();
+        File recordsDir = new File(System.getProperty("user.dir"), "records");
+        File fileToRead = new File(recordsDir, "ekgcopy3.edf");
+        try {
+            EdfData edfData = new EdfData(fileToRead);
+            ChannelData eog = edfData.getChannelData(0);
+
+            viewer.addGraph(eog);
+            viewer.addPreview(new FilterDerivativeRem(eog));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     static void filterTest() {
         int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
@@ -44,7 +62,6 @@ public class Start {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     static void funcitonTest() {
@@ -98,10 +115,8 @@ public class Start {
                 return f;
             };
 
-
             Function harmoharmonicPickic = new HarmonicPick(10, alfa_time);
             Function sin = new Sin(200);
-
 
             Function mix = (x) -> {
                 return   alfa.value(x) * sin.value(x);

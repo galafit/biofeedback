@@ -36,28 +36,30 @@ public class NormalizedNumber {
     /**
      * Unit tests {@code NormalizedNumber}.
      *
+     * String.format: https://www.dotnetperls.com/format-java
+     *
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        double num = 100;
-        NormalizedNumber value = new NormalizedNumber(num);
-        System.out.println(num + " digits = " + value.getDigits() + " power = " + value.getPower());
+        String format = "%1$10s :  digits = %2$9s  power = %3$3s";
+        double value = 100;
+        NormalizedNumber number = new NormalizedNumber(value);
+        System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
-        num = 0.003234234;
-        value = new NormalizedNumber(num);
-        System.out.println(num + " digits = " + value.getDigits() + " power = " + value.getPower());
+        value = 0.03234234;
+        number = new NormalizedNumber(value);
+        System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
-        num = 7000.15;
-        value = new NormalizedNumber(num);
-        System.out.println(num + " digits = " + value.getDigits() + " power = " + value.getPower());
+        value = 7000.15;
+        number = new NormalizedNumber(value);
+        System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
-        num = -20;
-        value = new NormalizedNumber(num);
-        System.out.println(num + " digits = " + value.getDigits() + " power = " + value.getPower());
+        value = -20;
+        number = new NormalizedNumber(value);
+        System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
-        num = 0;
-        value = new NormalizedNumber(num);
-        System.out.println(num + " digits = " + value.getDigits() + " power = " + value.getPower());
-
+        value = 0;
+        number = new NormalizedNumber(value);
+        System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
     }
 }
