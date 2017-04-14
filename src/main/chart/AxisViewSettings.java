@@ -7,11 +7,47 @@ import java.awt.*;
  */
 public class AxisViewSettings {
     private Color axisColor = Color.GRAY;
-    private int labelFontSize = 9;
+    private int labelFontSize = 11;
     private Color gridColor = Color.GRAY;
-    private Boolean isGridVisible = true;
+    private Color minorGridColor = Color.BLUE;
+    private boolean isGridVisible = true;
     private int tickSize = 5;
-    protected int tickPixelInterval =10;
+    protected int tickPixelInterval =100;
+    private int minLabelSpace = 5;
+    private boolean isAxisLineVisible = true;
+    private boolean isTicksVisible = true;
+
+    public Color getMinorGridColor() {
+        return minorGridColor;
+    }
+
+    public void setMinorGridColor(Color minorGridColor) {
+        this.minorGridColor = minorGridColor;
+    }
+
+    public boolean isAxisLineVisible() {
+        return isAxisLineVisible;
+    }
+
+    public void setAxisLineVisible(boolean axisLineVisible) {
+        isAxisLineVisible = axisLineVisible;
+    }
+
+    public boolean isTicksVisible() {
+        return isTicksVisible;
+    }
+
+    public void setTicksVisible(boolean ticksVisible) {
+        isTicksVisible = ticksVisible;
+    }
+
+    public int getMinLabelSpace() {
+        return minLabelSpace;
+    }
+
+    public void setMinLabelSpace(int minLabelSpace) {
+        this.minLabelSpace = minLabelSpace;
+    }
 
     public int getTickPixelInterval() {
         return tickPixelInterval;
@@ -53,7 +89,7 @@ public class AxisViewSettings {
         this.gridColor = gridColor;
     }
 
-    public Boolean getGridVisible() {
+    public boolean isGridVisible() {
         return isGridVisible;
     }
 
