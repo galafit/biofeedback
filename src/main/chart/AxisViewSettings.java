@@ -16,6 +16,24 @@ public class AxisViewSettings {
     private int minLabelSpace = 5;
     private boolean isAxisLineVisible = true;
     private boolean isTicksVisible = true;
+    private int minorGridDivider = 5;
+    private boolean isMinorGridVisible = false;
+
+    public boolean isMinorGridVisible() {
+        return isMinorGridVisible;
+    }
+
+    public void setMinorGridVisible(boolean minorGridVisible) {
+        isMinorGridVisible = minorGridVisible;
+    }
+
+    public int getMinorGridDivider() {
+        return minorGridDivider;
+    }
+
+    public void setMinorGridDivider(int minorGridDivider) {
+        this.minorGridDivider = minorGridDivider;
+    }
 
     public Color getMinorGridColor() {
         return minorGridColor;

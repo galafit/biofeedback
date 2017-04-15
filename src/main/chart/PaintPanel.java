@@ -8,10 +8,11 @@ import java.awt.*;
  */
 public class PaintPanel extends JPanel {
     private LineChart lineChart;
-    private XAxisPainter xAxisPainter;
+    private AxisPainter xAxisPainter;
+    private AxisPainter yAxisPainter;
 
-    private LinearAxisX xAxis;
-    private LinearAxisY yAxis;
+    private LinearAxis xAxis;
+    private LinearAxis yAxis;
 
     private int xIndent=50;
     private int yIndent=50;
@@ -22,9 +23,10 @@ public class PaintPanel extends JPanel {
 
     public PaintPanel(Point2d[] points) {
         setPreferredSize(new Dimension(width, height));
-        xAxis = new LinearAxisX(0.01,950);
-        yAxis = new LinearAxisY(0,1);
-        xAxisPainter = new XAxisPainter(xAxis, new AxisViewSettings());
+        xAxis = new LinearAxis(0.01,950, AxisPosition.BOTTOM);
+        yAxis = new LinearAxis(0,1, AxisPosition.LEFT);
+        xAxisPainter = new AxisPainter(xAxis, new AxisViewSettings());
+        yAxisPainter = new AxisPainter(yAxis, new AxisViewSettings());
         lineChart = new LineChart(new ChartItems2DList(points),xAxis, yAxis);
     }
 
@@ -36,6 +38,7 @@ public class PaintPanel extends JPanel {
         g.setColor(Color.GRAY);
         g.drawRect(area.x, area.y, area.width, area.height);
         xAxisPainter.draw(g, area, yIndent - 5);
+        yAxisPainter.draw(g, area, xIndent - 5);
         lineChart.draw(g, area);
     }
 

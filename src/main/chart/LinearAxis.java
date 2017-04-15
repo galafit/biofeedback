@@ -3,28 +3,72 @@ package main.chart;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.*;
+import java.util.List;
 
 import static java.lang.Math.pow;
 
 /**
  * Created by hdablin on 08.04.17.
  */
-public abstract class LinearAxis extends Axis {
+public class LinearAxis extends Axis {
 
-    private DecimalFormat dfNeg4 = new DecimalFormat("0.0000");
-    private DecimalFormat dfNeg3 = new DecimalFormat("0.000");
-    private DecimalFormat dfNeg2 = new DecimalFormat("0.00");
-    private DecimalFormat dfNeg1 = new DecimalFormat("0.0");
-    private DecimalFormat df0 = new DecimalFormat("#,##0");
-    private DecimalFormat df = new DecimalFormat("#.######E0");
 
-    public LinearAxis(double min, double max) {
-        super(min, max);
+    public LinearAxis(double min, double max, AxisPosition axisPosition) {
+        super(min, max, axisPosition);
+    }
+
+    @Override
+    public TickProvider getTicksProvider(Rectangle area) {
+        return new LinearTickProvider(min,max,pointsPerUnit(area));
+    }
+
+    @Override
+    public double pointsPerUnit(Rectangle area) {
+        if (axisPosition.isTopOrBottom()) {
+            return (area.getWidth()) / (max - min);
+        }
+        return (area.getHeight())/(max-min);
+    }
+
+    @Override
+    public int valueToPoint(double value, Rectangle area) {
+        if (axisPosition.isTopOrBottom()) {
+            return (int)(area.getX() + (value - min) * pointsPerUnit(area));
+        }
+        return (int)(area.getY() + (value - min) * pointsPerUnit(area));
+    }
+}
+
+class LinearTickProvider implements TickProvider{
+    Double tickInterval = Double.NaN;
+    double min;
+    double max;
+    Double pointsPerUnit = Double.NaN;
+    NumberFormat numberFormat;
+
+    public LinearTickProvider(double min, double max, double pointsPerUnit) {
+        this.min = min;
+        this.max = max;
+        this.pointsPerUnit = pointsPerUnit;
+    }
+
+    private double getClosestTickPrev(double value, double tickInterval){
+        return ((int)(value / tickInterval))*tickInterval;
+    }
+
+    private double getClosestTickNext(double value, double tickInterval){
+        return getClosestTickPrev(value,tickInterval) + tickInterval;
     }
 
 
-
     private NumberFormat getTickLabelFormat(int power) {
+        DecimalFormat dfNeg4 = new DecimalFormat("0.0000");
+        DecimalFormat dfNeg3 = new DecimalFormat("0.000");
+        DecimalFormat dfNeg2 = new DecimalFormat("0.00");
+        DecimalFormat dfNeg1 = new DecimalFormat("0.0");
+        DecimalFormat df0 = new DecimalFormat("#,##0");
+        DecimalFormat df = new DecimalFormat("#.######E0");
 
         if (power == -4) {
             return dfNeg4;
@@ -44,11 +88,58 @@ public abstract class LinearAxis extends Axis {
         return df;
     }
 
+    @Override
+    public Double getTickInterval() {
+        return tickInterval;
+    }
 
     @Override
-    public Tick[] getTicks1(Rectangle area, int minTickPixelInterval) {
+    public Double getTickPixelInterval() {
+        if (tickInterval.isNaN()){
+            return Double.NaN;
+        }
+        return tickInterval * pointsPerUnit;
+    }
 
-        double tickInterval = minTickPixelInterval / pointsPerUnit(area);
+    @Override
+    public void setTickInterval(double tickInterval) {
+        this.tickInterval = tickInterval;
+    }
+
+    @Override
+    public void setTickPixelInterval(double tickPixelInterval) {
+        tickInterval = tickPixelInterval / pointsPerUnit;
+        // firstDigit is in {2,5,10};
+        NormalizedNumber tick = new NormalizedNumber(tickInterval);
+
+        int power = tick.getPower();
+        int firstDigit = (int)(tick.getDigits());
+        switch (firstDigit){
+            case 3 : firstDigit = 2;
+                break;
+            case 4 : firstDigit = 5;
+                break;
+            case 6 : firstDigit = 5;
+                break;
+            case 7 : firstDigit = 5;
+                break;
+            case 8 : firstDigit = 1;
+                power++;
+                break;
+            case 9 : firstDigit = 1;
+                power++;
+                break;
+        }
+
+        tickInterval = (firstDigit * pow(10,power));
+        numberFormat = getTickLabelFormat(power);
+
+
+    }
+
+    @Override
+    public void setMinTickPixelInterval(double minTickPixelInterval) {
+        tickInterval = minTickPixelInterval / pointsPerUnit;
         // firstDigit is in {2,5,10};
         NormalizedNumber tick = new NormalizedNumber(tickInterval);
 
@@ -74,69 +165,42 @@ public abstract class LinearAxis extends Axis {
         }
 
         tickInterval = (firstDigit * pow(10,power));
-        NumberFormat numberFormat = getTickLabelFormat(power);
-        double roundMin = getClosestTickNext(min, tickInterval);
-        double roundMax = getClosestTickPrev(max, tickInterval);
-        int ticksAmount = (int)Math.round((roundMax - roundMin) / tickInterval) + 1;
-        Tick[] ticks = new Tick[ticksAmount];
-        double value = 0;
+        numberFormat = getTickLabelFormat(power);
 
-        for (int i = 0; i < ticksAmount; i++) {
-
-            value = roundMin + tickInterval * i;
-            String label =  numberFormat.format(value);
-            ticks[i] = new Tick(value, label);
-
-        }
-        return ticks;
-    }
-
-    private double getClosestTickPrev(double value, double tickInterval){
-        return ((int)(value / tickInterval))*tickInterval;
-    }
-
-    private double getClosestTickNext(double value, double tickInterval){
-        return getClosestTickPrev(value,tickInterval) + tickInterval;
     }
 
     @Override
-    public Tick[] getTicks(Rectangle area, int tickPixelInterval) {
-        double tickInterval = tickPixelInterval / pointsPerUnit(area);
-        // firstDigit is in {2,5,10};
-        NormalizedNumber tick = new NormalizedNumber(tickInterval);
+    public List<Tick> getTicks() {
 
-        int power = tick.getPower();
-        int firstDigit = (int)(tick.getDigits());
-        switch (firstDigit){
-            case 3 : firstDigit = 2;
-                    break;
-            case 4 : firstDigit = 5;
-                    break;
-            case 6 : firstDigit = 5;
-                    break;
-            case 7 : firstDigit = 5;
-                     break;
-            case 8 : firstDigit = 1;
-                     power++;
-                     break;
-            case 9 : firstDigit = 1;
-                     power++;
-                     break;
-        }
-
-        tickInterval = (firstDigit * pow(10,power));
-        NumberFormat numberFormat = getTickLabelFormat(power);
         double roundMin = getClosestTickNext(min, tickInterval);
         double roundMax = getClosestTickPrev(max, tickInterval);
         int ticksAmount = (int)Math.round((roundMax - roundMin) / tickInterval) + 1;
-        Tick[] ticks = new Tick[ticksAmount];
+        List<Tick> ticks = new ArrayList<Tick>(ticksAmount);
         double value = 0;
 
         for (int i = 0; i < ticksAmount; i++) {
 
             value = roundMin + tickInterval * i;
             String lable =  numberFormat.format(value);
-            ticks[i] = new Tick(value, lable);
+            ticks.add(new Tick(value, lable));
+
+        }
+        return ticks;
+    }
+
+    @Override
+    public List<Double> getMinorTicks(int tickDivider) {
+        double minorTickInterval = tickInterval / tickDivider;
+        double roundMin = getClosestTickNext(min, minorTickInterval);
+        double roundMax = getClosestTickPrev(max, minorTickInterval);
+        int ticksAmount = (int)Math.round((roundMax - roundMin) / minorTickInterval) + 1;
+        List<Double> ticks = new ArrayList<Double>(ticksAmount);
+        double value = 0;
+
+        for (int i = 0; i < ticksAmount; i++) {
+
+            value = roundMin + minorTickInterval * i;
+            ticks.add(value);
 
         }
         return ticks;

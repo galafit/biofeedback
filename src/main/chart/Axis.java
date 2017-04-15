@@ -8,12 +8,18 @@ import java.awt.*;
 public abstract class Axis {
     protected double min;
     protected double max;
+    protected AxisPosition axisPosition;
 
 
-    public Axis(double min, double max) {
+    public Axis(double min, double max, AxisPosition axisPosition) {
         this.min = min;
         this.max = max;
+        this.axisPosition = axisPosition;
 
+    }
+
+    public AxisPosition getAxisPosition() {
+        return axisPosition;
     }
 
     abstract public double pointsPerUnit(Rectangle area);
@@ -34,8 +40,7 @@ public abstract class Axis {
         this.max = max;
     }
 
-    abstract public Tick[] getTicks(Rectangle area, int tickPixelInterval);
+    abstract public TickProvider getTicksProvider(Rectangle area);
 
-    abstract public Tick[] getTicks1(Rectangle area, int minTickPixelInterval);
 
 }
