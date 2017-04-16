@@ -1,4 +1,4 @@
-package main.chart;
+package main.chart.axis;
 
 import java.awt.*;
 

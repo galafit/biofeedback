@@ -1,5 +1,8 @@
 package main.chart;
 
+import main.chart.axis.Axis;
+import main.chart.axis.AxisData;
+
 import java.awt.*;
 import java.util.List;
 
@@ -35,19 +38,4 @@ public class LineChart {
         }
     }
 
-    public Axis getxAxis() {
-        return xAxis;
-    }
-
-    public Axis getyAxis() {
-        return yAxis;
-    }
-
-    public void setxAxis(Axis xAxis) {
-        this.xAxis = xAxis;
-    }
-
-    public void setyAxis(Axis yAxis) {
-        this.yAxis = yAxis;
-    }
 }

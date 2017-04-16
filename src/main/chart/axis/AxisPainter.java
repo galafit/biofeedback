@@ -1,4 +1,7 @@
-package main.chart;
+package main.chart.axis;
+
+import main.chart.Tick;
+import main.chart.TickProvider;
 
 import java.awt.*;
 import java.util.List;
@@ -7,18 +10,22 @@ import java.util.List;
  * Created by hdablin on 06.04.17.
  */
 public class AxisPainter {
-    private LinearAxis axis;
+    private AxisData axis;
     private AxisViewSettings axisViewSettings;
     private int tickLabelPadding = 2;
 
 
 
-    public AxisPainter(LinearAxis axis, AxisViewSettings axisViewSettings) {
+    public AxisPainter(AxisData axis, AxisViewSettings axisViewSettings) {
         this.axis = axis;
         this.axisViewSettings = axisViewSettings;
     }
 
     public void draw(Graphics g, Rectangle area, int anchorPoint){
+
+        Font font = g.getFont();
+        g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
+
 
         TickProvider tickProvider = getTickProvider(g, area);
         List<Tick> ticks = tickProvider.getTicks();
@@ -38,8 +45,6 @@ public class AxisPainter {
         if (axisViewSettings.isGridVisible()) {
             drawGrid(g, area, ticks);
         }
-
-
 
     }
 
@@ -89,10 +94,6 @@ public class AxisPainter {
 
     private void drawTicks(Graphics g, Rectangle area, int anchorPoint, List<Tick> ticks){
         g.setColor(axisViewSettings.getAxisColor());
-        Font font = g.getFont();
-        g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
-
-
         for (Tick tick : ticks) {
             int tickPoint = axis.valueToPoint(tick.getValue(), area);
             drawLabel(g, anchorPoint, tickPoint, tick.getLabel());
@@ -112,27 +113,35 @@ public class AxisPainter {
         if (axis.getAxisPosition().isTopOrBottom()) {
             g.drawLine(tickPoint, anchorPoint + axisViewSettings.getTickSize() / 2, tickPoint, anchorPoint - axisViewSettings.getTickSize() / 2);
         } else {
-
+            g.drawLine(anchorPoint,tickPoint,anchorPoint + axisViewSettings.getTickSize(),tickPoint);
         }
     }
 
     private void drawLabel(Graphics g, int anchorPoint, int tickPoint, String label) {
         if (axis.getAxisPosition().isTopOrBottom()) {
-            g.drawString(label, tickPoint - getLabelSize(g, label) / 2, anchorPoint - axisViewSettings.getTickSize() / 2 - tickLabelPadding);
+            g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, anchorPoint - axisViewSettings.getTickSize() / 2 - tickLabelPadding);
         } else {
-
+            //g.drawRect(anchorPoint - getLabelWidth(g,label) - tickLabelPadding,tickPoint-getLabelHeight(g,label),getLabelWidth(g,label),getLabelHeight(g,label));
+            g.drawString(label,anchorPoint - getLabelWidth(g,label) - tickLabelPadding,tickPoint + getLabelHeight(g,label) / 2 );
         }
     }
 
-    private int getLabelSize(Graphics g, String label){
+    private int getLabelWidth(Graphics g, String label){
         return g.getFontMetrics().stringWidth(label);
     }
 
+    private int getLabelHeight(Graphics g, String label){
+          return (int)(g.getFontMetrics().getStringBounds(label,(Graphics2D)(g)).getHeight());
+    }
+
     private int getMaxTickSize(Graphics g, List<Tick> ticks){
-        int maxSize = 0;
-        for (Tick tick : ticks) {
-           maxSize = Math.max(maxSize,getLabelSize(g,tick.getLabel()));
+        if (axis.getAxisPosition().isTopOrBottom()) {
+            int maxSize = 0;
+            for (Tick tick : ticks) {
+                maxSize = Math.max(maxSize, getLabelWidth(g, tick.getLabel()));
+            }
+            return maxSize;
         }
-        return maxSize;
+            return getLabelHeight(g,ticks.get(0).getLabel());
     }
 }

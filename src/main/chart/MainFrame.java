@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
 
         setTitle("Test title");
 
-        Point2d[] points =  {new Point2d(0.7, 0.3),new Point2d(0.7, 0.5)};
+        Point2d[] points =  {new Point2d(0.7, 0.3),new Point2d(0.7, 0.5),new Point2d(0.2,0.5)};
 
         PaintPanel paintpanel = new PaintPanel(points);
         paintpanel.setBackground(Color.BLACK);

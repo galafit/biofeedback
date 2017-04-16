@@ -1,21 +1,20 @@
-package main.chart;
+package main.chart.axis;
+
+import main.chart.TickProvider;
 
 import java.awt.*;
 
 /**
  * Created by hdablin on 05.04.17.
  */
-public abstract class Axis {
-    protected double min;
-    protected double max;
+public abstract class AxisData {
+    protected double min = 0;
+    protected double max = 1;
     protected AxisPosition axisPosition;
 
 
-    public Axis(double min, double max, AxisPosition axisPosition) {
-        this.min = min;
-        this.max = max;
+    public AxisData(AxisPosition axisPosition) {
         this.axisPosition = axisPosition;
-
     }
 
     public AxisPosition getAxisPosition() {

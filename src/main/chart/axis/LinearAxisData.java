@@ -1,4 +1,8 @@
-package main.chart;
+package main.chart.axis;
+
+import main.chart.NormalizedNumber;
+import main.chart.Tick;
+import main.chart.TickProvider;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -11,11 +15,11 @@ import static java.lang.Math.pow;
 /**
  * Created by hdablin on 08.04.17.
  */
-public class LinearAxis extends Axis {
+public class LinearAxisData extends AxisData {
 
 
-    public LinearAxis(double min, double max, AxisPosition axisPosition) {
-        super(min, max, axisPosition);
+    public LinearAxisData(AxisPosition axisPosition) {
+        super(axisPosition);
     }
 
     @Override
@@ -36,7 +40,7 @@ public class LinearAxis extends Axis {
         if (axisPosition.isTopOrBottom()) {
             return (int)(area.getX() + (value - min) * pointsPerUnit(area));
         }
-        return (int)(area.getY() + (value - min) * pointsPerUnit(area));
+        return (int)(area.getY() + area.height - (value - min) * pointsPerUnit(area));
     }
 }
 
