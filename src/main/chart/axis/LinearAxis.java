@@ -8,8 +8,8 @@ import java.awt.*;
  * Created by hdablin on 16.04.17.
  */
 public class LinearAxis extends Axis {
-    public LinearAxis(AxisPosition axisPosition) {
-        this.axisData = new LinearAxisData(axisPosition);
+    public LinearAxis(boolean isHorizontal) {
+        this.axisData = new LinearAxisData(isHorizontal);
         this.axisPainter = new AxisPainter(axisData, new AxisViewSettings());
     }
 }

@@ -10,16 +10,19 @@ import java.awt.*;
 public abstract class AxisData {
     protected double min = 0;
     protected double max = 1;
-    protected AxisPosition axisPosition;
+    protected boolean isHorizontal;
 
 
-    public AxisData(AxisPosition axisPosition) {
-        this.axisPosition = axisPosition;
+    public AxisData(boolean isHorizontal) {
+        this.isHorizontal = isHorizontal;
     }
 
-    public AxisPosition getAxisPosition() {
-        return axisPosition;
+
+
+    public boolean isHorizontal() {
+        return isHorizontal;
     }
+
 
     abstract public double pointsPerUnit(Rectangle area);
 

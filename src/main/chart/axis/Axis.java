@@ -47,4 +47,6 @@ public abstract class Axis {
     public void setAxisViewSettings(AxisViewSettings axisViewSettings) {
         this.axisViewSettings = axisViewSettings;
     }
+
+    public boolean isHorizontal() {return axisData.isHorizontal();}
 }

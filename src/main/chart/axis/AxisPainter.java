@@ -51,7 +51,7 @@ public class AxisPainter {
 
     private void drawAxisLine(Graphics g, Rectangle area, int anchorPoint) {
         g.setColor(axisViewSettings.getAxisColor());
-        if (axis.getAxisPosition().isTopOrBottom()) {
+        if (axis.isHorizontal) {
             g.drawLine(area.x, anchorPoint, area.width + area.x, anchorPoint);
         } else {
             g.drawLine(anchorPoint, area.y, anchorPoint, area.y + area.height);
@@ -61,7 +61,7 @@ public class AxisPainter {
 
     private void drawGrid(Graphics g, Rectangle area, List<Tick> ticks) {
         g.setColor(axisViewSettings.getGridColor());
-        if (axis.getAxisPosition().isTopOrBottom()) {
+        if (axis.isHorizontal) {
             for (Tick tick : ticks) {
                 g.drawLine(axis.valueToPoint(tick.getValue(), area), area.y, axis.valueToPoint(tick.getValue(), area), area.y + area.height);
             }
@@ -97,7 +97,7 @@ public class AxisPainter {
         g.setColor(axisViewSettings.getAxisColor());
         for (Tick tick : ticks) {
             int tickPoint = axis.valueToPoint(tick.getValue(), area);
-            drawLabel(g, anchorPoint, tickPoint, tick.getLabel());
+            drawLabel(g, area, anchorPoint, tickPoint, tick.getLabel());
             drawTick(g, anchorPoint, tickPoint);
         }
 
@@ -111,19 +111,30 @@ public class AxisPainter {
     }
 
     private void drawTick(Graphics g, int anchorPoint, int tickPoint) {
-        if (axis.getAxisPosition().isTopOrBottom()) {
+        if (axis.isHorizontal) {
             g.drawLine(tickPoint, anchorPoint + axisViewSettings.getTickSize() / 2, tickPoint, anchorPoint - axisViewSettings.getTickSize() / 2);
         } else {
-            g.drawLine(anchorPoint, tickPoint, anchorPoint + axisViewSettings.getTickSize(), tickPoint);
+            g.drawLine(anchorPoint-axisViewSettings.getTickSize() / 2, tickPoint, anchorPoint + axisViewSettings.getTickSize() / 2, tickPoint);
         }
     }
 
-    private void drawLabel(Graphics g, int anchorPoint, int tickPoint, String label) {
-        if (axis.getAxisPosition().isTopOrBottom()) {
-            g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, anchorPoint - axisViewSettings.getTickSize() / 2 - tickLabelPadding);
-        } else {
-            //g.drawRect(anchorPoint - getLabelWidth(g,label) - tickLabelPadding,tickPoint-getLabelHeight(g,label),getLabelWidth(g,label),getLabelHeight(g,label));
-            g.drawString(label, anchorPoint - getLabelWidth(g, label) - tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
+    private void drawLabel(Graphics g, Rectangle area, int anchorPoint, int tickPoint, String label) {
+        //HORIZONTAL position
+        if (axis.isHorizontal()) {
+            // TOP axis position
+            if (anchorPoint < (area.height + area.y)/ 2) {
+                g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, anchorPoint - axisViewSettings.getTickSize() / 2 - tickLabelPadding);
+            }else{ //BOTTOM axis position
+                g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, anchorPoint + axisViewSettings.getTickSize() / 2 + tickLabelPadding + getLabelHeight(g,label));
+            }
+
+        } else { //VERTICAL position
+            //LEFT axis position
+            if (anchorPoint < (area.width + area.x) / 2) {
+                g.drawString(label, anchorPoint - axisViewSettings.getTickSize() / 2 - getLabelWidth(g, label) - tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
+            }else {//RIGTH axis position
+                g.drawString(label, anchorPoint + axisViewSettings.getTickSize() / 2 + tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
+            }
         }
     }
 
@@ -139,7 +150,7 @@ public class AxisPainter {
     }
 
     private int getMaxTickSize(Graphics g, List<Tick> ticks) {
-        if (axis.getAxisPosition().isTopOrBottom()) {
+        if (axis.isHorizontal()) {
             int maxSize = 0;
             for (Tick tick : ticks) {
                 maxSize = Math.max(maxSize, getLabelWidth(g, tick.getLabel()));

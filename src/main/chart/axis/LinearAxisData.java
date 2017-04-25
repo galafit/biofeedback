@@ -18,8 +18,8 @@ import static java.lang.Math.pow;
 public class LinearAxisData extends AxisData {
 
 
-    public LinearAxisData(AxisPosition axisPosition) {
-        super(axisPosition);
+    public LinearAxisData(boolean isHorizontal) {
+        super(isHorizontal);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class LinearAxisData extends AxisData {
 
     @Override
     public double pointsPerUnit(Rectangle area) {
-        if (axisPosition.isTopOrBottom()) {
+        if (isHorizontal) {
             return (area.getWidth()) / (max - min);
         }
         return (area.getHeight())/(max-min);
@@ -37,7 +37,7 @@ public class LinearAxisData extends AxisData {
 
     @Override
     public int valueToPoint(double value, Rectangle area) {
-        if (axisPosition.isTopOrBottom()) {
+        if (isHorizontal) {
             return (int)(area.getX() + (value - min) * pointsPerUnit(area));
         }
         return (int)(area.getY() + area.height - (value - min) * pointsPerUnit(area));
