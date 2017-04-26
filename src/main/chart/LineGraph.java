@@ -9,16 +9,12 @@ import java.util.List;
 /**
  * Created by hdablin on 05.04.17.
  */
-public class LineChart {
-    private List<ChartItem> chartItemList;
-    private Axis xAxis;
-    private Axis yAxis;
+public class LineGraph extends Graph {
 
-    public LineChart(List<ChartItem> chartItemList, Axis xAxis, Axis yAxis) {
+    public LineGraph(List<ChartItem> chartItemList) {
         this.chartItemList = chartItemList;
-        this.xAxis = xAxis;
-        this.yAxis = yAxis;
     }
+
 
     public void draw(Graphics g, Rectangle area) {
 

@@ -16,11 +16,8 @@ public abstract class Axis {
         return axisData.valueToPoint(value, area);
     }
 
-    public void setMin(double min) {
+    public void setRange(int min, int max){
         axisData.setMin(min);
-    }
-
-    public void setMax(double max) {
         axisData.setMax(max);
     }
 

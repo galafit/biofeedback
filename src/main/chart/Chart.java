@@ -4,28 +4,31 @@ import main.chart.axis.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by hdablin on 24.03.17.
  */
-public class PaintPanel extends JPanel {
-    private LineChart lineChart;
-
-    private Axis xAxis;
-    private Axis yAxis;
+public class Chart extends JPanel {
+    private List<Graph> graphs = new ArrayList<>();
+    private List<Axis> horizontalAxis = new ArrayList<>();
+    private List<Axis> verticalAxis = new ArrayList<>();
 
     private int xIndent=50;
     private int yIndent=50;
 
+    public void addVerticalAxis(Axis axis){
+        verticalAxis.add(axis);
+    }
 
+    public void addHorizontalAxis(Axis axis){
+        horizontalAxis.add(axis);
+    }
 
-    public PaintPanel(Point2d[] points) {
-
-        xAxis = new LinearAxis(true);
-        yAxis = new LinearAxis(false);
-
-
-        lineChart = new LineChart(new ChartItems2DList(points),xAxis, yAxis);
+    public void addGraph(Graph graph){
+        graphs.add(graph);
     }
 
     @Override
@@ -54,9 +57,15 @@ public class PaintPanel extends JPanel {
             yAnchorPoint = xIndent - 5;
         }
 
-        xAxis.draw(g, area, xAnchorPoint);
-        yAxis.draw(g, area, yAnchorPoint);
-        lineChart.draw(g, area);
+        horizontalAxis.get(0).draw(g, area, xAnchorPoint);
+        verticalAxis.get(0).draw(g, area, yAnchorPoint);
+
+        for (Graph graph : graphs) {
+            graph.draw(g,area);
+            System.out.println("graph");
+        }
+
+
     }
 
 
