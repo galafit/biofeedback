@@ -16,35 +16,24 @@ public abstract class Axis {
         return axisData.valueToPoint(value, area);
     }
 
-    public TickProvider getTicksProvider(Rectangle area){
-        return axisData.getTicksProvider(area);
+    public void setMin(double min) {
+        axisData.setMin(min);
     }
 
-    public AxisData getAxisData() {
-        return axisData;
+    public void setMax(double max) {
+        axisData.setMax(max);
     }
 
     public void draw(Graphics g, Rectangle area, int anchorPoint){
         axisPainter.draw(g, area, anchorPoint);
     }
 
-    public void setAxisData(AxisData axisData) {
-        this.axisData = axisData;
-    }
 
-    public AxisPainter getAxisPainter() {
-        return axisPainter;
-    }
-
-    public void setAxisPainter(AxisPainter axisPainter) {
-        this.axisPainter = axisPainter;
-    }
-
-    public AxisViewSettings getAxisViewSettings() {
+    public AxisViewSettings getViewSettings() {
         return axisViewSettings;
     }
 
-    public void setAxisViewSettings(AxisViewSettings axisViewSettings) {
+    public void setViewSettings(AxisViewSettings axisViewSettings) {
         this.axisViewSettings = axisViewSettings;
     }
 
