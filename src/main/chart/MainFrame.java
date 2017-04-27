@@ -31,7 +31,7 @@ public class MainFrame extends JFrame {
         chart.addHorizontalAxis(xAxis);
         chart.addVerticalAxis(yAxis);
 
-        Graph graph1 = new AreaGraph(new ChartItems2DList(points2, false));
+        Graph graph1 = new LineGraph(new ChartItems2DList(points2, false));
         graph1.setAxis(xAxis, yAxis);
         chart.addGraph(graph1);
 

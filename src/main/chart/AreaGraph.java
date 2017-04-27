@@ -27,13 +27,10 @@ public class AreaGraph extends Graph {
                 g.drawLine(previousPointX, previousPointY, pointX, pointY);
 
                 Polygon p = new Polygon();
-
                 p.addPoint(previousPointX,previousPointY);
                 p.addPoint(pointX,pointY);
                 p.addPoint(pointX,yAxis.valueToPoint(0,area));
                 p.addPoint(previousPointX,yAxis.valueToPoint(0,area));
-
-
 
                 g.fillPolygon(p);
             }

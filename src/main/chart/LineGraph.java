@@ -25,10 +25,6 @@ public class LineGraph extends Graph {
 
                 int previousPointX = xAxis.valueToPoint(dataItemList.get(i - 1).getX(), area);
                 int previousPointY = yAxis.valueToPoint(dataItemList.get(i - 1).getY(), area);
-
-                System.out.println(dataItemList.get(i - 1).getX()+" x, y "+ dataItemList.get(i - 1).getY() );
-                System.out.println(previousPointX+" point_x, point_y "+previousPointY );
-
                 g.drawLine(previousPointX, previousPointY, pointX, pointY);
             }
         }
