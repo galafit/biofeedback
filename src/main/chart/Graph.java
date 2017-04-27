@@ -9,16 +9,14 @@ import java.util.List;
  * Created by hdablin on 26.04.17.
  */
 public abstract class Graph {
-    protected List<ChartItem> chartItemList;
+    protected List<DataItem> dataItemList;
     protected Axis xAxis;
     protected Axis yAxis;
 
-    public void setxAxis(Axis xAxis) {
+
+
+    public void setAxis(Axis xAxis, Axis yAxis) {
         this.xAxis = xAxis;
-    }
-
-
-    public void setyAxis(Axis yAxis) {
         this.yAxis = yAxis;
     }
 

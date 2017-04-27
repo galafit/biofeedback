@@ -1,8 +1,5 @@
 package main.chart;
 
-import main.chart.axis.Axis;
-import main.chart.axis.AxisData;
-
 import java.awt.*;
 import java.util.List;
 
@@ -11,8 +8,8 @@ import java.util.List;
  */
 public class LineGraph extends Graph {
 
-    public LineGraph(List<ChartItem> chartItemList) {
-        this.chartItemList = chartItemList;
+    public LineGraph(List<DataItem> dataItemList) {
+        this.dataItemList = dataItemList;
     }
 
 
@@ -20,14 +17,17 @@ public class LineGraph extends Graph {
 
         g.setColor(Color.BLUE);
 
-        for (int i = 0; i < chartItemList.size(); i++) {
+        for (int i = 0; i < dataItemList.size(); i++) {
 
             if (i > 0) {
-                int pointX = xAxis.valueToPoint(chartItemList.get(i).getX(), area);
-                int pointY = yAxis.valueToPoint(chartItemList.get(i).getY(), area);
+                int pointX = xAxis.valueToPoint(dataItemList.get(i).getX(), area);
+                int pointY = yAxis.valueToPoint(dataItemList.get(i).getY(), area);
 
-                int previousPointX = xAxis.valueToPoint(chartItemList.get(i - 1).getX(), area);
-                int previousPointY = yAxis.valueToPoint(chartItemList.get(i - 1).getY(), area);
+                int previousPointX = xAxis.valueToPoint(dataItemList.get(i - 1).getX(), area);
+                int previousPointY = yAxis.valueToPoint(dataItemList.get(i - 1).getY(), area);
+
+                System.out.println(dataItemList.get(i - 1).getX()+" x, y "+ dataItemList.get(i - 1).getY() );
+                System.out.println(previousPointX+" point_x, point_y "+previousPointY );
 
                 g.drawLine(previousPointX, previousPointY, pointX, pointY);
             }

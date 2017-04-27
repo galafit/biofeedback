@@ -5,10 +5,10 @@ import java.util.AbstractList;
 /**
  * Created by hdablin on 05.04.17.
  */
-public class ChartItemsList extends AbstractList<ChartItem>{
+public class DataList extends AbstractList<DataItem>{
     double[] itemsArray;
 
-    public ChartItemsList(double[] itemsArray) {
+    public DataList(double[] itemsArray) {
         this.itemsArray = itemsArray;
     }
 
@@ -18,8 +18,8 @@ public class ChartItemsList extends AbstractList<ChartItem>{
     }
 
     @Override
-    public ChartItem get(int index){
-        return new ChartItem() {
+    public DataItem get(int index){
+        return new DataItem() {
             @Override
             public double getX() {
                 return index;

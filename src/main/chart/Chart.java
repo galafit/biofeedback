@@ -62,7 +62,6 @@ public class Chart extends JPanel {
 
         for (Graph graph : graphs) {
             graph.draw(g,area);
-            System.out.println("graph");
         }
 
 
