@@ -80,7 +80,7 @@ public class AxisPainter {
 
         List<Tick> ticks = tickProvider.getTicks();
 
-        int maxTickSize = getMaxTickSize(g, ticks);
+        int maxTickSize = getMaxTickLabelSize(g, ticks);
 
         if (ticks.size() > 1) {
 
@@ -149,7 +149,7 @@ public class AxisPainter {
         return (int) labelBounds.getHeight();
     }
 
-    private int getMaxTickSize(Graphics g, List<Tick> ticks) {
+    private int getMaxTickLabelSize(Graphics g, List<Tick> ticks) {
         if (axis.isHorizontal()) {
             int maxSize = 0;
             for (Tick tick : ticks) {
