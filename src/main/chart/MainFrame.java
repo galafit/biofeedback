@@ -26,12 +26,25 @@ public class MainFrame extends JFrame {
         Axis xAxis = new LinearAxis(true);
         Axis yAxis = new LinearAxis(false);
         xAxis.setRange(0, 2);
-        yAxis.setRange(0, 2);
+        yAxis.setRange(0, 22000000);
+
+        Axis yAxis2 = new LinearAxis(false);
+        Axis xAxis2 = new LinearAxis(true);
+        xAxis2.setRange(10, 178);
+        yAxis2.setRange(-18, 6);
+
+        yAxis2.getViewSettings().setGridVisible(false);
+        yAxis2.getViewSettings().setOpposite(true);
+        xAxis2.getViewSettings().setGridVisible(false);
+        xAxis2.getViewSettings().setOpposite(true);
+
+        chart.addVerticalAxis(yAxis2);
+        chart.addHorizontalAxis(xAxis2);
 
         chart.addHorizontalAxis(xAxis);
         chart.addVerticalAxis(yAxis);
 
-        Graph graph1 = new LineGraph(new ChartItems2DList(points2, false));
+        Graph graph1 = new LineGraph(new ChartItems2DList(points2, true));
         graph1.setAxis(xAxis, yAxis);
         chart.addGraph(graph1);
 

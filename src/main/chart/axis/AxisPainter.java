@@ -2,6 +2,8 @@ package main.chart.axis;
 
 import main.chart.Tick;
 import main.chart.TickProvider;
+import main.graph.Graph;
+import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.font.TextLayout;
@@ -20,6 +22,22 @@ public class AxisPainter {
     public AxisPainter(AxisData axis, AxisViewSettings axisViewSettings) {
         this.axis = axis;
         this.axisViewSettings = axisViewSettings;
+    }
+
+    public int getSize(Graphics g, Rectangle area){
+        int size = 1;
+        Font font = g.getFont();
+        g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
+
+        TickProvider tickProvider = getTickProvider(g, area);
+        List<Tick> ticks = tickProvider.getTicks();
+
+        if (axisViewSettings.isTicksVisible()){
+
+            size = tickLabelPadding + axisViewSettings.getTickSize() + getMaxTickLabelSize(g,ticks,!axis.isHorizontal());
+        }
+
+        return size;
     }
 
     public void draw(Graphics g, Rectangle area, int anchorPoint) {
@@ -80,7 +98,7 @@ public class AxisPainter {
 
         List<Tick> ticks = tickProvider.getTicks();
 
-        int maxTickSize = getMaxTickLabelSize(g, ticks);
+        int maxTickSize = getMaxTickLabelSize(g, ticks, axis.isHorizontal());
 
         if (ticks.size() > 1) {
 
@@ -149,8 +167,9 @@ public class AxisPainter {
         return (int) labelBounds.getHeight();
     }
 
-    private int getMaxTickLabelSize(Graphics g, List<Tick> ticks) {
-        if (axis.isHorizontal()) {
+    private int getMaxTickLabelSize(Graphics g, List<Tick> ticks, boolean isHorizontal) {
+
+        if (isHorizontal) {
             int maxSize = 0;
             for (Tick tick : ticks) {
                 maxSize = Math.max(maxSize, getLabelWidth(g, tick.getLabel()));

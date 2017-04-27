@@ -25,7 +25,9 @@ public abstract class Axis {
         axisPainter.draw(g, area, anchorPoint);
     }
 
-
+    public int getSize(Graphics g, Rectangle area){
+       return axisPainter.getSize(g, area);
+    }
     public AxisViewSettings getViewSettings() {
         return axisViewSettings;
     }

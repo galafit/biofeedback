@@ -18,6 +18,15 @@ public class AxisViewSettings {
     private boolean isTicksVisible = true;
     private int minorGridDivider = 5;
     private boolean isMinorGridVisible = false;
+    private boolean isOpposite = false;
+
+    public boolean isOpposite() {
+        return isOpposite;
+    }
+
+    public void setOpposite(boolean opposite) {
+        isOpposite = opposite;
+    }
 
     public boolean isMinorGridVisible() {
         return isMinorGridVisible;

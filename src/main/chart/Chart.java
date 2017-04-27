@@ -13,18 +13,17 @@ import java.util.List;
  */
 public class Chart extends JPanel {
     private List<Graph> graphs = new ArrayList<>();
-    private List<Axis> horizontalAxis = new ArrayList<>();
-    private List<Axis> verticalAxis = new ArrayList<>();
+    private List<Axis> xAxis = new ArrayList<>();
+    private List<Axis> yAxis = new ArrayList<>();
+    private int chartPadding = 10;
 
-    private int xIndent=50;
-    private int yIndent=50;
 
     public void addVerticalAxis(Axis axis){
-        verticalAxis.add(axis);
+        yAxis.add(axis);
     }
 
     public void addHorizontalAxis(Axis axis){
-        horizontalAxis.add(axis);
+        xAxis.add(axis);
     }
 
     public void addGraph(Graph graph){
@@ -37,32 +36,60 @@ public class Chart extends JPanel {
         super.paintComponent(g);
         int width = getSize().width;
         int height = getSize().height;
-        Rectangle area = new Rectangle(xIndent,yIndent,width-2*xIndent,height-2*yIndent);
+
+        int topIndent = chartPadding;
+        int bottomIndent = chartPadding;
+        int leftIndent = chartPadding;
+        int rightIndent = chartPadding;
+
+        int[] xAnchorPoints = new int[xAxis.size()];
+        int[] yAnchorPoints = new int[yAxis.size()];
+
+        Rectangle fullArea = new Rectangle(0,0,width,height);
+
+        //Calculate axis position and indents of xAxis
+        for (int i = xAxis.size() - 1; i >= 0 ; i--) {
+
+            int size = xAxis.get(i).getSize(g, fullArea);
+
+            if (!xAxis.get(i).getViewSettings().isOpposite()){
+                bottomIndent += size;
+                xAnchorPoints[i] = fullArea.height - bottomIndent;
+            } else {
+                topIndent += size;
+                xAnchorPoints[i] = topIndent;
+            }
+        }
+        //Calculate axis position and indents of yAxis
+        for (int i = yAxis.size() - 1; i >= 0 ; i--) {
+
+            int size = yAxis.get(i).getSize(g, fullArea);
+
+            if (!yAxis.get(i).getViewSettings().isOpposite()){
+                leftIndent += size;
+                yAnchorPoints[i] = leftIndent;
+            } else {
+                rightIndent += size;
+                yAnchorPoints[i] = fullArea.width - rightIndent;
+            }
+        }
+
+        Rectangle area = new Rectangle(leftIndent,topIndent,width - leftIndent - rightIndent,height - topIndent - bottomIndent);
         g.setColor(Color.GRAY);
         g.drawRect(area.x, area.y, area.width, area.height);
 
-        boolean xIsOpposite = true;
-        int xAnchorPoint;
-        if (xIsOpposite){
-            xAnchorPoint = yIndent - 5;
-        }else{
-            xAnchorPoint = area.height + area.y + 5;
+        for (int i = 0; i < xAxis.size(); i++) {
+            xAxis.get(i).draw(g, area, xAnchorPoints[i]);
         }
 
-        boolean yIsOpposite = false;
-        int yAnchorPoint;
-        if (yIsOpposite){
-            yAnchorPoint = area.width + area.x + 5;
-        }else{
-            yAnchorPoint = xIndent - 5;
+        for (int i = 0; i < yAxis.size(); i++) {
+            yAxis.get(i).draw(g, area, yAnchorPoints[i]);
         }
-
-        horizontalAxis.get(0).draw(g, area, xAnchorPoint);
-        verticalAxis.get(0).draw(g, area, yAnchorPoint);
 
         for (Graph graph : graphs) {
             graph.draw(g,area);
         }
+
 
 
     }

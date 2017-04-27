@@ -10,7 +10,8 @@ import java.awt.*;
 public class LinearAxis extends Axis {
     public LinearAxis(boolean isHorizontal) {
         this.axisData = new LinearAxisData(isHorizontal);
-        this.axisPainter = new AxisPainter(axisData, new AxisViewSettings());
+        this.axisViewSettings = new AxisViewSettings();
+        this.axisPainter = new AxisPainter(axisData, this.axisViewSettings);
     }
 }
 
