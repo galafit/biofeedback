@@ -18,16 +18,54 @@ public class Chart extends JPanel {
     private int chartPadding = 10;
 
 
-    public void addVerticalAxis(Axis axis){
+    public Chart() {
+        xAxis.add(new LinearAxis());
+        yAxis.add(new LinearAxis());
+    }
+
+
+
+    public Axis getXAxis(int xAxisIndex){
+        if (xAxisIndex >= xAxis.size()){
+            return null;
+        }
+        return xAxis.get(xAxisIndex);
+    }
+
+    public Axis getYAxis(int yAxisIndex){
+        if (yAxisIndex >= yAxis.size()){
+            return null;
+        }
+        return yAxis.get(yAxisIndex);
+    }
+
+    public void addYAxis(Axis axis){
+        axis.setHorizontal(false);
         yAxis.add(axis);
     }
 
-    public void addHorizontalAxis(Axis axis){
+    public void addXAxis(Axis axis){
+        axis.setHorizontal(true);
         xAxis.add(axis);
     }
 
     public void addGraph(Graph graph){
+       addGraph(graph,0,0);
+    }
+
+    public void addGraph(Graph graph, int xAxisIndex, int yAxisIndex){
+        if (xAxisIndex >= xAxis.size()) {
+            xAxisIndex = xAxis.size() - 1;
+        }
+        if (yAxisIndex >= yAxis.size()) {
+            yAxisIndex = yAxis.size() - 1;
+        }
+
+        graph.setAxis(xAxis.get(xAxisIndex), yAxis.get(yAxisIndex));
+        graph.rangeAxis();
         graphs.add(graph);
+
+
     }
 
     @Override

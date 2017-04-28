@@ -18,9 +18,7 @@ import static java.lang.Math.pow;
 public class LinearAxisData extends AxisData {
 
 
-    public LinearAxisData(boolean isHorizontal) {
-        super(isHorizontal);
-    }
+
 
     @Override
     public TickProvider getTicksProvider(Rectangle area) {

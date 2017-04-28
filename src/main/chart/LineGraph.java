@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class LineGraph extends Graph {
 
-    public LineGraph(List<DataItem> dataItemList) {
+    public LineGraph(DataList dataItemList) {
         this.dataItemList = dataItemList;
     }
 

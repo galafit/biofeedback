@@ -5,6 +5,7 @@ import main.chart.axis.LinearAxis;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 /**
  * Created by hdablin on 24.03.17.
@@ -15,37 +16,30 @@ public class MainFrame extends JFrame {
 
         setTitle("Test title");
 
-        Point2d[] points =  {new Point2d(0.7, 0.3),new Point2d(0.8, 0.5),new Point2d(0.9,0.5), new Point2d(1,2)};
-
-        Point2d[] points2 =  {new Point2d(0.0, 0.0),new Point2d(0.3, 0.5),new Point2d(0.7,0.5), new Point2d(0.9,2)};
-
-        Point2d[] points3 =  {new Point2d(0, 0),new Point2d(0, 1)};
-
 
         Chart chart = new Chart();
-        Axis xAxis = new LinearAxis(true);
-        Axis yAxis = new LinearAxis(false);
-        xAxis.setRange(0, 2);
-        yAxis.setRange(0, 22000000);
 
-        Axis yAxis2 = new LinearAxis(false);
-        Axis xAxis2 = new LinearAxis(true);
-        xAxis2.setRange(10, 178);
-        yAxis2.setRange(-18, 6);
+        Axis yAxis2 = new LinearAxis();
+        Axis xAxis2 = new LinearAxis();
+
 
         yAxis2.getViewSettings().setGridVisible(false);
         yAxis2.getViewSettings().setOpposite(true);
         xAxis2.getViewSettings().setGridVisible(false);
         xAxis2.getViewSettings().setOpposite(true);
 
-        chart.addVerticalAxis(yAxis2);
-        chart.addHorizontalAxis(xAxis2);
+        chart.addYAxis(yAxis2);
+        chart.addXAxis(xAxis2);
 
-        chart.addHorizontalAxis(xAxis);
-        chart.addVerticalAxis(yAxis);
+        XYList xyList = new XYList();
+        Random rand = new Random();
+        for (int i = 0; i <15 ; i++) {
+            xyList.addItem(i,rand.nextInt(9000));
+        }
 
-        Graph graph1 = new LineGraph(new ChartItems2DList(points2, true));
-        graph1.setAxis(xAxis, yAxis);
+
+        Graph graph1 = new LineGraph(xyList);
+
         chart.addGraph(graph1);
 
 

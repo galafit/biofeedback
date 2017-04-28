@@ -7,7 +7,7 @@ import java.awt.*;
  */
 public class AreaGraph extends Graph {
 
-    public AreaGraph(java.util.List<DataItem> dataItemList) {
+    public AreaGraph(DataList dataItemList) {
         this.dataItemList = dataItemList;
     }
 

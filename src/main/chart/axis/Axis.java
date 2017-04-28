@@ -12,13 +12,31 @@ public abstract class Axis {
     protected AxisPainter axisPainter;
     protected AxisViewSettings axisViewSettings;
 
+
+    public void setHorizontal(boolean isHorisontal){
+        axisData.setHorizontal(isHorisontal);
+    }
+
+    public boolean isAutoScale() {
+       return axisData.isAutoScale();
+    }
+
+    public void setAutoScale(boolean isAutoScale){
+        axisData.setAutoScale(isAutoScale);
+    }
+
     public int valueToPoint(double value, Rectangle area){
         return axisData.valueToPoint(value, area);
     }
 
-    public void setRange(int min, int max){
-        axisData.setMin(min);
-        axisData.setMax(max);
+    public void setRange(double min, double max){
+        axisData.setRange(min, max);
+    }
+
+    public double getMin() {return axisData.getMin();}
+
+    public double getMax() {
+        return axisData.getMax();
     }
 
     public void draw(Graphics g, Rectangle area, int anchorPoint){
