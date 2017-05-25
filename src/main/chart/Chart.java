@@ -19,8 +19,12 @@ public class Chart extends JPanel {
 
 
     public Chart() {
-        xAxis.add(new LinearAxis());
-        yAxis.add(new LinearAxis());
+        Axis x = new LinearAxis();
+        x.setHorizontal(true);
+        xAxis.add(x);
+        Axis y = new LinearAxis();
+        y.setHorizontal(false);
+        yAxis.add(y);
     }
 
 

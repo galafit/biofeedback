@@ -25,8 +25,10 @@ public class MainFrame extends JFrame {
 
         yAxis2.getViewSettings().setGridVisible(false);
         yAxis2.getViewSettings().setOpposite(true);
+        yAxis2.getViewSettings().setAxisColor(Color.RED);
         xAxis2.getViewSettings().setGridVisible(false);
         xAxis2.getViewSettings().setOpposite(true);
+        xAxis2.getViewSettings().setAxisColor(Color.GREEN);
 
         chart.addYAxis(yAxis2);
         chart.addXAxis(xAxis2);
