@@ -12,6 +12,7 @@ public abstract class Graph {
     protected DataList dataItemList;
     protected Axis xAxis;
     protected Axis yAxis;
+    protected Color color = Color.GRAY;
 
     protected void rangeAxis(){
         if (xAxis.isAutoScale()){
@@ -20,6 +21,14 @@ public abstract class Graph {
         if (yAxis.isAutoScale()){
             yAxis.setRange(Math.min(yAxis.getMin(),dataItemList.getYmin()),Math.max(yAxis.getMax(),dataItemList.getYmax()));
         }
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public double getXmin(){

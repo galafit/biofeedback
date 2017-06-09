@@ -16,9 +16,10 @@ import static java.lang.Math.pow;
  * Created by hdablin on 08.04.17.
  */
 public class LinearAxisData extends AxisData {
-
-
-
+    @Override
+    public void setRange(double min, double max) {
+      //LinearTickProvider linearTickProvider = new LinearTickProvider(min,max,pointsPerUnit())
+    }
 
     @Override
     public TickProvider getTicksProvider(Rectangle area) {
@@ -56,11 +57,14 @@ class LinearTickProvider implements TickProvider{
     }
 
     private double getClosestTickPrev(double value, double tickInterval){
-        return ((int)(value / tickInterval))*tickInterval;
+        if (value > 0) {
+            return (int) (value / tickInterval) * tickInterval;
+        }
+        return (int) ((value / tickInterval) * tickInterval - tickInterval);
     }
 
     private double getClosestTickNext(double value, double tickInterval){
-        return getClosestTickPrev(value,tickInterval) + tickInterval;
+        return getClosestTickPrev(value, tickInterval) + tickInterval;
     }
 
 

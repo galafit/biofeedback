@@ -25,24 +25,32 @@ public class MainFrame extends JFrame {
 
         yAxis2.getViewSettings().setGridVisible(false);
         yAxis2.getViewSettings().setOpposite(true);
-        yAxis2.getViewSettings().setAxisColor(Color.RED);
+
         xAxis2.getViewSettings().setGridVisible(false);
         xAxis2.getViewSettings().setOpposite(true);
-        xAxis2.getViewSettings().setAxisColor(Color.GREEN);
+
 
         chart.addYAxis(yAxis2);
         chart.addXAxis(xAxis2);
 
         XYList xyList = new XYList();
         Random rand = new Random();
+        xyList.addItem(-2.5,-8);
         for (int i = 0; i <15 ; i++) {
-            xyList.addItem(i,rand.nextInt(9000));
+            xyList.addItem(i,rand.nextInt(9));
         }
 
 
+        XYList xyList2 = new XYList();
+        for (int i = 0; i <6 ; i++) {
+            xyList2.addItem(i,rand.nextInt(100));
+        }
+
         Graph graph1 = new LineGraph(xyList);
+      //  Graph graph2 = new AreaGraph(xyList2);
 
         chart.addGraph(graph1);
+       // chart.addGraph(graph2,1,1);
 
 
         chart.setPreferredSize(new Dimension(500, 500));

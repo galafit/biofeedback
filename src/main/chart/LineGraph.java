@@ -15,7 +15,7 @@ public class LineGraph extends Graph {
 
     public void draw(Graphics g, Rectangle area) {
 
-        g.setColor(Color.CYAN);
+        g.setColor(color);
 
         for (int i = 0; i < dataItemList.size(); i++) {
 

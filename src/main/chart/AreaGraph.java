@@ -13,7 +13,7 @@ public class AreaGraph extends Graph {
 
     @Override
     public void draw(Graphics g, Rectangle area) {
-        g.setColor(Color.YELLOW);
+        g.setColor(color);
 
         for (int i = 0; i < dataItemList.size(); i++) {
 

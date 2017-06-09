@@ -16,6 +16,7 @@ public class Chart extends JPanel {
     private List<Axis> xAxis = new ArrayList<>();
     private List<Axis> yAxis = new ArrayList<>();
     private int chartPadding = 10;
+    private Color[] colors = {Color.GRAY, Color.YELLOW, Color.CYAN, Color.ORANGE, Color.GREEN};
 
 
     public Chart() {
@@ -45,11 +46,13 @@ public class Chart extends JPanel {
 
     public void addYAxis(Axis axis){
         axis.setHorizontal(false);
+        axis.getViewSettings().setAxisColor(colors[xAxis.size() % colors.length]);
         yAxis.add(axis);
     }
 
     public void addXAxis(Axis axis){
         axis.setHorizontal(true);
+        axis.getViewSettings().setAxisColor(colors[xAxis.size() % colors.length]);
         xAxis.add(axis);
     }
 
@@ -67,6 +70,7 @@ public class Chart extends JPanel {
 
         graph.setAxis(xAxis.get(xAxisIndex), yAxis.get(yAxisIndex));
         graph.rangeAxis();
+        graph.setColor(yAxis.get(yAxisIndex).getViewSettings().getAxisColor());
         graphs.add(graph);
 
 
