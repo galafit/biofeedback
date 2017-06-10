@@ -12,7 +12,7 @@ public class AxisViewSettings {
     private Color minorGridColor = Color.BLUE;
     private boolean isGridVisible = true;
     private int tickSize = 5;
-    protected int tickPixelInterval =100;
+    protected int tickPixelInterval = 100;
     private int minLabelSpace = 5;
     private boolean isAxisLineVisible = true;
     private boolean isTicksVisible = true;

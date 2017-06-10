@@ -18,7 +18,8 @@ import static java.lang.Math.pow;
 public class LinearAxisData extends AxisData {
     @Override
     public void setRange(double min, double max) {
-      //LinearTickProvider linearTickProvider = new LinearTickProvider(min,max,pointsPerUnit())
+        this.min = min;
+        this.max = max;
     }
 
     @Override
