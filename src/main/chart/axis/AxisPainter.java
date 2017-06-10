@@ -49,6 +49,8 @@ public class AxisPainter {
         TickProvider tickProvider = getTickProvider(g, area);
         List<Tick> ticks = tickProvider.getTicks();
 
+        //axis.setRange(tickProvider.getRoundMin(), tickProvider.getRoundMax());
+
         if (axisViewSettings.isAxisLineVisible()) {
             drawAxisLine(g, area, anchorPoint);
         }

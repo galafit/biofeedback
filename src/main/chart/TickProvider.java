@@ -14,4 +14,6 @@ public interface TickProvider {
     public void setMinTickPixelInterval(double minTickPixelInterval);
     public List<Tick> getTicks();
     public List<Double> getMinorTicks(int tickDivider);
+    public double getRoundMin();
+    public double getRoundMax();
 }

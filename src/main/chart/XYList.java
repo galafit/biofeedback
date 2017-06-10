@@ -9,7 +9,10 @@ import java.util.List;
  */
 public class XYList extends AbstractList<DataItem> implements DataList {
     private List<Point2d> items = new ArrayList<>();
-    private double xMin, xMax, yMin, yMax;
+    private double xMin = Double.MAX_VALUE;
+    private double xMax = Double.MIN_VALUE;
+    private double yMin = Double.MAX_VALUE;
+    private double yMax = Double.MIN_VALUE;
 
     public void addItem(double x, double y){
         xMin = Math.min(xMin,x);

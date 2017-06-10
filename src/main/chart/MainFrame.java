@@ -35,22 +35,23 @@ public class MainFrame extends JFrame {
 
         XYList xyList = new XYList();
         Random rand = new Random();
-        xyList.addItem(-2.5,-8);
+        //xyList.addItem(-2.5,-8);
         for (int i = 0; i <15 ; i++) {
-            xyList.addItem(i,rand.nextInt(9));
+            xyList.addItem(i,rand.nextInt(200) + 1000);
         }
 
 
         XYList xyList2 = new XYList();
         for (int i = 0; i <6 ; i++) {
-            xyList2.addItem(i,rand.nextInt(100));
+            //xyList2.addItem(i,rand.nextInt(100));
+            xyList2.addItem(i,457);
         }
 
         Graph graph1 = new LineGraph(xyList);
-      //  Graph graph2 = new AreaGraph(xyList2);
+        Graph graph2 = new LineGraph(xyList2);
 
         chart.addGraph(graph1);
-       // chart.addGraph(graph2,1,1);
+        chart.addGraph(graph2,1,1);
 
 
         chart.setPreferredSize(new Dimension(500, 500));

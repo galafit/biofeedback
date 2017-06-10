@@ -17,6 +17,7 @@ public class Chart extends JPanel {
     private List<Axis> yAxis = new ArrayList<>();
     private int chartPadding = 10;
     private Color[] colors = {Color.GRAY, Color.YELLOW, Color.CYAN, Color.ORANGE, Color.GREEN};
+    private Color[] graphicColors = {Color.MAGENTA, Color.RED, Color.PINK};
 
 
     public Chart() {
@@ -70,7 +71,20 @@ public class Chart extends JPanel {
 
         graph.setAxis(xAxis.get(xAxisIndex), yAxis.get(yAxisIndex));
         graph.rangeAxis();
-        graph.setColor(yAxis.get(yAxisIndex).getViewSettings().getAxisColor());
+
+        boolean isGraphExist = false;
+        for (Graph graph1 : graphs) {
+            if (graph1.getYAxis() == yAxis.get(yAxisIndex)){
+                isGraphExist = true;
+                break;
+            }
+        }
+
+        if (!isGraphExist) {
+            graph.setColor(yAxis.get(yAxisIndex).getViewSettings().getAxisColor());
+        } else {
+            graph.setColor(graphicColors[graphs.size() % graphicColors.length]);
+        }
         graphs.add(graph);
 
 

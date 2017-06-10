@@ -19,6 +19,10 @@ public abstract class Graph {
             xAxis.setRange(Math.min(xAxis.getMin(),dataItemList.getXmin()),Math.max(xAxis.getMax(),dataItemList.getXmax()));
         }
         if (yAxis.isAutoScale()){
+            System.out.println("getMin = " + yAxis.getMin());
+            System.out.println("getMax = " + yAxis.getMax());
+            System.out.println("itemYmin = " + dataItemList.getYmin());
+            System.out.println("itemYmax = " + dataItemList.getYmax());
             yAxis.setRange(Math.min(yAxis.getMin(),dataItemList.getYmin()),Math.max(yAxis.getMax(),dataItemList.getYmax()));
         }
     }

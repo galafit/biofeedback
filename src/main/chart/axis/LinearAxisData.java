@@ -32,11 +32,18 @@ public class LinearAxisData extends AxisData {
         if (isHorizontal) {
             return (area.getWidth()) / (max - min);
         }
-        return (area.getHeight())/(max-min);
+        return (area.getHeight())/ (max - min);
     }
 
     @Override
     public int valueToPoint(double value, Rectangle area) {
+        if (min == max){
+            if (isHorizontal) {
+                return (int)(area.getX() + area.getWidth() / 2);
+            }
+            return (int)(area.getY() - area.getHeight() / 2);
+        }
+
         if (isHorizontal) {
             return (int)(area.getX() + (value - min) * pointsPerUnit(area));
         }
@@ -50,11 +57,32 @@ class LinearTickProvider implements TickProvider{
     double max;
     Double pointsPerUnit = Double.NaN;
     NumberFormat numberFormat;
+    double roundMin, roundMax;
+
 
     public LinearTickProvider(double min, double max, double pointsPerUnit) {
         this.min = min;
         this.max = max;
         this.pointsPerUnit = pointsPerUnit;
+    }
+
+    private void setRoundRange(){
+        if (min == max){
+            roundMin = min;
+            roundMax = max;
+        } else {
+            roundMin = getClosestTickPrev(min, tickInterval);
+            roundMax = getClosestTickNext(max, tickInterval);
+        }
+    }
+
+
+    public double getRoundMin() {
+        return roundMin;
+    }
+
+    public double getRoundMax() {
+        return roundMax;
     }
 
     private double getClosestTickPrev(double value, double tickInterval){
@@ -111,10 +139,12 @@ class LinearTickProvider implements TickProvider{
     @Override
     public void setTickInterval(double tickInterval) {
         this.tickInterval = tickInterval;
+        setRoundRange();
     }
 
     @Override
     public void setTickPixelInterval(double tickPixelInterval) {
+
         tickInterval = tickPixelInterval / pointsPerUnit;
         // firstDigit is in {2,5,10};
         NormalizedNumber tick = new NormalizedNumber(tickInterval);
@@ -141,6 +171,7 @@ class LinearTickProvider implements TickProvider{
         tickInterval = (firstDigit * pow(10,power));
         numberFormat = getTickLabelFormat(power);
 
+        setRoundRange();
 
     }
 
@@ -174,10 +205,22 @@ class LinearTickProvider implements TickProvider{
         tickInterval = (firstDigit * pow(10,power));
         numberFormat = getTickLabelFormat(power);
 
+        setRoundRange();
     }
 
     @Override
     public List<Tick> getTicks() {
+
+        //System.out.println("min = " + min);
+        //System.out.println("max = " + max);
+        if (min == max){
+            System.out.println("min = max = " + min);
+            List<Tick> ticks = new ArrayList<Tick>(1);
+            double value = min;
+            String lable =  numberFormat.format(value);
+            ticks.add(new Tick(value, lable));
+            return ticks;
+        }
 
         double roundMin = getClosestTickNext(min, tickInterval);
         double roundMax = getClosestTickPrev(max, tickInterval);
