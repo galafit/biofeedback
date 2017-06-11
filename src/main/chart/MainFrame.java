@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
         XYList xyList2 = new XYList();
         for (int i = 0; i <6 ; i++) {
             //xyList2.addItem(i,rand.nextInt(100));
-            xyList2.addItem(i,457);
+            xyList2.addItem(457,i);
         }
 
         Graph graph1 = new LineGraph(xyList);

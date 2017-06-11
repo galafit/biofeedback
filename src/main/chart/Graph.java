@@ -16,14 +16,10 @@ public abstract class Graph {
 
     protected void rangeAxis(){
         if (xAxis.isAutoScale()){
-            xAxis.setRange(Math.min(xAxis.getMin(),dataItemList.getXmin()),Math.max(xAxis.getMax(),dataItemList.getXmax()));
+            xAxis.setRange(getXmin(), getXmax());
         }
         if (yAxis.isAutoScale()){
-            System.out.println("getMin = " + yAxis.getMin());
-            System.out.println("getMax = " + yAxis.getMax());
-            System.out.println("itemYmin = " + dataItemList.getYmin());
-            System.out.println("itemYmax = " + dataItemList.getYmax());
-            yAxis.setRange(Math.min(yAxis.getMin(),dataItemList.getYmin()),Math.max(yAxis.getMax(),dataItemList.getYmax()));
+            yAxis.setRange(getYmin(),getYmax());
         }
     }
 
@@ -44,11 +40,11 @@ public abstract class Graph {
     }
 
     public double getYmin(){
-        return dataItemList.getXmin();
+        return dataItemList.getYmin();
     }
 
     public double getYmax(){
-        return dataItemList.getXmax();
+        return dataItemList.getYmax();
     }
 
     public Axis getXAxis() {

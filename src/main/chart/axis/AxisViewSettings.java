@@ -8,7 +8,7 @@ import java.awt.*;
 public class AxisViewSettings {
     private Color axisColor = Color.GRAY;
     private int labelFontSize = 11;
-    private Color gridColor = Color.GRAY;
+    private Color gridColor = Color.DARK_GRAY;
     private Color minorGridColor = Color.BLUE;
     private boolean isGridVisible = true;
     private int tickSize = 5;
