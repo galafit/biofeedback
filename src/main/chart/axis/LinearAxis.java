@@ -1,9 +1,5 @@
 package main.chart.axis;
 
-import main.chart.TickProvider;
-
-import java.awt.*;
-
 /**
  * Created by hdablin on 16.04.17.
  */

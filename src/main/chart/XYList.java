@@ -22,19 +22,22 @@ public class XYList extends AbstractList<DataItem> implements DataList {
         items.add(new Point2d(x,y));
     }
 
-
+    @Override
     public double getXmin() {
         return xMin;
     }
 
+    @Override
     public double getXmax() {
         return xMax;
     }
 
+    @Override
     public double getYmin() {
         return yMin;
     }
 
+    @Override
     public double getYmax() {
         return yMax;
     }

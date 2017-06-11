@@ -1,9 +1,5 @@
 package main.chart.axis;
 
-import main.chart.NormalizedNumber;
-import main.chart.Tick;
-import main.chart.TickProvider;
-
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -18,9 +14,7 @@ import static java.lang.Math.pow;
 public class LinearAxisData extends AxisData {
     @Override
     public TickProvider getTicksProvider(Rectangle area) {
-        double min = getMin();
-        double max = getMax();
-        return new LinearTickProvider(min,max,pointsPerUnit(area));
+        return new LinearTickProvider(getMin(),getMax(),pointsPerUnit(area));
     }
 
     @Override
@@ -35,9 +29,11 @@ public class LinearAxisData extends AxisData {
 
     @Override
     public int valueToPoint(double value, Rectangle area) {
-        double min = getMin();
-        double max = getMax();
-        if (min == max){
+        double axisMin = getMin();
+        double axisMax = getMax();
+
+
+        if (axisMin == axisMax){
             if (isHorizontal) {
                 return (int)(area.getX() + area.getWidth() / 2);
             }
@@ -45,9 +41,9 @@ public class LinearAxisData extends AxisData {
         }
 
         if (isHorizontal) {
-            return (int)(area.getX() + (value - min) * pointsPerUnit(area));
+            return (int)(area.getX() + (value - axisMin) * pointsPerUnit(area));
         }
-        return (int)(area.getY() + area.height - (value - min) * pointsPerUnit(area));
+        return (int)(area.getY() + area.height - (value - axisMin) * pointsPerUnit(area));
     }
 }
 
@@ -182,54 +178,24 @@ class LinearTickProvider implements TickProvider{
     }
 
     public double getRoundMin(){
-        return getClosestTickPrev(min, tickInterval);
+        return (min == max) ? min : getClosestTickPrev(min, tickInterval);
     }
 
     public double getRoundMax(){
-        return getClosestTickNext(max, tickInterval);
+        return (min == max) ? max : getClosestTickNext(max, tickInterval);
     }
 
     @Override
     public List<Tick> getTicks() {
-
-        if (min == max){
-            List<Tick> ticks = new ArrayList<Tick>(1);
-            double value = min;
-            String lable =  numberFormat.format(value);
-            ticks.add(new Tick(value, lable));
-            return ticks;
-        }
-
         double roundMin = getRoundMin();
         double roundMax = getRoundMax();
-
         List<Tick> ticks = new ArrayList<Tick>();
         double value = roundMin;
-
-        while (value <= roundMax) {
-
-            String lable =  numberFormat.format(value);
-            ticks.add(new Tick(value, lable));
+        int tickAmount = (roundMax == roundMin || tickInterval == 0) ? 1 : (int) Math.round((roundMax - roundMin) / tickInterval) + 1 ;
+        for(int i = 1; i <= tickAmount; i++) {
+            String label =  numberFormat.format(value);
+            ticks.add(new Tick(value, label));
             value = value + tickInterval;
-
-        }
-        return ticks;
-    }
-
-    @Override
-    public List<Double> getMinorTicks(int tickDivider) {
-        double minorTickInterval = tickInterval / tickDivider;
-        double roundMin = getClosestTickNext(min, minorTickInterval);
-        double roundMax = getClosestTickPrev(max, minorTickInterval);
-        int ticksAmount = (int)Math.round((roundMax - roundMin) / minorTickInterval) + 1;
-        List<Double> ticks = new ArrayList<Double>(ticksAmount);
-        double value = 0;
-
-        for (int i = 0; i < ticksAmount; i++) {
-
-            value = roundMin + minorTickInterval * i;
-            ticks.add(value);
-
         }
         return ticks;
     }

@@ -1,4 +1,4 @@
-package main.chart;
+package main.chart.axis;
 
 /**
  * Created by hdablin on 08.04.17.

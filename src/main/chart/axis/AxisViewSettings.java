@@ -8,8 +8,8 @@ import java.awt.*;
 public class AxisViewSettings {
     private Color axisColor = Color.GRAY;
     private int labelFontSize = 11;
-    private Color gridColor = Color.DARK_GRAY;
-    private Color minorGridColor = Color.BLUE;
+    private Color gridColor = new Color(50, 50, 50);
+    private Color minorGridColor = new Color(25, 25, 25);;
     private boolean isGridVisible = true;
     private int tickSize = 5;
     protected int tickPixelInterval = 100;
@@ -17,7 +17,7 @@ public class AxisViewSettings {
     private boolean isAxisLineVisible = true;
     private boolean isTicksVisible = true;
     private int minorGridDivider = 5;
-    private boolean isMinorGridVisible = false;
+    private boolean isMinorGridVisible = true;
     private boolean isOpposite = false;
 
     public boolean isOpposite() {

@@ -1,6 +1,5 @@
-package main.chart;
+package main.chart.axis;
 
-import java.awt.geom.Point2D;
 import java.util.List;
 
 /**
@@ -13,7 +12,4 @@ public interface TickProvider {
     public void setTickPixelInterval(double tickPixelInterval);
     public void setMinTickPixelInterval(double minTickPixelInterval);
     public List<Tick> getTicks();
-    public List<Double> getMinorTicks(int tickDivider);
-    public double getRoundMin();
-    public double getRoundMax();
 }

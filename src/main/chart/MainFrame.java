@@ -24,9 +24,11 @@ public class MainFrame extends JFrame {
 
 
         yAxis2.getViewSettings().setGridVisible(false);
+        yAxis2.getViewSettings().setMinorGridVisible(false);
         yAxis2.getViewSettings().setOpposite(true);
 
         xAxis2.getViewSettings().setGridVisible(false);
+        xAxis2.getViewSettings().setMinorGridVisible(false);
         xAxis2.getViewSettings().setOpposite(true);
 
 
@@ -63,9 +65,6 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-
-
-
     }
 
 

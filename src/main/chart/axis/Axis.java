@@ -1,7 +1,5 @@
 package main.chart.axis;
 
-import main.chart.TickProvider;
-
 import java.awt.*;
 
 /**
@@ -43,8 +41,8 @@ public abstract class Axis {
         axisPainter.draw(g, area, anchorPoint);
     }
 
-    public int getSize(Graphics g, Rectangle area){
-       return axisPainter.getSize(g, area);
+    public int getWidth(Graphics g, Rectangle area){
+       return axisPainter.getAxisWidth(g, area);
     }
     public AxisViewSettings getViewSettings() {
         return axisViewSettings;

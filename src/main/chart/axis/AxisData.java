@@ -1,7 +1,5 @@
 package main.chart.axis;
 
-import main.chart.TickProvider;
-
 import java.awt.*;
 
 /**

@@ -102,35 +102,35 @@ public class Chart extends JPanel {
         int leftIndent = chartPadding;
         int rightIndent = chartPadding;
 
-        int[] xAnchorPoints = new int[xAxis.size()];
-        int[] yAnchorPoints = new int[yAxis.size()];
+        int[] xAxisOriginPoints = new int[xAxis.size()];
+        int[] yAxisOriginPoints = new int[yAxis.size()];
 
         Rectangle fullArea = new Rectangle(0,0,width,height);
 
         //Calculate axis position and indents of xAxis
         for (int i = xAxis.size() - 1; i >= 0 ; i--) {
 
-            int size = xAxis.get(i).getSize(g, fullArea);
+            int size = xAxis.get(i).getWidth(g, fullArea);
 
             if (!xAxis.get(i).getViewSettings().isOpposite()){
                 bottomIndent += size;
-                xAnchorPoints[i] = fullArea.height - bottomIndent;
+                xAxisOriginPoints[i] = fullArea.height - bottomIndent;
             } else {
                 topIndent += size;
-                xAnchorPoints[i] = topIndent;
+                xAxisOriginPoints[i] = topIndent;
             }
         }
         //Calculate axis position and indents of yAxis
         for (int i = yAxis.size() - 1; i >= 0 ; i--) {
 
-            int size = yAxis.get(i).getSize(g, fullArea);
+            int size = yAxis.get(i).getWidth(g, fullArea);
 
             if (!yAxis.get(i).getViewSettings().isOpposite()){
                 leftIndent += size;
-                yAnchorPoints[i] = leftIndent;
+                yAxisOriginPoints[i] = leftIndent;
             } else {
                 rightIndent += size;
-                yAnchorPoints[i] = fullArea.width - rightIndent;
+                yAxisOriginPoints[i] = fullArea.width - rightIndent;
             }
         }
 
@@ -139,11 +139,11 @@ public class Chart extends JPanel {
         g.drawRect(area.x, area.y, area.width, area.height);
 
         for (int i = 0; i < xAxis.size(); i++) {
-            xAxis.get(i).draw(g, area, xAnchorPoints[i]);
+            xAxis.get(i).draw(g, area, xAxisOriginPoints[i]);
         }
 
         for (int i = 0; i < yAxis.size(); i++) {
-            yAxis.get(i).draw(g, area, yAnchorPoints[i]);
+            yAxis.get(i).draw(g, area, yAxisOriginPoints[i]);
         }
 
         for (Graph graph : graphs) {
