@@ -8,6 +8,7 @@ import java.awt.*;
 public class AxisViewSettings {
     private Color axisColor = Color.GRAY;
     private int labelFontSize = 11;
+    private int LabelPadding = 5;
     private Color gridColor = new Color(50, 50, 50);
     private Color minorGridColor = new Color(25, 25, 25);;
     private boolean isGridVisible = true;
@@ -20,6 +21,14 @@ public class AxisViewSettings {
     private boolean isMinorGridVisible = true;
     private boolean isOpposite = false;
     private boolean isVisible = true;
+
+    public int getLabelPadding() {
+        return LabelPadding;
+    }
+
+    public void setLabelPadding(int labelPadding) {
+        LabelPadding = labelPadding;
+    }
 
     public void setGridVisible(boolean gridVisible) {
         isGridVisible = gridVisible;

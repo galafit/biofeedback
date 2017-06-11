@@ -38,7 +38,7 @@ public class MainFrame extends JFrame {
 
         XYList xyList = new XYList();
         Random rand = new Random();
-        //xyList.addItem(-2.5,-8);
+        // xyList.addItem(-2.5,-8);
         for (int i = 0; i <15 ; i++) {
             xyList.addItem(i,rand.nextInt(200) + 1000);
         }

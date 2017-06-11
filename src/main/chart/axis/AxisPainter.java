@@ -11,7 +11,6 @@ import java.util.List;
 public class AxisPainter {
     private AxisData axis;
     private AxisViewSettings axisViewSettings;
-    private int tickLabelPadding = 3;
 
     public AxisPainter(AxisData axis, AxisViewSettings axisViewSettings) {
         this.axis = axis;
@@ -32,7 +31,7 @@ public class AxisPainter {
 
         if (axisViewSettings.isTicksVisible()) {
 
-            size = tickLabelPadding + axisViewSettings.getTickSize() + getMaxTickLabelSize(g, ticks, !axis.isHorizontal());
+            size = axisViewSettings.getLabelPadding() + axisViewSettings.getTickSize() + getMaxTickLabelSize(g, ticks, !axis.isHorizontal());
         }
 
         return size;
@@ -157,22 +156,23 @@ public class AxisPainter {
     }
 
     private void drawLabel(Graphics g, Rectangle area, int axisOriginPoint, int tickPoint, String label) {
+        int labelPadding = axisViewSettings.getLabelPadding();
         //HORIZONTAL position
         if (axis.isHorizontal()) {
             // TOP axis position
             if (axisViewSettings.isOpposite()) {
-                g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, axisOriginPoint - axisViewSettings.getTickSize() / 2 - tickLabelPadding);
+                g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, axisOriginPoint - axisViewSettings.getTickSize() / 2 - labelPadding);
             } else { //BOTTOM axis position
-                g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, axisOriginPoint + axisViewSettings.getTickSize() / 2 + tickLabelPadding + getLabelHeight(g, label));
+                g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, axisOriginPoint + axisViewSettings.getTickSize() / 2 + labelPadding + getLabelHeight(g, label));
             }
 
         } else { //VERTICAL position
             //RIGTH axis position
             if (axisViewSettings.isOpposite()) {
-                g.drawString(label, axisOriginPoint + axisViewSettings.getTickSize() / 2 + tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
+                g.drawString(label, axisOriginPoint + axisViewSettings.getTickSize() / 2 + labelPadding, tickPoint + getLabelHeight(g, label) / 2);
 
             } else { //LEFT axis position
-                g.drawString(label, axisOriginPoint - axisViewSettings.getTickSize() / 2 - getLabelWidth(g, label) - tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
+                g.drawString(label, axisOriginPoint - axisViewSettings.getTickSize() / 2 - getLabelWidth(g, label) - labelPadding, tickPoint + getLabelHeight(g, label) / 2);
             }
         }
     }
