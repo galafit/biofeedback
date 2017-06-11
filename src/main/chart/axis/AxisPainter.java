@@ -11,7 +11,7 @@ import java.util.List;
 public class AxisPainter {
     private AxisData axis;
     private AxisViewSettings axisViewSettings;
-    private int tickLabelPadding = 2;
+    private int tickLabelPadding = 3;
 
     public AxisPainter(AxisData axis, AxisViewSettings axisViewSettings) {
         this.axis = axis;
@@ -19,6 +19,10 @@ public class AxisPainter {
     }
 
     public int getAxisWidth(Graphics g, Rectangle area) {
+        if(!axisViewSettings.isVisible()) {
+            return 0;
+        }
+
         int size = 1;
         Font font = g.getFont();
         g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
@@ -35,32 +39,30 @@ public class AxisPainter {
     }
 
     public void draw(Graphics g, Rectangle area, int axisOriginPoint) {
+       if(axisViewSettings.isVisible()) {
+           Font font = g.getFont();
+           g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
 
-        Font font = g.getFont();
-        g.setFont(new Font(font.getFontName(), Font.PLAIN, axisViewSettings.getLabelFontSize()));
+           TickProvider tickProvider = getTickProvider(g, area);
+           List<Tick> ticks = tickProvider.getTicks();
 
+           if (axisViewSettings.isMinorGridVisible()) {
+               drawMinorGrid(g, area, ticks);
+           }
 
-        TickProvider tickProvider = getTickProvider(g, area);
-        List<Tick> ticks = tickProvider.getTicks();
+           if (axisViewSettings.isGridVisible()) {
+               drawGrid(g, area, ticks);
+           }
 
-        //axis.setRange(tickProvider.getRoundMin(), tickProvider.getRoundMax());
+           if (axisViewSettings.isTicksVisible()) {
+               drawTicks(g, area, axisOriginPoint, ticks);
+           }
 
-        if (axisViewSettings.isTicksVisible()) {
-            drawTicks(g, area, axisOriginPoint, ticks);
-        }
+           if (axisViewSettings.isAxisLineVisible()) {
+               drawAxisLine(g, area, axisOriginPoint);
+           }
 
-        if (axisViewSettings.isMinorGridVisible()) {
-            drawMinorGrid(g, area, ticks);
-        }
-
-        if (axisViewSettings.isGridVisible()) {
-            drawGrid(g, area, ticks);
-        }
-
-        if (axisViewSettings.isAxisLineVisible()) {
-            drawAxisLine(g, area, axisOriginPoint);
-        }
-
+       }
     }
 
     private void drawAxisLine(Graphics g, Rectangle area, int axisOriginPoint) {
@@ -124,7 +126,7 @@ public class AxisPainter {
     }
 
     private void drawMinorGrid(Graphics g, Rectangle area, List<Tick> ticks) {
-        if(ticks.size() > 1) {
+        if (ticks.size() > 1) {
             g.setColor(axisViewSettings.getMinorGridColor());
             double max = axis.getMax();
             double min = axis.getMin();
@@ -133,7 +135,7 @@ public class AxisPainter {
 
             double minorTickValue = ticks.get(0).getValue();
             while (minorTickValue <= max) {
-                if(min <= minorTickValue) {
+                if (min <= minorTickValue) {
                     if (axis.isHorizontal) {
                         g.drawLine(axis.valueToPoint(minorTickValue, area), area.y, axis.valueToPoint(minorTickValue, area), area.y + area.height);
                     } else {
@@ -158,18 +160,19 @@ public class AxisPainter {
         //HORIZONTAL position
         if (axis.isHorizontal()) {
             // TOP axis position
-            if (axisOriginPoint < (area.height + area.y) / 2) {
+            if (axisViewSettings.isOpposite()) {
                 g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, axisOriginPoint - axisViewSettings.getTickSize() / 2 - tickLabelPadding);
             } else { //BOTTOM axis position
                 g.drawString(label, tickPoint - getLabelWidth(g, label) / 2, axisOriginPoint + axisViewSettings.getTickSize() / 2 + tickLabelPadding + getLabelHeight(g, label));
             }
 
         } else { //VERTICAL position
-            //LEFT axis position
-            if (axisOriginPoint < (area.width + area.x) / 2) {
-                g.drawString(label, axisOriginPoint - axisViewSettings.getTickSize() / 2 - getLabelWidth(g, label) - tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
-            } else {//RIGTH axis position
+            //RIGTH axis position
+            if (axisViewSettings.isOpposite()) {
                 g.drawString(label, axisOriginPoint + axisViewSettings.getTickSize() / 2 + tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
+
+            } else { //LEFT axis position
+                g.drawString(label, axisOriginPoint - axisViewSettings.getTickSize() / 2 - getLabelWidth(g, label) - tickLabelPadding, tickPoint + getLabelHeight(g, label) / 2);
             }
         }
     }

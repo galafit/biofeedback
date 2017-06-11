@@ -10,6 +10,19 @@ public abstract class Axis {
     protected AxisPainter axisPainter;
     protected AxisViewSettings axisViewSettings;
 
+    public void resetRange() {
+        axisData.resetRange();
+    }
+
+    public boolean isVisible() {
+        return axisViewSettings.isVisible();
+    }
+
+    public void setVisible(boolean isVisible) {
+        axisViewSettings.setVisible(isVisible);
+    }
+
+
 
     public void setHorizontal(boolean isHorisontal){
         axisData.setHorizontal(isHorisontal);
@@ -27,8 +40,16 @@ public abstract class Axis {
         return axisData.valueToPoint(value, area);
     }
 
-    public void setRange(double min, double max){
-        axisData.setRange(min, max);
+    /**
+     * If isAutoScale = FALSE this method simply sets: min = newMin, max = newMax.
+     * But if isAutoScale = TRUE then it only extends the range and sets:
+     * min = Math.min(min, newMin), max = Math.max(max, newMax).
+     *
+     * @param newMin new min value
+     * @param newMax new max value
+     */
+    public void setRange(double newMin, double newMax) {
+        axisData.setRange(newMin, newMax);
     }
 
     public double getMin() {return axisData.getMin();}

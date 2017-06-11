@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() throws HeadlessException {
 
-        setTitle("Test title");
+        setTitle("Test chart");
 
 
         Chart chart = new Chart();
@@ -26,6 +26,7 @@ public class MainFrame extends JFrame {
         yAxis2.getViewSettings().setGridVisible(false);
         yAxis2.getViewSettings().setMinorGridVisible(false);
         yAxis2.getViewSettings().setOpposite(true);
+       // yAxis2.setVisible(false);
 
         xAxis2.getViewSettings().setGridVisible(false);
         xAxis2.getViewSettings().setMinorGridVisible(false);

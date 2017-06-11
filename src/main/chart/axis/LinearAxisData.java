@@ -31,19 +31,32 @@ public class LinearAxisData extends AxisData {
     public int valueToPoint(double value, Rectangle area) {
         double axisMin = getMin();
         double axisMax = getMax();
-
-
-        if (axisMin == axisMax){
-            if (isHorizontal) {
-                return (int)(area.getX() + area.getWidth() / 2);
-            }
-            return (int)(area.getY() + area.getHeight() / 2);
-        }
-
+        double min = 0;
+        double max = 0;
         if (isHorizontal) {
-            return (int)(area.getX() + (value - axisMin) * pointsPerUnit(area));
+            min = area.getX();
+            max = area.getMaxX();
         }
-        return (int)(area.getY() + area.height - (value - axisMin) * pointsPerUnit(area));
+        else  {
+            max = area.getMinY();
+            min = area.getMaxY();
+        }
+
+        double point;
+        if (axisMin == axisMax){
+           point = min + (max - min) / 2;
+        } else {
+            if (isInverted) {
+                point = max - ((value - axisMin) / (axisMax - axisMin)) * (max - min);
+            }
+            else {
+                point = min + ((value - axisMin) / (axisMax - axisMin)) * (max - min);
+            }
+        }
+        Long l =  Math.round(point);
+        return l.intValue();
+
+
     }
 }
 
@@ -139,7 +152,6 @@ class LinearTickProvider implements TickProvider{
                 power++;
                 break;
         }
-
         tickInterval = (firstDigit * pow(10,power));
         numberFormat = getTickLabelFormat(power);
 

@@ -12,8 +12,14 @@ public abstract class AxisData {
     private final double DEFAULT_MAX = 1;
     protected boolean isHorizontal;
     protected boolean isAutoScale = true;
+    protected boolean isInverted = false;
     private double lowerPadding = 0.02;
     private double upperPadding = 0.02;
+
+    public void resetRange() {
+        min = null;
+        max = null;
+    }
 
     public void setHorizontal(boolean horizontal) {
         isHorizontal = horizontal;
@@ -46,19 +52,21 @@ public abstract class AxisData {
 
     }
 
-    public void setRange(double min, double max) {
+    /**
+     * If isAutoScale = FALSE this method simply sets: min = newMin, max = newMax.
+     * But if isAutoScale = TRUE then it only extends the range and sets:
+     * min = Math.min(min, newMin), max = Math.max(max, newMax).
+     *
+     * @param newMin new min value
+     * @param newMax new max value
+     */
+    public void setRange(double newMin, double newMax) {
         if (!isAutoScale) {
-            this.min = min;
-            this.max = max;
+            min = newMin;
+            max = newMax;
         } else {
-            if (this.min == null) {
-                this.min = min;
-            }
-            if (this.max == null){
-                this.max = max;
-            }
-            this.min = Math.min(min, this.min);
-            this.max = Math.max(max, this.max);
+            min = (min == null) ? newMin : Math.min(newMin, min);
+            max = (max == null) ? newMax : Math.max(newMax, max);
         }
     }
 

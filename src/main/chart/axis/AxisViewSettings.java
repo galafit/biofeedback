@@ -19,6 +19,19 @@ public class AxisViewSettings {
     private int minorGridDivider = 5;
     private boolean isMinorGridVisible = true;
     private boolean isOpposite = false;
+    private boolean isVisible = true;
+
+    public void setGridVisible(boolean gridVisible) {
+        isGridVisible = gridVisible;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
+    }
 
     public boolean isOpposite() {
         return isOpposite;
