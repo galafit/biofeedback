@@ -1,6 +1,7 @@
 package main.chart.axis;
 
 import java.awt.*;
+import java.text.MessageFormat;
 
 /**
  * Created by hdablin on 05.04.17.
@@ -15,6 +16,33 @@ public abstract class AxisData {
     protected boolean isInverted = false;
     private double lowerPadding = 0.02;
     private double upperPadding = 0.02;
+    private boolean isEndOnTick = true;
+    private String name = "Test name 125679000999";
+    private String units = "kg";
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public boolean isEndOnTick() {
+        return isEndOnTick;
+    }
+
+    public void setEndOnTick(boolean endOnTick) {
+        isEndOnTick = endOnTick;
+    }
 
     public void resetRange() {
         min = null;
@@ -29,7 +57,7 @@ public abstract class AxisData {
         return isHorizontal;
     }
 
-    abstract public double pointsPerUnit(Rectangle area);
+    abstract public Double pointsPerUnit(Rectangle area);
 
     abstract public int valueToPoint(double value, Rectangle area);
 
@@ -61,6 +89,11 @@ public abstract class AxisData {
      * @param newMax new max value
      */
     public void setRange(double newMin, double newMax) {
+        if (newMin > newMax){
+            String errorMessage = "Error during setRange(). Expected Min < Max. Min = {0}, Max = {1}.";
+            String formattedError = MessageFormat.format(errorMessage,newMin,newMax);
+            throw new IllegalArgumentException(formattedError);
+        }
         if (!isAutoScale) {
             min = newMin;
             max = newMax;

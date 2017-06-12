@@ -12,15 +12,40 @@ import static java.lang.Math.pow;
  * Created by hdablin on 08.04.17.
  */
 public class LinearAxisData extends AxisData {
+    private LinearTickProvider linearTickProvider;
+
+
     @Override
     public TickProvider getTicksProvider(Rectangle area) {
-        return new LinearTickProvider(getMin(),getMax(),pointsPerUnit(area));
+        if (linearTickProvider == null) {
+            linearTickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area));
+        }
+        return linearTickProvider;
     }
 
     @Override
-    public double pointsPerUnit(Rectangle area) {
+    public Double getMin() {
+        if (isEndOnTick() && (linearTickProvider != null)){
+            return linearTickProvider.getRoundMin();
+        }
+        return super.getMin();
+    }
+
+    @Override
+    public Double getMax() {
+        if (isEndOnTick() && (linearTickProvider != null)){
+            return linearTickProvider.getRoundMax();
+        }
+        return super.getMax();
+    }
+
+    @Override
+    public Double pointsPerUnit(Rectangle area) {
         double min = getMin();
         double max = getMax();
+
+        if (max == min) {return Double.NaN;}
+
         if (isHorizontal) {
             return (area.getWidth()) / (max - min);
         }

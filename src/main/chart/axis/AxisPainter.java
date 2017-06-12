@@ -61,6 +61,8 @@ public class AxisPainter {
                drawAxisLine(g, area, axisOriginPoint);
            }
 
+           drawName(g,area,axisOriginPoint, ticks);
+
        }
     }
 
@@ -96,6 +98,17 @@ public class AxisPainter {
 
     }
 
+    private void drawName (Graphics g, Rectangle area, int axisOriginPoint, List<Tick> ticks){
+        g.setColor(axisViewSettings.getAxisColor());
+        int maxSize = getMaxTickLabelSize(g, ticks, axis.isHorizontal);
+        int namePosition = maxSize + axisViewSettings.getTickSize() / 2 + axisViewSettings.getLabelPadding() * 2;
+        if (axis.isHorizontal()){
+            int nameWidth = getLabelWidth(g,axis.getName());
+            g.drawString(axis.getName(),area.x + area.width / 2 - nameWidth / 2, axisOriginPoint + namePosition);
+
+        }
+    }
+
     private void drawTicks(Graphics g, Rectangle area, int axisOriginPoint, List<Tick> ticks) {
         g.setColor(axisViewSettings.getAxisColor());
         double max = axis.getMax();
@@ -114,7 +127,7 @@ public class AxisPainter {
         double max = axis.getMax();
         double min = axis.getMin();
         for (Tick tick : ticks) {
-            if (min <= tick.getValue() && tick.getValue() <= max) {
+            if (min < tick.getValue() && tick.getValue() < max) {
                 if (axis.isHorizontal) {
                     g.drawLine(axis.valueToPoint(tick.getValue(), area), area.y, axis.valueToPoint(tick.getValue(), area), area.y + area.height);
                 } else {
@@ -133,8 +146,8 @@ public class AxisPainter {
             double minorTickInterval = tickInterval / axisViewSettings.getMinorGridDivider();
 
             double minorTickValue = ticks.get(0).getValue();
-            while (minorTickValue <= max) {
-                if (min <= minorTickValue) {
+            while (minorTickValue < max) {
+                if (min < minorTickValue) {
                     if (axis.isHorizontal) {
                         g.drawLine(axis.valueToPoint(minorTickValue, area), area.y, axis.valueToPoint(minorTickValue, area), area.y + area.height);
                     } else {
