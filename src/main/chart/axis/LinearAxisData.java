@@ -17,9 +17,8 @@ public class LinearAxisData extends AxisData {
 
     @Override
     public TickProvider getTicksProvider(Rectangle area) {
-        if (linearTickProvider == null) {
-            linearTickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area));
-        }
+        linearTickProvider = null;
+        linearTickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area));
         return linearTickProvider;
     }
 
@@ -46,7 +45,7 @@ public class LinearAxisData extends AxisData {
 
         if (max == min) {return Double.NaN;}
 
-        if (isHorizontal) {
+        if (isHorizontal()) {
             return (area.getWidth()) / (max - min);
         }
         return (area.getHeight())/ (max - min);
@@ -58,7 +57,7 @@ public class LinearAxisData extends AxisData {
         double axisMax = getMax();
         double min = 0;
         double max = 0;
-        if (isHorizontal) {
+        if (isHorizontal()) {
             min = area.getX();
             max = area.getMaxX();
         }
@@ -71,7 +70,7 @@ public class LinearAxisData extends AxisData {
         if (axisMin == axisMax){
            point = min + (max - min) / 2;
         } else {
-            if (isInverted) {
+            if (isInverted()) {
                 point = max - ((value - axisMin) / (axisMax - axisMin)) * (max - min);
             }
             else {

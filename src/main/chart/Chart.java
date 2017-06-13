@@ -117,7 +117,7 @@ public class Chart extends JPanel {
 
             int size = xAxis.get(i).getWidth(g, fullArea);
 
-            if (!xAxis.get(i).getViewSettings().isOpposite()){
+            if (!xAxis.get(i).isOpposite()){
                 bottomIndent += size;
                 xAxisOriginPoints[i] = fullArea.height - bottomIndent;
             } else {
@@ -130,7 +130,7 @@ public class Chart extends JPanel {
 
             int size = yAxis.get(i).getWidth(g, fullArea);
 
-            if (!yAxis.get(i).getViewSettings().isOpposite()){
+            if (!yAxis.get(i).isOpposite()){
                 leftIndent += size;
                 yAxisOriginPoints[i] = leftIndent;
             } else {

@@ -23,15 +23,15 @@ public class MainFrame extends JFrame {
         Axis xAxis2 = new LinearAxis();
 
 
-        yAxis2.getViewSettings().setGridVisible(false);
-        yAxis2.getViewSettings().setMinorGridVisible(false);
-        yAxis2.getViewSettings().setOpposite(true);
+        yAxis2.getGridSettings().setGridLineWidth(0);
+        yAxis2.getGridSettings().setMinorGridLineWidth(0);
+        yAxis2.setOpposite(true);
 
        // yAxis2.setVisible(false);
 
-        xAxis2.getViewSettings().setGridVisible(false);
-        xAxis2.getViewSettings().setMinorGridVisible(false);
-        xAxis2.getViewSettings().setOpposite(true);
+        xAxis2.getGridSettings().setGridLineWidth(0);
+        xAxis2.getGridSettings().setMinorGridLineWidth(0);
+        xAxis2.setOpposite(true);
 
 
         chart.addYAxis(yAxis2);

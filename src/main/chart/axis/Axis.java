@@ -8,21 +8,38 @@ import java.awt.*;
 public abstract class Axis {
     protected AxisData axisData;
     protected AxisPainter axisPainter;
-    protected AxisViewSettings axisViewSettings;
+
+    public boolean isOpposite() {
+        return axisData.isOpposite();
+    }
+
+    public void setOpposite(boolean opposite) {
+        axisData.setOpposite(opposite);
+    }
+
 
     public void resetRange() {
         axisData.resetRange();
     }
 
     public boolean isVisible() {
-        return axisViewSettings.isVisible();
+        return axisData.getAxisViewSettings().isVisible();
     }
 
     public void setVisible(boolean isVisible) {
-        axisViewSettings.setVisible(isVisible);
+        axisData.getAxisViewSettings().setVisible(isVisible);
+    }
+    public AxisViewSettings getAxisViewSettings() {
+        return axisData.getAxisViewSettings();
     }
 
+    public TicksSettings getTicksSettings() {
+        return axisData.getTicksSettings();
+    }
 
+    public GridSettings getGridSettings() {
+        return axisData.getGridSettings();
+    }
 
     public void setHorizontal(boolean isHorisontal){
         axisData.setHorizontal(isHorisontal);
@@ -66,11 +83,7 @@ public abstract class Axis {
        return axisPainter.getAxisWidth(g, area);
     }
     public AxisViewSettings getViewSettings() {
-        return axisViewSettings;
-    }
-
-    public void setViewSettings(AxisViewSettings axisViewSettings) {
-        this.axisViewSettings = axisViewSettings;
+        return axisData.getAxisViewSettings();
     }
 
     public boolean isHorizontal() {return axisData.isHorizontal();}

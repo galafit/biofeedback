@@ -6,8 +6,7 @@ package main.chart.axis;
 public class LinearAxis extends Axis {
     public LinearAxis() {
         this.axisData = new LinearAxisData();
-        this.axisViewSettings = new AxisViewSettings();
-        this.axisPainter = new AxisPainter(axisData, this.axisViewSettings);
+        this.axisPainter = new AxisPainter(axisData);
     }
 }
 

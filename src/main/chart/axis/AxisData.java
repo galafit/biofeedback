@@ -7,18 +7,49 @@ import java.text.MessageFormat;
  * Created by hdablin on 05.04.17.
  */
 public abstract class AxisData {
+    private String name = "Test name 125679000999";
+    private String units = "kg";
+
     private Double min = null;
     private Double max = null;
     private final double DEFAULT_MIN = 0;
     private final double DEFAULT_MAX = 1;
-    protected boolean isHorizontal;
-    protected boolean isAutoScale = true;
-    protected boolean isInverted = false;
+    private boolean isHorizontal;
+    private boolean isAutoScale = true;
+    private boolean isInverted = false;
+    private boolean isOpposite = false;
+
     private double lowerPadding = 0.02;
     private double upperPadding = 0.02;
     private boolean isEndOnTick = true;
-    private String name = "Test name 125679000999";
-    private String units = "kg";
+
+    private AxisViewSettings axisViewSettings = new AxisViewSettings();
+    private TicksSettings ticksSettings = new TicksSettings();
+    private GridSettings gridSettings = new GridSettings();
+
+    public AxisViewSettings getAxisViewSettings() {
+        return axisViewSettings;
+    }
+
+    public TicksSettings getTicksSettings() {
+        return ticksSettings;
+    }
+
+    public GridSettings getGridSettings() {
+        return gridSettings;
+    }
+
+    public boolean isOpposite() {
+        return isOpposite;
+    }
+
+    public void setOpposite(boolean opposite) {
+        isOpposite = opposite;
+    }
+
+    public boolean isInverted() {
+        return isInverted;
+    }
 
     public String getName() {
         return name;
