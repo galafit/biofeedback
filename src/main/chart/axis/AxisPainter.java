@@ -66,12 +66,15 @@ public class AxisPainter {
 
     private void drawAxisLine(Graphics g, Rectangle area, int axisOriginPoint) {
         g.setColor(axis.getAxisViewSettings().getAxisColor());
+        Graphics2D g2d = (Graphics2D) g;
+        Stroke defaultStroke = g2d.getStroke();
+        g2d.setStroke(DashStyle.SOLID.getStroke(axis.getAxisViewSettings().getAxisLineWidth()));
         if (axis.isHorizontal()) {
             g.drawLine(area.x, axisOriginPoint, area.width + area.x, axisOriginPoint);
         } else {
             g.drawLine(axisOriginPoint, area.y, axisOriginPoint, area.y + area.height);
         }
-
+        g2d.setStroke(defaultStroke);
     }
 
     private TickProvider getTickProvider(Graphics g, Rectangle area) {
@@ -122,6 +125,9 @@ public class AxisPainter {
 
     private void drawGrid(Graphics g, Rectangle area, List<Tick> ticks) {
         g.setColor(axis.getGridSettings().getGridColor());
+        Graphics2D g2d = (Graphics2D) g;
+        Stroke defaultStroke = g2d.getStroke();
+        g2d.setStroke(axis.getGridSettings().getGridLineStyle().getStroke(axis.getGridSettings().getGridLineWidth()));
         double max = axis.getMax();
         double min = axis.getMin();
         for (Tick tick : ticks) {
@@ -133,11 +139,16 @@ public class AxisPainter {
                 }
             }
         }
+        g2d.setStroke(defaultStroke);
+
     }
 
     private void drawMinorGrid(Graphics g, Rectangle area, List<Tick> ticks) {
         if (ticks.size() > 1) {
             g.setColor(axis.getGridSettings().getMinorGridColor());
+            Graphics2D g2d = (Graphics2D) g;
+            Stroke defaultStroke = g2d.getStroke();
+            g2d.setStroke(axis.getGridSettings().getMinorGridLineStyle().getStroke(axis.getGridSettings().getMinorGridLineWidth()));
             double max = axis.getMax();
             double min = axis.getMin();
             double tickInterval = ticks.get(1).getValue() - ticks.get(0).getValue();
@@ -154,16 +165,21 @@ public class AxisPainter {
                 }
                 minorTickValue += minorTickInterval;
             }
+            g2d.setStroke(defaultStroke);
         }
 
     }
 
     private void drawTick(Graphics g, int axisOriginPoint, int tickPoint) {
+        Graphics2D g2d = (Graphics2D) g;
+        Stroke defaultStroke = g2d.getStroke();
+        g2d.setStroke(DashStyle.SOLID.getStroke(axis.getTicksSettings().getTicksWidth()));
         if (axis.isHorizontal()) {
             g.drawLine(tickPoint, axisOriginPoint + axis.getTicksSettings().getTickSize() / 2, tickPoint, axisOriginPoint - axis.getTicksSettings().getTickSize() / 2);
         } else {
             g.drawLine(axisOriginPoint - axis.getTicksSettings().getTickSize() / 2, tickPoint, axisOriginPoint + axis.getTicksSettings().getTickSize() / 2, tickPoint);
         }
+        g2d.setStroke(defaultStroke);
     }
 
     private void drawLabel(Graphics g, Rectangle area, int axisOriginPoint, int tickPoint, String label) {
