@@ -16,10 +16,19 @@ public abstract class Graph {
 
     protected void rangeAxis(){
         if (xAxis.isAutoScale()){
-            xAxis.setRange(getXmin(), getXmax());
+            Double xMin = getXmin();
+            Double xMax = getXmax();
+            if(xMin != null && !xMin.isNaN() && xMax != null && !xMax.isNaN()) {
+                xAxis.setRange(xMin, xMax);
+            }
+
         }
         if (yAxis.isAutoScale()){
-            yAxis.setRange(getYmin(),getYmax());
+            Double yMin = getYmin();
+            Double yMax = getYmax();
+            if(yMin != null && !yMin.isNaN() && yMax != null && !yMax.isNaN()) {
+                yAxis.setRange(yMin, yMax);
+            }
         }
     }
 
@@ -31,19 +40,19 @@ public abstract class Graph {
         this.color = color;
     }
 
-    public double getXmin(){
+    public Double getXmin(){
        return dataItemList.getXmin();
     }
 
-    public double getXmax(){
+    public Double getXmax(){
         return dataItemList.getXmax();
     }
 
-    public double getYmin(){
+    public Double getYmin(){
         return dataItemList.getYmin();
     }
 
-    public double getYmax(){
+    public Double getYmax(){
         return dataItemList.getYmax();
     }
 

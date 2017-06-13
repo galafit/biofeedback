@@ -23,23 +23,35 @@ public class XYList extends AbstractList<DataItem> implements DataList {
     }
 
     @Override
-    public double getXmin() {
-        return xMin;
+    public Double getXmin() {
+        if(size() > 0) {
+            return xMin;
+        }
+        return null;
     }
 
     @Override
-    public double getXmax() {
-        return xMax;
+    public Double getXmax() {
+        if(size() > 0) {
+            return xMax;
+        }
+        return null;
     }
 
     @Override
-    public double getYmin() {
-        return yMin;
+    public Double getYmin() {
+        if(size() > 0) {
+            return yMin;
+        }
+        return null;
     }
 
     @Override
-    public double getYmax() {
-        return yMax;
+    public Double getYmax() {
+        if(size() > 0) {
+            return yMax;
+        }
+        return null;
     }
 
     @Override

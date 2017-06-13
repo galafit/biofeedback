@@ -16,8 +16,13 @@ public class Chart extends JPanel {
     private List<Axis> xAxis = new ArrayList<>();
     private List<Axis> yAxis = new ArrayList<>();
     private int chartPadding = 10;
-    private Color[] colors = {Color.GRAY, Color.YELLOW, Color.CYAN, Color.ORANGE, Color.GREEN};
-    private Color[] graphicColors = {Color.MAGENTA, Color.RED, Color.PINK};
+
+    private final Color GREY = new Color(150, 150, 150);
+    private final Color BROWN = new Color(200, 102, 0 );
+    private final Color ORANGE = new Color(255, 153, 0);
+
+    private Color[] colors = {GREY, BROWN, Color.GREEN, Color.YELLOW};
+    private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN,  Color.PINK};
 
 
     public Chart() {
