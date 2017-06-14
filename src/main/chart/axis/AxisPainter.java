@@ -16,14 +16,18 @@ public class AxisPainter {
         this.axis = axis;
     }
 
+    private void setFonts(Graphics g, int size){
+        Font font = g.getFont();
+        g.setFont(new Font(font.getFontName(), Font.PLAIN, size));
+    }
+
     public int getAxisWidth(Graphics g, Rectangle area) {
         if(!axis.getAxisViewSettings().isVisible()) {
             return 0;
         }
 
         int size = 1;
-        Font font = g.getFont();
-        g.setFont(new Font(font.getFontName(), Font.PLAIN, axis.getTicksSettings().getTickLabelsFontSize()));
+        setFonts(g, axis.getTicksSettings().getTickLabelsFontSize());
 
         TickProvider tickProvider = getTickProvider(g, area);
         List<Tick> ticks = tickProvider.getTicks();
@@ -32,13 +36,15 @@ public class AxisPainter {
             size = axis.getTicksSettings().getTickLabelsPadding() + axis.getTicksSettings().getTickSize() + getMaxTickLabelSize(g, ticks, !axis.isHorizontal());
         }
 
+        if (axis.getAxisViewSettings().isNameVisible()){
+            size = size + calculateNameGap(g, ticks) + getNameSize(g);
+        }
+
         return size;
     }
 
     public void draw(Graphics g, Rectangle area, int axisOriginPoint) {
        if(axis.getAxisViewSettings().isVisible()) {
-           Font font = g.getFont();
-           g.setFont(new Font(font.getFontName(), Font.PLAIN, axis.getTicksSettings().getTickLabelsFontSize()));
 
            TickProvider tickProvider = getTickProvider(g, area);
            List<Tick> ticks = tickProvider.getTicks();
@@ -99,19 +105,31 @@ public class AxisPainter {
 
     }
 
+    private int calculateNameGap(Graphics g, List<Tick> ticks){
+        setFonts(g, axis.getTicksSettings().getTickLabelsFontSize());
+        int maxSize = getMaxTickLabelSize(g, ticks, !axis.isHorizontal());
+        return maxSize + axis.getTicksSettings().getTickSize() / 2 + axis.getTicksSettings().getTickLabelsPadding() + axis.getAxisViewSettings().getNamePadding();
+    }
+
     private void drawName (Graphics g, Rectangle area, int axisOriginPoint, List<Tick> ticks){
         g.setColor(axis.getAxisViewSettings().getAxisColor());
-        int maxSize = getMaxTickLabelSize(g, ticks, axis.isHorizontal());
-        int namePosition = maxSize + axis.getTicksSettings().getTickSize() / 2 + axis.getTicksSettings().getTickLabelsPadding() * 2;
+        int namePosition = calculateNameGap(g, ticks);
+
         if (axis.isHorizontal()){
             int nameWidth = getLabelWidth(g,axis.getName());
-            g.drawString(axis.getName(),area.x + area.width / 2 - nameWidth / 2, axisOriginPoint + namePosition);
+            setFonts(g, axis.getAxisViewSettings().getNameFontSize());
 
+            if (axis.isOpposite()){
+                g.drawString(axis.getName(),area.x + area.width / 2 - nameWidth / 2, axisOriginPoint - namePosition);
+            } else {
+                g.drawString(axis.getName(), area.x + area.width / 2 - nameWidth / 2, axisOriginPoint + namePosition + getNameSize(g));
+            }
         }
     }
 
     private void drawTicks(Graphics g, Rectangle area, int axisOriginPoint, List<Tick> ticks) {
         g.setColor(axis.getAxisViewSettings().getAxisColor());
+        setFonts(g, axis.getTicksSettings().getTickLabelsFontSize());
         double max = axis.getMax();
         double min = axis.getMin();
         for (Tick tick : ticks) {
@@ -205,11 +223,13 @@ public class AxisPainter {
     }
 
     private int getLabelWidth(Graphics g, String label) {
+        setFonts(g, axis.getTicksSettings().getTickLabelsFontSize());
         return g.getFontMetrics().stringWidth(label);
     }
 
     private int getLabelHeight(Graphics g, String label) {
         // return (int)(g.getFontMetrics().getStringBounds(label,(Graphics2D)(g)).getHeight());
+        setFonts(g, axis.getTicksSettings().getTickLabelsFontSize());
         TextLayout layout = new TextLayout(label, g.getFont(), ((Graphics2D) g).getFontRenderContext());
         Rectangle2D labelBounds = layout.getBounds();
         return (int) labelBounds.getHeight();
@@ -224,5 +244,12 @@ public class AxisPainter {
             return maxSize;
         }
         return g.getFontMetrics().getHeight();
+    }
+
+    private int getNameSize(Graphics g) {
+        setFonts(g, axis.getAxisViewSettings().getNameFontSize());
+        TextLayout layout = new TextLayout(axis.getName(), g.getFont(), ((Graphics2D) g).getFontRenderContext());
+        Rectangle2D labelBounds = layout.getBounds();
+        return (int) labelBounds.getHeight();
     }
 }
