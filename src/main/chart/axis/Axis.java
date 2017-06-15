@@ -75,11 +75,11 @@ public abstract class Axis {
         return axisData.getMax();
     }
 
-    public void draw(Graphics g, Rectangle area, int anchorPoint){
+    public void draw(Graphics2D g, Rectangle area, int anchorPoint){
         axisPainter.draw(g, area, anchorPoint);
     }
 
-    public int getWidth(Graphics g, Rectangle area){
+    public int getWidth(Graphics2D g, Rectangle area){
        return axisPainter.getAxisWidth(g, area);
     }
     public AxisViewSettings getViewSettings() {

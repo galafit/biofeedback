@@ -6,14 +6,32 @@ import java.awt.*;
  * Created by hdablin on 13.04.17.
  */
 public class AxisViewSettings {
-
+    private final double DEFAULT_NAME_PADDING_FACTOR = 0.5;
+    private String nameFontName = Font.SANS_SERIF;
     private Color axisColor = Color.GRAY;
     private int axisLineWidth = 1;
     private boolean isVisible = true;
-    private int nameFontSize = 12;
+    private int nameFontSize = 11;
     private Integer namePadding = null;
-    private final double DEFAULT_NAME_PADDING = 0.3;
+
     private boolean isNameVisible = true;
+    private boolean isUnitsVisible = true;
+
+    public String getNameFontName() {
+        return nameFontName;
+    }
+
+    public void setNameFontName(String nameFontName) {
+        this.nameFontName = nameFontName;
+    }
+
+    public boolean isUnitsVisible() {
+        return isUnitsVisible;
+    }
+
+    public void setUnitsVisible(boolean unitsVisible) {
+        isUnitsVisible = unitsVisible;
+    }
 
     public boolean isNameVisible() {
         return isNameVisible;
@@ -32,7 +50,7 @@ public class AxisViewSettings {
     }
 
     public Integer getNamePadding() {
-        return (namePadding == null) ? (int)(DEFAULT_NAME_PADDING * nameFontSize) : namePadding;
+        return (namePadding == null) ? (int)(DEFAULT_NAME_PADDING_FACTOR * nameFontSize) : namePadding;
     }
 
     public void setNamePadding(Integer namePadding) {

@@ -97,8 +97,8 @@ public class Chart extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        super.paintComponent(g2d);
         int width = getSize().width;
         int height = getSize().height;
 
@@ -115,7 +115,7 @@ public class Chart extends JPanel {
         //Calculate axis position and indents of xAxis
         for (int i = xAxis.size() - 1; i >= 0 ; i--) {
 
-            int size = xAxis.get(i).getWidth(g, fullArea);
+            int size = xAxis.get(i).getWidth(g2d, fullArea);
 
             if (!xAxis.get(i).isOpposite()){
                 bottomIndent += size;
@@ -128,7 +128,7 @@ public class Chart extends JPanel {
         //Calculate axis position and indents of yAxis
         for (int i = yAxis.size() - 1; i >= 0 ; i--) {
 
-            int size = yAxis.get(i).getWidth(g, fullArea);
+            int size = yAxis.get(i).getWidth(g2d, fullArea);
 
             if (!yAxis.get(i).isOpposite()){
                 leftIndent += size;
@@ -140,19 +140,19 @@ public class Chart extends JPanel {
         }
 
         Rectangle area = new Rectangle(leftIndent,topIndent,width - leftIndent - rightIndent,height - topIndent - bottomIndent);
-        g.setColor(Color.GRAY);
-        g.drawRect(area.x, area.y, area.width, area.height);
+        //g2d.setColor(Color.GRAY);
+        //g2d.drawRect(area.x, area.y, area.width, area.height);
 
         for (int i = 0; i < xAxis.size(); i++) {
-            xAxis.get(i).draw(g, area, xAxisOriginPoints[i]);
+            xAxis.get(i).draw(g2d, area, xAxisOriginPoints[i]);
         }
 
         for (int i = 0; i < yAxis.size(); i++) {
-            yAxis.get(i).draw(g, area, yAxisOriginPoints[i]);
+            yAxis.get(i).draw(g2d, area, yAxisOriginPoints[i]);
         }
 
         for (Graph graph : graphs) {
-            graph.draw(g,area);
+            graph.draw(g2d,area);
         }
 
 

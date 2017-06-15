@@ -1,22 +1,33 @@
 package main.chart.axis;
 
+import java.awt.*;
+
 /**
  * Created by galafit on 13/6/17.
  */
 public class TicksSettings {
+    private final double DEFAULT_LABEL_PADDING_FACTOR = 0.4;
+    private String tickLabelFontName = Font.SANS_SERIF;
     private int tickLabelsFontSize = 11;
-    private int tickLabelsPadding = 5;
+    private Integer tickLabelsPadding = null;
     private boolean isTickLabelsVisible = true;
     // see http://api.highcharts.com/highcharts/xAxis.labels.autoRotation
     private int[] tickLabelAutoRotation = {-45, 90}; // at the moment not used
 
     private int ticksWidth = 1;
-    private int tickSize = 5;
+    private int tickSize = 4;
     private Integer tickPixelInterval = 100;
     private Double tickInterval = null; // in axis unit (tickUnit)
 
-    public boolean isTicksVisible() {
+    public boolean isTickMarkVisible() {
         return (ticksWidth > 0) ? true : false;
+    }
+
+    public String getTickLabelFontName() {
+        return tickLabelFontName;
+    }
+    public void setTickLabelFontName(String tickLabelFontName) {
+        this.tickLabelFontName = tickLabelFontName;
     }
 
     public int getTickLabelsFontSize() {
@@ -28,7 +39,7 @@ public class TicksSettings {
     }
 
     public int getTickLabelsPadding() {
-        return tickLabelsPadding;
+        return (tickLabelsPadding == null) ? (int) (tickLabelsFontSize * DEFAULT_LABEL_PADDING_FACTOR) : tickLabelsPadding;
     }
 
     public void setTickLabelsPadding(int tickLabelsPadding) {

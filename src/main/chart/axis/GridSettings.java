@@ -7,8 +7,8 @@ import java.awt.*;
  */
 public class GridSettings {
     private int gridLineWidth = 1;
-    private DashStyle gridLineStyle = DashStyle.SOLID;
-    private DashStyle minorGridLineStyle = DashStyle.SOLID;
+    private LineStyle gridLineStyle = LineStyle.SOLID;
+    private LineStyle minorGridLineStyle = LineStyle.SOLID;
     private int minorGridLineWidth = 1;
     private Color gridColor = new Color(50, 50, 50);
     private Color minorGridColor = new Color(25, 25, 25);
@@ -30,19 +30,19 @@ public class GridSettings {
         this.gridLineWidth = gridLineWidth;
     }
 
-    public DashStyle getGridLineStyle() {
+    public LineStyle getGridLineStyle() {
         return gridLineStyle;
     }
 
-    public void setGridLineStyle(DashStyle gridLineStyle) {
+    public void setGridLineStyle(LineStyle gridLineStyle) {
         this.gridLineStyle = gridLineStyle;
     }
 
-    public DashStyle getMinorGridLineStyle() {
+    public LineStyle getMinorGridLineStyle() {
         return minorGridLineStyle;
     }
 
-    public void setMinorGridLineStyle(DashStyle minorGridLineStyle) {
+    public void setMinorGridLineStyle(LineStyle minorGridLineStyle) {
         this.minorGridLineStyle = minorGridLineStyle;
     }
 

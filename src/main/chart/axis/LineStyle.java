@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * Created by galafit on 13/6/17.
  */
-public enum DashStyle {
+public enum LineStyle {
     SOLID {
         @Override
         Stroke getStroke(int width) {
