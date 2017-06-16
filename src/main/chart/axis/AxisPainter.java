@@ -16,69 +16,6 @@ public class AxisPainter {
         this.axis = axis;
     }
 
-    private Font getNameFont() {
-        String fontName = axis.getAxisViewSettings().getNameFontName();
-        return new Font(fontName, Font.PLAIN, axis.getAxisViewSettings().getNameFontSize());
-    }
-
-    private Font getLabelFont() {
-        String fontName = axis.getTicksSettings().getTickLabelFontName();
-        return new Font(fontName, Font.PLAIN, axis.getTicksSettings().getTickLabelsFontSize());
-    }
-
-    private int getTicksSize() {
-        return axis.getTicksSettings().getTickSize();
-    }
-
-    private int getAxisLineWidth() {
-        return axis.getAxisViewSettings().getAxisLineWidth();
-    }
-
-    private int getNamePadding() {
-        return axis.getAxisViewSettings().getNamePadding();
-    }
-
-    private int getLabelPadding() {
-        return axis.getTicksSettings().getTickLabelsPadding();
-    }
-
-    private boolean isAxisVisible() {
-        return axis.getAxisViewSettings().isVisible();
-    }
-
-    private boolean isAxisLineVisible() {
-        return axis.getAxisViewSettings().isAxisLineVisible();
-    }
-
-    private boolean isAxisNameVisible() {
-        return axis.getAxisViewSettings().isNameVisible();
-    }
-
-    private boolean isGridVisible() {
-        return axis.getGridSettings().isGridVisible();
-    }
-
-    private boolean isMinorGridVisible() {
-        return axis.getGridSettings().isMinorGridVisible();
-    }
-
-    private boolean isTicksVisible() {
-        return axis.getTicksSettings().isTickMarkVisible();
-    }
-
-    private boolean isLabelsVisible() {
-        return axis.getTicksSettings().isTickLabelsVisible();
-    }
-
-    private String getName() {
-        return axis.getName();
-    }
-
-    private Color getAxisColor() {
-        return axis.getAxisViewSettings().getAxisColor();
-    }
-
-
     public int getAxisWidth(Graphics2D g, Rectangle area) {
         if (!isAxisVisible()) {
             return 0;
@@ -392,5 +329,69 @@ public class AxisPainter {
         }
         return maxSize;
     }
+
+    private Font getNameFont() {
+        String fontName = axis.getAxisViewSettings().getNameFontName();
+        return new Font(fontName, Font.PLAIN, axis.getAxisViewSettings().getNameFontSize());
+    }
+
+    private Font getLabelFont() {
+        String fontName = axis.getTicksSettings().getTickLabelFontName();
+        return new Font(fontName, Font.PLAIN, axis.getTicksSettings().getTickLabelsFontSize());
+    }
+
+    private int getTicksSize() {
+        return axis.getTicksSettings().getTickSize();
+    }
+
+    private int getAxisLineWidth() {
+        return axis.getAxisViewSettings().getAxisLineWidth();
+    }
+
+    private int getNamePadding() {
+        return axis.getAxisViewSettings().getNamePadding();
+    }
+
+    private int getLabelPadding() {
+        return axis.getTicksSettings().getTickLabelsPadding();
+    }
+
+    private boolean isAxisVisible() {
+        return axis.getAxisViewSettings().isVisible();
+    }
+
+    private boolean isAxisLineVisible() {
+        return axis.getAxisViewSettings().isAxisLineVisible();
+    }
+
+    private boolean isAxisNameVisible() {
+        return axis.getAxisViewSettings().isNameVisible();
+    }
+
+    private boolean isGridVisible() {
+        return axis.getGridSettings().isGridVisible();
+    }
+
+    private boolean isMinorGridVisible() {
+        return axis.getGridSettings().isMinorGridVisible();
+    }
+
+    private boolean isTicksVisible() {
+        return axis.getTicksSettings().isTickMarkVisible();
+    }
+
+    private boolean isLabelsVisible() {
+        return axis.getTicksSettings().isTickLabelsVisible();
+    }
+
+    private String getName() {
+        return axis.getName();
+    }
+
+    private Color getAxisColor() {
+        return axis.getAxisViewSettings().getAxisColor();
+    }
+
+
 
 }
