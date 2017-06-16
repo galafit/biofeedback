@@ -15,7 +15,7 @@ public class TicksSettings {
     private int[] tickLabelAutoRotation = {-45, 90}; // at the moment not used
 
     private int ticksWidth = 1;
-    private int tickSize = 4;
+    private int tickSize = 2;
     private Integer tickPixelInterval = 100;
     private Double tickInterval = null; // in axis unit (tickUnit)
 

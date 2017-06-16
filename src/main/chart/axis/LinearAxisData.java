@@ -19,6 +19,13 @@ public class LinearAxisData extends AxisData {
     public TickProvider getTicksProvider(Rectangle area) {
         linearTickProvider = null;
         linearTickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area));
+        Double tickInterval = getTicksSettings().getTickInterval();
+        if( tickInterval != null) {
+            linearTickProvider.setTickInterval(tickInterval);
+        } else {
+            linearTickProvider.setTickPixelInterval(getTicksSettings().getTickPixelInterval());
+        }
+
         return linearTickProvider;
     }
 

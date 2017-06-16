@@ -147,10 +147,6 @@ public class AxisPainter {
     private TickProvider getTickProvider(Graphics2D g, Rectangle area) {
         TickProvider tickProvider = axis.getTicksProvider(area);
 
-        if (tickProvider.getTickInterval().isNaN()) {
-            tickProvider.setTickPixelInterval(axis.getTicksSettings().getTickPixelInterval());
-        }
-
         List<Tick> ticks = tickProvider.getTicks();
 
         int labelsSize = 0;

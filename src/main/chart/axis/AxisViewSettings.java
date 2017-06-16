@@ -6,12 +6,12 @@ import java.awt.*;
  * Created by hdablin on 13.04.17.
  */
 public class AxisViewSettings {
-    private final double DEFAULT_NAME_PADDING_FACTOR = 0.5;
+    private final double DEFAULT_NAME_PADDING_FACTOR = 0.8;
     private String nameFontName = Font.SANS_SERIF;
     private Color axisColor = Color.GRAY;
     private int axisLineWidth = 1;
     private boolean isVisible = true;
-    private int nameFontSize = 11;
+    private int nameFontSize = 12;
     private Integer namePadding = null;
 
     private boolean isNameVisible = true;
