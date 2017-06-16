@@ -1,7 +1,9 @@
 package main.chart.axis;
 
+
 import java.awt.*;
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Created by hdablin on 05.04.17.
@@ -26,6 +28,8 @@ public abstract class AxisData {
     private AxisViewSettings axisViewSettings = new AxisViewSettings();
     private TicksSettings ticksSettings = new TicksSettings();
     private GridSettings gridSettings = new GridSettings();
+
+    public abstract void setTicksPoints(List<Integer> points, Rectangle area);
 
     public AxisViewSettings getAxisViewSettings() {
         return axisViewSettings;
@@ -91,6 +95,8 @@ public abstract class AxisData {
     abstract public Double pointsPerUnit(Rectangle area);
 
     abstract public int valueToPoint(double value, Rectangle area);
+
+    abstract public double pointsToValue(int point, Rectangle area);
 
     public Double getMin() {
         double resultantMin = (min == null) ? DEFAULT_MIN : min;

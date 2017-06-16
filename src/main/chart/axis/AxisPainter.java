@@ -2,7 +2,9 @@ package main.chart.axis;
 
 import java.awt.*;
 import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +16,15 @@ public class AxisPainter {
 
     public AxisPainter(AxisData axis) {
         this.axis = axis;
+    }
+
+    public List<Integer> getTickPoints(Graphics2D g, Rectangle area){
+        List<Tick> ticks =  getTickProvider(g,area).getTicks();
+        List<Integer> points = new ArrayList<Integer>(ticks.size());
+        for (Tick tick : ticks) {
+            points.add(axis.valueToPoint(tick.getValue(), area));
+        }
+        return points;
     }
 
     public int getAxisWidth(Graphics2D g, Rectangle area) {
@@ -154,6 +165,26 @@ public class AxisPainter {
             } else {
                 namePosition += getStringHeight(g, axis.getName(), getNameFont());
                 g.drawString(axis.getName(), area.x + area.width / 2 - nameWidth / 2, axisOriginPoint + namePosition);
+            }
+        } else {
+            if (!axis.isOpposite()) {
+                AffineTransform transform = new AffineTransform();
+                transform.rotate(Math.toRadians(-90));
+                AffineTransform defaultTransform = g.getTransform();
+                g.setTransform(transform);
+                int nameX = axisOriginPoint - namePosition;
+                int nameY = area.y + area.height / 2 + nameWidth / 2;
+                g.drawString(axis.getName(), -nameY, nameX);
+                g.setTransform(defaultTransform);
+            } else {
+                AffineTransform transform = new AffineTransform();
+                transform.rotate(Math.toRadians(+90));
+                AffineTransform defaultTransform = g.getTransform();
+                g.setTransform(transform);
+                int nameX = axisOriginPoint + namePosition;
+                int nameY = area.y + area.height / 2 - nameWidth / 2;
+                g.drawString(axis.getName(), nameY,  - nameX);
+                g.setTransform(defaultTransform);
             }
         }
     }

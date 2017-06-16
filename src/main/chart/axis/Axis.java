@@ -1,6 +1,8 @@
 package main.chart.axis;
 
+
 import java.awt.*;
+import java.util.List;
 
 /**
  * Created by hdablin on 16.04.17.
@@ -8,6 +10,10 @@ import java.awt.*;
 public abstract class Axis {
     protected AxisData axisData;
     protected AxisPainter axisPainter;
+
+    public List<Integer> getTicksPoints(Graphics2D g, Rectangle area){
+        return axisPainter.getTickPoints(g, area);
+    }
 
     public boolean isOpposite() {
         return axisData.isOpposite();

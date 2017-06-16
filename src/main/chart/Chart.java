@@ -24,6 +24,8 @@ public class Chart extends JPanel {
     private Color[] colors = {GREY, BROWN, Color.GREEN, Color.YELLOW};
     private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN,  Color.PINK};
 
+    private boolean isTickSynchronized = true;
+
 
     public Chart() {
         Axis x = new LinearAxis();
@@ -34,7 +36,13 @@ public class Chart extends JPanel {
         yAxis.add(y);
     }
 
+    public boolean isTickSynchronized() {
+        return isTickSynchronized;
+    }
 
+    public void setTickSynchronized(boolean tickSynchronized) {
+        isTickSynchronized = tickSynchronized;
+    }
 
     public Axis getXAxis(int xAxisIndex){
         if (xAxisIndex >= xAxis.size()){
