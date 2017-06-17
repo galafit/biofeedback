@@ -1,8 +1,8 @@
 package main.chart.axis;
 
-
 import java.awt.*;
 import java.text.MessageFormat;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -25,11 +25,10 @@ public abstract class AxisData {
     private double upperPadding = 0.02;
     private boolean isEndOnTick = true;
 
+
     private AxisViewSettings axisViewSettings = new AxisViewSettings();
     private TicksSettings ticksSettings = new TicksSettings();
     private GridSettings gridSettings = new GridSettings();
-
-    public abstract void setTicksPoints(List<Integer> points, Rectangle area);
 
     public AxisViewSettings getAxisViewSettings() {
         return axisViewSettings;
@@ -96,8 +95,6 @@ public abstract class AxisData {
 
     abstract public int valueToPoint(double value, Rectangle area);
 
-    abstract public double pointsToValue(int point, Rectangle area);
-
     public Double getMin() {
         double resultantMin = (min == null) ? DEFAULT_MIN : min;
         double resultantMax = (max == null) ? DEFAULT_MAX : max;
@@ -140,7 +137,9 @@ public abstract class AxisData {
         }
     }
 
-    abstract public TickProvider getTicksProvider(Rectangle area);
+    public abstract List<Tick> getTicks(Rectangle area);
+    public abstract List<Tick> getTicks(Rectangle area, double minTickPixelInterval);
+
 
     public boolean isAutoScale() {
         return isAutoScale;

@@ -9,7 +9,7 @@ public class GridSettings {
     private int gridLineWidth = 1;
     private LineStyle gridLineStyle = LineStyle.SOLID;
     private LineStyle minorGridLineStyle = LineStyle.SOLID;
-    private int minorGridLineWidth = 1;
+    private int minorGridLineWidth = 0;
     private Color gridColor = new Color(50, 50, 50);
     private Color minorGridColor = new Color(25, 25, 25);
     private int minorGridDivider = 5; // minor grid counter

@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,15 +17,6 @@ public class AxisPainter {
         this.axis = axis;
     }
 
-    public List<Integer> getTickPoints(Graphics2D g, Rectangle area){
-        List<Tick> ticks =  getTickProvider(g,area).getTicks();
-        List<Integer> points = new ArrayList<Integer>(ticks.size());
-        for (Tick tick : ticks) {
-            points.add(axis.valueToPoint(tick.getValue(), area));
-        }
-        return points;
-    }
-
     public int getAxisWidth(Graphics2D g, Rectangle area) {
         if (!isAxisVisible()) {
             return 0;
@@ -36,8 +26,7 @@ public class AxisPainter {
             size += getAxisLineWidth();
         }
 
-        TickProvider tickProvider = getTickProvider(g, area);
-        List<Tick> ticks = tickProvider.getTicks();
+        List<Tick> ticks = getTicks(g, area);
 
         if (isTicksVisible()) {
             size += getTicksSize();
@@ -63,8 +52,7 @@ public class AxisPainter {
     public void draw(Graphics2D g, Rectangle area, int axisOriginPoint) {
         if (isAxisVisible()) {
 
-            TickProvider tickProvider = getTickProvider(g, area);
-            List<Tick> ticks = tickProvider.getTicks();
+            List<Tick> ticks = getTicks(g, area);
 
             if (isMinorGridVisible()) {
                 drawMinorGrid(g, area, ticks);
@@ -92,24 +80,22 @@ public class AxisPainter {
         }
     }
 
-    private TickProvider getTickProvider(Graphics2D g, Rectangle area) {
-        TickProvider tickProvider = axis.getTicksProvider(area);
-
-        List<Tick> ticks = tickProvider.getTicks();
-
-        int labelsSize = 0;
-        if(axis.isHorizontal()) {
-            labelsSize = getMaxTickLabelsHeight(g, getLabelFont(), ticks);
-        } else {
-            labelsSize = getMaxTickLabelsWidth(g, getLabelFont(), ticks);
-        }
-        if (ticks.size() > 1) {
-            if ((labelsSize + getLabelPadding()) > tickProvider.getTickPixelInterval()) {
-                tickProvider.setMinTickPixelInterval(labelsSize + getLabelPadding());
+    private List<Tick> getTicks(Graphics2D g, Rectangle area) {
+        List<Tick> ticks =  axis.getTicks(area);
+        if(ticks.size() > 1) {
+            int labelsSize = 0;
+            if(axis.isHorizontal()) {
+                labelsSize = getMaxTickLabelsHeight(g, getLabelFont(), ticks);
+            } else {
+                labelsSize = getMaxTickLabelsWidth(g, getLabelFont(), ticks);
+            }
+            int tickPixelInterval = (int)((ticks.get(1).getValue() - ticks.get(0).getValue()) * axis.pointsPerUnit(area));
+            int labelSpace = labelsSize + getLabelPadding();
+            if (labelSpace > tickPixelInterval) {
+                ticks = axis.getTicks(area, labelSpace);
             }
         }
-
-        return tickProvider;
+        return ticks;
 
     }
 

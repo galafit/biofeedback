@@ -11,13 +11,23 @@ public class TicksSettings {
     private int tickLabelsFontSize = 11;
     private Integer tickLabelsPadding = null;
     private boolean isTickLabelsVisible = true;
+    private int ticksAmount = 14;
+
     // see http://api.highcharts.com/highcharts/xAxis.labels.autoRotation
     private int[] tickLabelAutoRotation = {-45, 90}; // at the moment not used
 
     private int ticksWidth = 1;
     private int tickSize = 2;
-    private Integer tickPixelInterval = 100;
-    private Double tickInterval = null; // in axis unit (tickUnit)
+    private int tickPixelInterval = 100;
+    private double tickInterval; // in axis unit (tickUnit)
+
+    public int getTicksAmount() {
+        return ticksAmount;
+    }
+
+    public void setTicksAmount(int ticksAmount) {
+        this.ticksAmount = ticksAmount;
+    }
 
     public boolean isTickMarkVisible() {
         return (ticksWidth > 0) ? true : false;
@@ -82,15 +92,15 @@ public class TicksSettings {
         return tickPixelInterval;
     }
 
-    public void setTickPixelInterval(Integer tickPixelInterval) {
+    public void setTickPixelInterval(int tickPixelInterval) {
         this.tickPixelInterval = tickPixelInterval;
     }
 
-    public Double getTickInterval() {
+    public double getTickInterval() {
         return tickInterval;
     }
 
-    public void setTickInterval(Double tickInterval) {
+    public void setTickInterval(double tickInterval) {
         this.tickInterval = tickInterval;
     }
 }

@@ -11,10 +11,6 @@ public abstract class Axis {
     protected AxisData axisData;
     protected AxisPainter axisPainter;
 
-    public List<Integer> getTicksPoints(Graphics2D g, Rectangle area){
-        return axisPainter.getTickPoints(g, area);
-    }
-
     public boolean isOpposite() {
         return axisData.isOpposite();
     }
