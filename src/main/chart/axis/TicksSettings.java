@@ -6,19 +6,20 @@ import java.awt.*;
  * Created by galafit on 13/6/17.
  */
 public class TicksSettings {
-    private final double DEFAULT_LABEL_PADDING_FACTOR = 0.4;
+    private final double DEFAULT_LABEL_PADDING_FACTOR = 0.6; // relative to font size
+    private final int DEFAULT_TICK_PIXEL_INTERVAL_FACTOR = 5; // relative to font size
     private String tickLabelFontName = Font.SANS_SERIF;
     private int tickLabelsFontSize = 11;
     private Integer tickLabelsPadding = null;
     private boolean isTickLabelsVisible = true;
-    private int ticksAmount = 7;
+    private int ticksAmount = 0;
 
     // see http://api.highcharts.com/highcharts/xAxis.labels.autoRotation
     private int[] tickLabelAutoRotation = {-45, 90}; // at the moment not used
 
     private int ticksWidth = 1;
     private int tickSize = 2;
-    private int tickPixelInterval = 100;
+    private int tickPixelInterval = 0;
     private double tickInterval; // in axis unit (tickUnit)
 
     public int getTicksAmount() {
@@ -89,7 +90,7 @@ public class TicksSettings {
     }
 
     public int getTickPixelInterval() {
-        return tickPixelInterval;
+        return (tickPixelInterval != 0) ? tickPixelInterval : getTickLabelsFontSize() * DEFAULT_TICK_PIXEL_INTERVAL_FACTOR;
     }
 
     public void setTickPixelInterval(int tickPixelInterval) {

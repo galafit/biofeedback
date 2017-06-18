@@ -80,19 +80,22 @@ public class AxisPainter {
         }
     }
 
-    private List<Tick> getTicks(Graphics2D g, Rectangle area) {
+    public List<Tick> getTicks(Graphics2D g, Rectangle area) {
         List<Tick> ticks =  axis.getTicks(area);
         if(ticks.size() > 1) {
             int labelsSize = 0;
             if(axis.isHorizontal()) {
-                labelsSize = getMaxTickLabelsHeight(g, getLabelFont(), ticks);
-            } else {
                 labelsSize = getMaxTickLabelsWidth(g, getLabelFont(), ticks);
+            } else {
+                labelsSize = getMaxTickLabelsHeight(g, getLabelFont(), ticks);
             }
             int tickPixelInterval = (int)((ticks.get(1).getValue() - ticks.get(0).getValue()) * axis.pointsPerUnit(area));
-            int labelSpace = labelsSize + getLabelPadding();
-            if (labelSpace > tickPixelInterval) {
-                ticks = axis.getTicks(area, labelSpace);
+            // min space between labels = 2 symbols size (roughly)
+            int labelSpace = 2 * axis.getTicksSettings().getTickLabelsFontSize();
+            int requiredSpace = labelsSize + labelSpace;
+
+            if (requiredSpace > tickPixelInterval) {
+                ticks = axis.getTicks(area, requiredSpace);
             }
         }
         return ticks;

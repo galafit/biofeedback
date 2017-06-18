@@ -23,7 +23,7 @@ public abstract class AxisData {
 
     private double lowerPadding = 0.02;
     private double upperPadding = 0.02;
-    private boolean isEndOnTick = true;
+    private boolean isEndOnTick = false;
 
 
     private AxisViewSettings axisViewSettings = new AxisViewSettings();

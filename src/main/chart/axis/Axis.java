@@ -92,4 +92,8 @@ public abstract class Axis {
     }
 
     public boolean isHorizontal() {return axisData.isHorizontal();}
+
+    public List<Tick> getTicks(Graphics2D g, Rectangle area) {
+        return axisPainter.getTicks(g, area);
+    }
 }
