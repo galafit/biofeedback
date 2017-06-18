@@ -1,5 +1,7 @@
 package main.chart.axis;
 
+import com.sun.istack.internal.Nullable;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -11,17 +13,21 @@ import static java.lang.Math.pow;
  * Created by galafit on 17/6/17.
  */
 class LinearTickProvider {
-    Double tickInterval;
+    double tickInterval;
     double min;
     double max;
-    Double pointsPerUnit;
+    double pointsPerUnit;
     NumberFormat numberFormat;
     int tickAmount;
+    boolean isHorizontal;
+    String units;
 
-    public LinearTickProvider(double min, double max, double pointsPerUnit) {
+    public LinearTickProvider(double min, double max, double pointsPerUnit, boolean isHorizontal, @Nullable  String units) {
         this.min = min;
         this.max = max;
         this.pointsPerUnit = pointsPerUnit;
+        this.units = units;
+        this.isHorizontal = isHorizontal;
     }
 
     private double getClosestTickPrev(double value, double tickInterval) {
@@ -61,12 +67,14 @@ class LinearTickProvider {
 
     public void setTickInterval(double tickInterval) {
         this.tickInterval = tickInterval;
-
+        NormalizedNumber normalizedInterval = new NormalizedNumber(tickInterval);
+        int power = normalizedInterval.getPower();
+        numberFormat = getTickLabelFormat(power);
     }
 
-    public void setTickPixelInterval(double tickPixelInterval) {
+    public void setTickPixelInterval(int tickPixelInterval) {
         tickInterval = tickPixelInterval / pointsPerUnit;
-        // firstDigit is in {2,5,10};
+        // firstDigit is in {1,2,5,10};
         NormalizedNumber tick = new NormalizedNumber(tickInterval);
 
         int power = tick.getPower();
@@ -99,8 +107,8 @@ class LinearTickProvider {
     }
 
     public void setMinTickPixelInterval_(double minTickPixelInterval) {
-        tickInterval = minTickPixelInterval / pointsPerUnit + 1;
-        // firstDigit is in {2,5,10};
+        tickInterval = minTickPixelInterval / pointsPerUnit;
+        // firstDigit is in {1,2,5,10};
         NormalizedNumber tick = new NormalizedNumber(tickInterval);
 
         int power = tick.getPower();
@@ -135,35 +143,43 @@ class LinearTickProvider {
     }
 
     public void setMinTickPixelInterval(double minTickPixelInterval) {
-        tickInterval = minTickPixelInterval / pointsPerUnit + 1;
-        // firstDigit is in {2,5,10};
-        NormalizedNumber tick = new NormalizedNumber(tickInterval);
-
-        int power = tick.getPower();
-        int firstDigit = (int) Math.round(tick.getDigits());
-    /*    switch (firstDigit) {
-            case 3:
-                firstDigit = 4;
+        tickInterval = minTickPixelInterval / pointsPerUnit;
+        NormalizedNumber normalizedInterval = new NormalizedNumber(tickInterval);
+        int power = normalizedInterval.getPower();
+        int first2Digits = (int) (normalizedInterval.getDigits() * 10) + 1;
+        power--;
+        int[] roundValues = {10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100};
+        //int[] roundValues = {10, 12, 15, 20,  25, 30, 40, 50, 60, 80, 100};
+        // find the closest roundValue that is > first2Digits
+        for (int roundValue : roundValues) {
+            if(roundValue >= first2Digits) {
+                first2Digits = roundValue;
                 break;
-            case 7:
-                firstDigit = 8;
-                break;
-            case 9:
-                firstDigit = 1;
-                power++;
-                break;
-        }*/
-
-        tickInterval = (firstDigit * pow(10, power));
-        numberFormat = getTickLabelFormat(power);
+            }
+        }
+        int formatPower = power;
+        if(first2Digits == 100) {
+            formatPower += 2;
+        }
+        int rest = first2Digits % 10;
+        if(rest == 0 ) {
+            formatPower++;
+        }
+        numberFormat = getTickLabelFormat(formatPower);
+        tickInterval = (first2Digits * pow(10, power));
     }
 
 
     public void setTicksAmount(int tickAmount) {
-        this.tickAmount = tickAmount;
-        double tickPixelInterval = (max - min) * pointsPerUnit / (tickAmount - 1);
-        setMinTickPixelInterval(tickPixelInterval);
-    }
+        if(max == min) {
+            setTickInterval(max);
+        }
+        else {
+            this.tickAmount = tickAmount;
+            double tickPixelInterval = (max - min) * pointsPerUnit / (tickAmount - 1);
+            setMinTickPixelInterval(tickPixelInterval);
+        }
+   }
 
 
     public double getRoundMin() {
@@ -183,6 +199,15 @@ class LinearTickProvider {
         ticksAmount = (ticksAmount == 1) ? 1 : Math.max(ticksAmount, this.tickAmount);
         for (int i = 1; i <= ticksAmount; i++) {
             String label = numberFormat.format(value);
+            if (units != null){
+                label = label + " " + units;
+            }
+            if (roundMin < 0 && !isHorizontal){
+                if (value >= 0) {
+                    label = " " + label;
+                }
+            }
+
             ticks.add(new Tick(value, label));
             value = value + tickInterval;
         }

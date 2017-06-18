@@ -59,6 +59,9 @@ public abstract class Axis {
         return axisData.valueToPoint(value, area);
     }
 
+    public double pointsToValue(int point, Rectangle area) {
+        return axisData.pointsToValue(point, area);
+    }
     /**
      * If isAutoScale = FALSE this method simply sets: min = newMin, max = newMax.
      * But if isAutoScale = TRUE then it only extends the range and sets:

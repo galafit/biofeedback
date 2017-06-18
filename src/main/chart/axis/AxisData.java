@@ -94,6 +94,7 @@ public abstract class AxisData {
     abstract public Double pointsPerUnit(Rectangle area);
 
     abstract public int valueToPoint(double value, Rectangle area);
+    public abstract double pointsToValue(int point, Rectangle area);
 
     public Double getMin() {
         double resultantMin = (min == null) ? DEFAULT_MIN : min;

@@ -19,7 +19,10 @@ public class LinearAxisData extends AxisData {
     public List<Tick> getTicks(Rectangle area) {
         roundMax = null;
         roundMin = null;
-        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area));
+        String units = getUnits();
+        units = getAxisViewSettings().isUnitsVisible() ? units : null;
+        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), isHorizontal(), units);
+
         double tickInterval = getTicksSettings().getTickInterval();
         int ticksAmount = getTicksSettings().getTicksAmount();
         if(ticksAmount > 0) {
@@ -40,9 +43,12 @@ public class LinearAxisData extends AxisData {
     public List<Tick> getTicks(Rectangle area, double minTickPixelInterval) {
         roundMax = null;
         roundMin = null;
+        String units = getUnits();
+        units = getAxisViewSettings().isUnitsVisible() ? units : null;
+        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), isHorizontal(), units);
+
         double tickInterval = getTicksSettings().getTickInterval();
         int ticksAmount = getTicksSettings().getTicksAmount();
-        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area));
         if(ticksAmount > 0) {
             tickProvider.setTicksAmount(ticksAmount);
         }
@@ -114,7 +120,32 @@ public class LinearAxisData extends AxisData {
         }
         Long l =  Math.round(point);
         return l.intValue();
-
-
     }
+
+    @Override
+    public double pointsToValue(int point, Rectangle area) {
+        double axisMin = getMin();
+        double axisMax = getMax();
+        double min = 0;
+        double max = 0;
+        if (isHorizontal()) {
+            min = area.getX();
+            max = area.getMaxX();
+        }
+        else  {
+            max = area.getMinY();
+            min = area.getMaxY();
+        }
+
+        if (axisMin == axisMax){
+            return axisMax;
+        }
+        if (isInverted()) {
+            return axisMax - (point - min) / (max - min) * (axisMax - axisMin);
+        }
+        else {
+            return axisMin + (point - min) / (max - min) * (axisMax - axisMin);
+        }
+    }
+
 }
