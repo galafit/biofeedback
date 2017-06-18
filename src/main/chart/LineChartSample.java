@@ -27,10 +27,10 @@ public class LineChartSample extends Application {
         series.getData().add(new XYChart.Data(100, 23));
         series.getData().add(new XYChart.Data(200, 14));
         series.getData().add(new XYChart.Data(300, 15));
-        series.getData().add(new XYChart.Data(400, 24));
+        series.getData().add(new XYChart.Data(400, 10024));
         series.getData().add(new XYChart.Data(500, 34));
         series.getData().add(new XYChart.Data(600, 36));
-        series.getData().add(new XYChart.Data(700, 22));
+        series.getData().add(new XYChart.Data(700, 20022));
         series.getData().add(new XYChart.Data(800, 45));
         series.getData().add(new XYChart.Data(900, 43));
         series.getData().add(new XYChart.Data(1000, 17));
