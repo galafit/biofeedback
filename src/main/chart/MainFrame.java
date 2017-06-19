@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
         Random rand = new Random();
         // xyList.addItem(-2.5,-8);
         for (int i = 0; i <15 ; i++) {
-            xyList.addItem(i,rand.nextInt(200) + 1000);
+            xyList.addItem(i,rand.nextInt(100)/100.0);
         }
 
 
@@ -51,11 +51,15 @@ public class MainFrame extends JFrame {
             xyList2.addItem(4057.0789,i);
         }
 
-        Graph graph1 = new LineGraph(xyList);
-        Graph graph2 = new LineGraph(xyList2);
+        Graph graph1 = new LineGraph();
+        Graph graph2 = new LineGraph();
 
-        chart.addGraph(graph1);
-        chart.addGraph(graph2,1,1);
+        chart.addGraph(graph1,xyList);
+        chart.addGraph(graph2, xyList2, 1,1);
+
+        Function2D sin = new Sin();
+
+        chart.addGraph(new LineGraph(),sin);
 
 
         chart.setPreferredSize(new Dimension(500, 500));

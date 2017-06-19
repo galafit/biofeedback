@@ -19,6 +19,11 @@ public abstract class Axis {
         axisData.setOpposite(opposite);
     }
 
+    public boolean isEndOnTick() {return axisData.isEndOnTick();}
+
+    public void setEndOnTick(boolean endOnTick) {
+        axisData.setEndOnTick(endOnTick);
+    }
 
     public void resetRange() {
         axisData.resetRange();

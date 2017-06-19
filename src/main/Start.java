@@ -121,7 +121,7 @@ public class Start {
             Function mix = (x) -> {
                 return   alfa.value(x) * sin.value(x);
             };
-            /* Function mix1 = new Function() {
+            /* Function2D mix1 = new Function2D() {
                 @Override
                 public double value(double x) {
                     return eog.value(x) * sin.value(x);

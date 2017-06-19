@@ -216,7 +216,7 @@ class LinearTickProvider {
     public List<Tick> getTicks() {
         List<Tick> ticks = new ArrayList<Tick>();
         double value = getRoundMin();
-        ticksAmount = calculateTicksAmount();
+        int ticksAmount = calculateTicksAmount();
         ticksAmount = (ticksAmount == 1) ? 1 : Math.max(ticksAmount, this.ticksAmount);
         if (units != null){
             numberFormat = new DecimalFormat(numberFormat.toPattern() + " "+units);

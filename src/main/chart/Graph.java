@@ -14,6 +14,10 @@ public abstract class Graph {
     protected Axis yAxis;
     protected Color color = Color.GRAY;
 
+    public void setData(DataList data){
+        dataItemList = data;
+    }
+
     protected void rangeAxis(){
         if (xAxis.isAutoScale()){
             Double xMin = getXmin();
@@ -41,19 +45,31 @@ public abstract class Graph {
     }
 
     public Double getXmin(){
-       return dataItemList.getXmin();
+        if (dataItemList != null) {
+            return dataItemList.getXmin();
+        }
+        return null;
     }
 
     public Double getXmax(){
+        if (dataItemList != null) {
         return dataItemList.getXmax();
+        }
+        return null;
     }
 
     public Double getYmin(){
-        return dataItemList.getYmin();
+        if (dataItemList != null) {
+            return dataItemList.getYmin();
+        }
+        return null;
     }
 
     public Double getYmax(){
-        return dataItemList.getYmax();
+        if (dataItemList != null) {
+            return dataItemList.getYmax();
+        }
+        return null;
     }
 
     public Axis getXAxis() {

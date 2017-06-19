@@ -2,9 +2,11 @@ package main.chart;
 
 import main.chart.axis.*;
 
+
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 
@@ -13,6 +15,7 @@ import java.util.List;
  */
 public class Chart extends JPanel {
     private List<Graph> graphs = new ArrayList<>();
+    private Map<Integer,Function2D> functionMap = new Hashtable<Integer, Function2D>();
     private List<Axis> xAxis = new ArrayList<>();
     private List<Axis> yAxis = new ArrayList<>();
     private int chartPadding = 10;
@@ -24,7 +27,7 @@ public class Chart extends JPanel {
     private Color[] colors = {GREY, BROWN, Color.GREEN, Color.YELLOW};
     private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN,  Color.PINK};
 
-    private boolean isTickSynchronized = true;
+    private boolean isTicksAligned = true;
 
 
     public Chart() {
@@ -36,12 +39,12 @@ public class Chart extends JPanel {
         yAxis.add(y);
     }
 
-    public boolean isTickSynchronized() {
-        return isTickSynchronized;
+    public boolean isTicksAligned() {
+        return isTicksAligned;
     }
 
-    public void setTickSynchronized(boolean tickSynchronized) {
-        isTickSynchronized = tickSynchronized;
+    public void setTicksAligned(boolean ticksAligned) {
+        isTicksAligned = ticksAligned;
     }
 
     public Axis getXAxis(int xAxisIndex){
@@ -70,8 +73,8 @@ public class Chart extends JPanel {
         xAxis.add(axis);
     }
 
-    public void addGraph(Graph graph){
-       addGraph(graph,0,0);
+    public void addGraph(Graph graph, DataList data){
+       addGraph(graph, data,0,0);
     }
 
     public void addGraph(Graph graph, int xAxisIndex, int yAxisIndex){
@@ -101,6 +104,55 @@ public class Chart extends JPanel {
         graphs.add(graph);
 
 
+    }
+
+    public void addGraph(Graph graph, DataList data, int xAxisIndex, int yAxisIndex){
+        graph.setData(data);
+        addGraph(graph,xAxisIndex,yAxisIndex);
+
+    }
+
+    public void addGraph(Graph graph, Function2D function, int xAxisIndex, int yAxisIndex) {
+        addGraph(graph,xAxisIndex,yAxisIndex);
+        functionMap.put(graphs.size() - 1, function);
+    }
+
+    public void addGraph(Graph graph, Function2D function){
+        addGraph(graph, function,0,0);
+    }
+
+
+    private void alignAxis(List<Axis> axisList, Graphics2D g, Rectangle area){
+        int maxSize = 0;
+
+
+            for (Axis axis : axisList) {
+                axis.getTicksSettings().setTicksAmount(0);
+            }
+
+            for (Axis axis : axisList) {
+                maxSize = Math.max(maxSize, axis.getTicks(g,area).size());
+            }
+
+            for (Axis axis : axisList) {
+                axis.getTicksSettings().setTicksAmount(maxSize);
+                axis.setEndOnTick(true);
+            }
+
+    }
+
+
+    private void setFunctions(Rectangle area){
+        Set keys = functionMap.keySet();
+        for (Object key: keys) {
+            Function2D function = functionMap.get(key);
+            Graph graph = graphs.get((Integer)key);
+            XYList data = new XYList();
+            for (int i = area.x; i <= area.width + area.x; i++ ){
+                double value = graph.getXAxis().pointsToValue(i,area);
+                data.addItem(value,function.apply(value));
+            }
+        }
     }
 
     @Override
@@ -151,6 +203,14 @@ public class Chart extends JPanel {
         //g2d.setColor(Color.GRAY);
         //g2d.drawRect(area.x, area.y, area.width, area.height);
 
+        setFunctions(area);
+
+        if (isTicksAligned()) {
+            alignAxis(xAxis, g2d, area);
+            alignAxis(yAxis, g2d, area);
+        }
+
+
         for (int i = 0; i < xAxis.size(); i++) {
             xAxis.get(i).draw(g2d, area, xAxisOriginPoints[i]);
         }
@@ -162,6 +222,7 @@ public class Chart extends JPanel {
         for (Graph graph : graphs) {
             graph.draw(g2d,area);
         }
+
 
 
 

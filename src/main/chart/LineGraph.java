@@ -8,13 +8,9 @@ import java.util.List;
  */
 public class LineGraph extends Graph {
 
-    public LineGraph(DataList dataItemList) {
-        this.dataItemList = dataItemList;
-    }
-
 
     public void draw(Graphics g, Rectangle area) {
-
+        if (dataItemList == null) {return;}
         g.setColor(color);
 
         for (int i = 0; i < dataItemList.size(); i++) {
