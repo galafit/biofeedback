@@ -12,7 +12,7 @@ public class TicksSettings {
     private int tickLabelsFontSize = 11;
     private Integer tickLabelsPadding = null;
     private boolean isTickLabelsVisible = true;
-    private int ticksAmount = 21;
+    private int ticksAmount = 0;
 
     // see http://api.highcharts.com/highcharts/xAxis.labels.autoRotation
     private int[] tickLabelAutoRotation = {-45, 90}; // at the moment not used

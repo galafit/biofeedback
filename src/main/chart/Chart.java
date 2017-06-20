@@ -1,10 +1,10 @@
 package main.chart;
 
 import main.chart.axis.*;
+import main.chart.functions.Function2D;
 
 
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -86,8 +86,8 @@ public class Chart extends JPanel {
         }
 
         graph.setAxis(xAxis.get(xAxisIndex), yAxis.get(yAxisIndex));
-        graph.rangeAxis();
-
+        graph.rangeXaxis();
+        graph.rangeYaxis();
         boolean isGraphExist = false;
         for (Graph graph1 : graphs) {
             if (graph1.getYAxis() == yAxis.get(yAxisIndex)){
@@ -152,6 +152,7 @@ public class Chart extends JPanel {
                 double value = graph.getXAxis().pointsToValue(i,area);
                 data.addItem(value,function.apply(value));
             }
+            graph.setData(data);
         }
     }
 
@@ -205,10 +206,19 @@ public class Chart extends JPanel {
 
         setFunctions(area);
 
+        for (Axis axis : yAxis){
+           axis.resetRange();
+        }
+
+        for (Graph graph : graphs) {
+            graph.rangeYaxis();
+        }
+
         if (isTicksAligned()) {
             alignAxis(xAxis, g2d, area);
             alignAxis(yAxis, g2d, area);
         }
+
 
 
         for (int i = 0; i < xAxis.size(); i++) {
@@ -218,6 +228,9 @@ public class Chart extends JPanel {
         for (int i = 0; i < yAxis.size(); i++) {
             yAxis.get(i).draw(g2d, area, yAxisOriginPoints[i]);
         }
+
+        setFunctions(area);
+        g2d.setClip(area);
 
         for (Graph graph : graphs) {
             graph.draw(g2d,area);

@@ -2,6 +2,10 @@ package main.chart;
 
 import main.chart.axis.Axis;
 import main.chart.axis.LinearAxis;
+import main.chart.functions.Function2D;
+import main.chart.functions.Sin;
+import main.chart.functions.Tg;
+import main.functions.Function;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,8 +62,10 @@ public class MainFrame extends JFrame {
         chart.addGraph(graph2, xyList2, 1,1);
 
         Function2D sin = new Sin();
-
         chart.addGraph(new LineGraph(),sin);
+
+        Function2D tg = new Tg();
+       // chart.addGraph(new LineGraph(), tg);
 
 
         chart.setPreferredSize(new Dimension(500, 500));

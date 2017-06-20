@@ -14,8 +14,8 @@ public abstract class AxisData {
 
     private Double min = null;
     private Double max = null;
-    private final double DEFAULT_MIN = 0;
-    private final double DEFAULT_MAX = 1;
+    private final double DEFAULT_MIN = -3;
+    private final double DEFAULT_MAX = 3;
     private boolean isHorizontal;
     private boolean isAutoScale = true;
     private boolean isInverted = false;
@@ -23,7 +23,7 @@ public abstract class AxisData {
 
     private double lowerPadding = 0.02;
     private double upperPadding = 0.02;
-    private boolean isEndOnTick = true;
+    private boolean isEndOnTick = false;
 
 
     private AxisViewSettings axisViewSettings = new AxisViewSettings();

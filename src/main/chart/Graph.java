@@ -18,7 +18,7 @@ public abstract class Graph {
         dataItemList = data;
     }
 
-    protected void rangeAxis(){
+    protected void rangeXaxis(){
         if (xAxis.isAutoScale()){
             Double xMin = getXmin();
             Double xMax = getXmax();
@@ -27,6 +27,10 @@ public abstract class Graph {
             }
 
         }
+    }
+
+
+    protected void rangeYaxis(){
         if (yAxis.isAutoScale()){
             Double yMin = getYmin();
             Double yMax = getYmax();

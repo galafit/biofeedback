@@ -134,10 +134,12 @@ class LinearTickProvider {
                 break;
             }
         }
-        int formatPower = power;
+
         if(first2Digits == 100) {
-            formatPower += 2;
+            first2Digits = 10;
+            power++;
         }
+        int formatPower = power;
         int rest = first2Digits % 10;
         if(rest == 0 ) {
             formatPower++;

@@ -1,4 +1,4 @@
-package main.chart;
+package main.chart.functions;
 
 /**
  * Created by hdablin on 19.06.17.
