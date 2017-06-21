@@ -173,6 +173,15 @@ public class Chart extends JPanel {
 
         Rectangle fullArea = new Rectangle(0,0,width,height);
 
+        setFunctions(fullArea);
+        for (Axis axis : yAxis){
+            axis.resetRange();
+        }
+
+        for (Graph graph : graphs) {
+            graph.rangeYaxis();
+        }
+
         //Calculate axis position and indents of xAxis
         for (int i = xAxis.size() - 1; i >= 0 ; i--) {
 
@@ -204,8 +213,11 @@ public class Chart extends JPanel {
         //g2d.setColor(Color.GRAY);
         //g2d.drawRect(area.x, area.y, area.width, area.height);
 
-        setFunctions(area);
+        if (isTicksAligned()) {
+            alignAxis(xAxis, g2d, area);
+        }
 
+        setFunctions(area);
         for (Axis axis : yAxis){
            axis.resetRange();
         }
@@ -215,11 +227,8 @@ public class Chart extends JPanel {
         }
 
         if (isTicksAligned()) {
-            alignAxis(xAxis, g2d, area);
             alignAxis(yAxis, g2d, area);
         }
-
-
 
         for (int i = 0; i < xAxis.size(); i++) {
             xAxis.get(i).draw(g2d, area, xAxisOriginPoints[i]);
@@ -229,17 +238,11 @@ public class Chart extends JPanel {
             yAxis.get(i).draw(g2d, area, yAxisOriginPoints[i]);
         }
 
-        setFunctions(area);
+       // setFunctions(area);
         g2d.setClip(area);
 
         for (Graph graph : graphs) {
             graph.draw(g2d,area);
         }
-
-
-
-
     }
-
-
 }

@@ -1,13 +1,25 @@
 package main.chart.axis;
 
+import java.text.MessageFormat;
+
 /**
- * Created by hdablin on 11.04.17.
+ * Scientific Notation:
+ * https://www.mathsisfun.com/numbers/scientific-notation.html
  */
-public class NormalizedNumber {
+public class ScientificNumber {
     double digits;
     int power;
 
-    public NormalizedNumber(double value) {
+    public ScientificNumber(double digits, int power) {
+        if(digits >= 10 || digits < 1) {
+            String errMsg = MessageFormat.format("Invalid digits: {0}. In Scientific Notation expected 1<= digits < 10.", digits);
+            throw new IllegalArgumentException(errMsg);
+        }
+        this.digits = digits;
+        this.power = power;
+    }
+
+    public ScientificNumber(double value) {
         power = calculatePower(value);
         digits = value/Math.pow(10,power);
     }
@@ -34,7 +46,7 @@ public class NormalizedNumber {
     }
 
     /**
-     * Unit tests {@code NormalizedNumber}.
+     * Unit tests {@code ScientificNumber}.
      *
      * String.format: https://www.dotnetperls.com/format-java
      *
@@ -43,23 +55,23 @@ public class NormalizedNumber {
     public static void main(String[] args) {
         String format = "%1$10s :  digits = %2$9s  power = %3$3s";
         double value = 100;
-        NormalizedNumber number = new NormalizedNumber(value);
+        ScientificNumber number = new ScientificNumber(value);
         System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
         value = 0.03234234;
-        number = new NormalizedNumber(value);
+        number = new ScientificNumber(value);
         System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
         value = 7000.15;
-        number = new NormalizedNumber(value);
+        number = new ScientificNumber(value);
         System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
         value = -20;
-        number = new NormalizedNumber(value);
+        number = new ScientificNumber(value);
         System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
 
         value = 0;
-        number = new NormalizedNumber(value);
+        number = new ScientificNumber(value);
         System.out.println(String.format(format, value, number.getDigits(), number.getPower()));
     }
 }

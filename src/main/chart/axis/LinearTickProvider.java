@@ -3,18 +3,16 @@ package main.chart.axis;
 import com.sun.istack.internal.Nullable;
 
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.pow;
 
 /**
  * Created by galafit on 17/6/17.
  */
 class LinearTickProvider {
-    double tickInterval;
+    double ticksInterval;
     double min;
     double max;
     double pointsPerUnit;
@@ -64,20 +62,24 @@ class LinearTickProvider {
         return df;
     }
 
-    public void setTickInterval(double tickInterval) {
-        this.tickInterval = tickInterval;
-        NormalizedNumber normalizedInterval = new NormalizedNumber(tickInterval);
-        int power = normalizedInterval.getPower();
-        numberFormat = getTickLabelFormat(power);
+
+    public void setTicksInterval(double ticksInterval) {
+        ScientificNumber scientificNumber = new ScientificNumber(ticksInterval);
+        int numberOfFirstDigits = 7;
+        int firstDigits = (int) (scientificNumber.getDigits() * Math.pow(10, numberOfFirstDigits)) + 1;
+        int power = scientificNumber.getPower() - numberOfFirstDigits;
+
+        NormalizedDouble roundInterval = new NormalizedDouble(firstDigits, power);
+        setTickIntervalAndFormat(ticksInterval, roundInterval.getPower());
     }
 
     public void setTickPixelInterval(int tickPixelInterval) {
         if(max == min) {
             return;
         }
-        tickInterval = tickPixelInterval / pointsPerUnit;
+        ticksInterval = tickPixelInterval / pointsPerUnit;
         // firstDigit is in {1,2,5,10};
-        NormalizedNumber tick = new NormalizedNumber(tickInterval);
+        ScientificNumber tick = new ScientificNumber(ticksInterval);
 
         int power = tick.getPower();
         int firstDigit = (int) (tick.getDigits());
@@ -103,54 +105,12 @@ class LinearTickProvider {
                 power++;
                 break;
         }
-        setTickInterval(firstDigit * pow(10, power));
+        setTickIntervalAndFormat(firstDigit * Math.pow(10, power), power);
 
     }
 
     /**
-     * Find and set round tickInterval >= (max - min) / (givenTicksAmount - 1).
-     * <p>
-     * So normally resultantTicksAmount <= givenTicksAmount.
-     * But since to calculate real ticks amount we will use
-     * roundMin < min < max < roundMax sometimes it is possible that:
-     * resultant ticks amount = givenTicksAmount + 1
-     *
-     * @param givenTicksAmount - desirable amount of ticks
-     */
-    private void setRoundTickInterval(int givenTicksAmount, int[] roundValues)  {
-        if(givenTicksAmount <= 1) {
-            String errMsg = MessageFormat.format("Invalid ticks amount: {0}. Expected >= 2", givenTicksAmount);
-            throw new IllegalArgumentException(errMsg);
-        }
-        tickInterval = (max - min)  / (givenTicksAmount - 1);
-        NormalizedNumber normalizedInterval = new NormalizedNumber(tickInterval);
-        int power = normalizedInterval.getPower();
-        int first2Digits = (int) (normalizedInterval.getDigits() * 10) + 1;
-        power--;
-        // find the closest roundValue that is > first2Digits
-        for (int roundValue : roundValues) {
-            if(roundValue >= first2Digits) {
-                first2Digits = roundValue;
-                break;
-            }
-        }
-
-        if(first2Digits == 100) {
-            first2Digits = 10;
-            power++;
-        }
-        int formatPower = power;
-        int rest = first2Digits % 10;
-        if(rest == 0 ) {
-            formatPower++;
-        }
-        tickInterval = (first2Digits * pow(10, power));
-        numberFormat = getTickLabelFormat(formatPower);
-    }
-
-
-
-    /**
+     * Calculate and set ticksInterval such that
      * resultant ticks amount <= given ticks amount!
      * @param givenTicksAmount
      */
@@ -160,22 +120,14 @@ class LinearTickProvider {
         }
         ticksAmount = givenTicksAmount;
         int[] roundValues = {10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100};
-        /*
-         * Normally resultantTicksAmount <= givenTicksAmount.
-         * But since to calculate real ticks amount we will use
-         * roundMin < min < max < roundMax sometimes it is possible that:
-         * resultantTicksAmount = (givenTicksAmount + 1)
-         * And in this case we need to call the same method with
-         * (givenTicksAmount - 1)
-         */
         setRoundTickInterval(givenTicksAmount, roundValues);
-        int resultantTickAmount = calculateTicksAmount();
-        // if resultantTicksAmount = given ticks amount + 1 we do next iteration
-        if(resultantTickAmount > givenTicksAmount && givenTicksAmount > 2) {
-            setRoundTickInterval(givenTicksAmount - 1, roundValues);
-        }
-   }
+    }
 
+    /**
+     * Calculate and set ticksInterval such that
+     * resultant ticksPixelInterval >= minTickPixelInterval
+     * @param minTickPixelInterval given min tick interval in pixels
+     */
     public void setMinTickPixelInterval(double minTickPixelInterval) {
         if(max == min) {
             return;
@@ -185,49 +137,134 @@ class LinearTickProvider {
             ticksAmount = 2;
         }
         int[] roundValues = {10, 20,  30, 40, 50, 60, 80, 100};
-         /*
-         * Normally resultantTicksAmount <= givenTicksAmount.
-         * But since to calculate real ticks amount we will use
-         * roundMin < min < max < roundMax sometimes it is possible that:
-         * resultantTicksAmount = (givenTicksAmount + 1).
-         * In this case resultantTickPixelInterval can be < minTickPixelInterval.
-         * And to compensate that we need to call the same method with
-         * (ticksAmount - 1)
-         */
         setRoundTickInterval(ticksAmount, roundValues);
-        int resultantTickAmount = calculateTicksAmount();
-        if(resultantTickAmount > ticksAmount && ticksAmount > 2) {
-            setRoundTickInterval(ticksAmount - 1, roundValues);
+    }
+
+
+    private void setTickIntervalAndFormat(double ticksInterval, int formatPower) {
+        this.ticksInterval = ticksInterval;
+        numberFormat = getTickLabelFormat(formatPower);
+    }
+
+    /**
+     * Find closest roundInterval >= given interval
+     * @param interval given interval
+     * @param roundValues array of possible round values. Each 10 <= value <= 100
+     * @return closest roundInterval >= given interval
+     */
+    private NormalizedDouble roundIntervalUp(double interval, int[] roundValues)  {
+        ScientificNumber scientificNumber = new ScientificNumber(interval);
+        int power = scientificNumber.getPower();
+        int first2Digits = (int) (scientificNumber.getDigits() * 10) + 1;
+        power--;
+        // find the closest roundValue that is > first2Digits
+        for (int roundValue : roundValues) {
+            if(roundValue >= first2Digits) {
+                first2Digits = roundValue;
+                break;
+            }
         }
+
+        return new NormalizedDouble(first2Digits, power);
+    }
+
+    /**
+     * Find closest roundInterval <= given interval
+     * @param interval given interval
+     * @param roundValues array of possible round values. Each 10 <= value <= 100
+     * @return closest roundInterval <= given interval
+     */
+    private NormalizedDouble roundIntervalDown(double interval, int[] roundValues)  {
+        ScientificNumber scientificNumber = new ScientificNumber(interval);
+        int power = scientificNumber.getPower();
+        int first2Digits = (int) (scientificNumber.getDigits() * 10) + 1;
+        power--;
+        // find the closest roundValue that is < first2Digits
+        for (int i = roundValues.length - 1; i >= 0; i--) {
+            if(roundValues[i] <= first2Digits) {
+                first2Digits = roundValues[i];
+                break;
+            }
+        }
+        return new NormalizedDouble(first2Digits, power);
     }
 
 
-    private double getRoundMin() {
-        return (min == max) ? min : getClosestTickPrev(min, tickInterval);
+
+    /**
+     * Find and set round ticksInterval such that:
+     * resultantTicksAmount <= givenTicksAmount
+     *
+     * @param givenTicksAmount - desirable amount of ticks
+     */
+    private void setRoundTickInterval(int givenTicksAmount, int[] roundValues)  {
+        if(givenTicksAmount <= 1) {
+            String errMsg = MessageFormat.format("Invalid ticks amount: {0}. Expected >= 2", givenTicksAmount);
+            throw new IllegalArgumentException(errMsg);
+        }
+        Double interval = (max - min)  / (givenTicksAmount - 1);
+        NormalizedDouble normalizedDouble = roundIntervalUp(interval, roundValues);
+        int intervalPower = normalizedDouble.getPower();
+        double intervalValue = normalizedDouble.getDouble();
+
+        int resultantTicksAmount = calculateTicksAmount(intervalValue);
+        /*
+         * Due to rounding (roundMin < min < max < roundMax)
+         * sometimes it is possible that the resultantTicksAmount may be
+         * greater than the givenTicksAmount:
+         * resultantTicksAmount = givenTicksAmount + 1.
+         * In this case we repeat the same procedure with (givenTicksAmount -1)
+         */
+        if(resultantTicksAmount > givenTicksAmount && givenTicksAmount > 2) {
+            givenTicksAmount--;
+            interval = (max - min)  / (givenTicksAmount - 1);
+            normalizedDouble = roundIntervalUp(interval, roundValues);
+            intervalPower = normalizedDouble.getPower();
+            intervalValue = normalizedDouble.getDouble();
+
+        }
+        setTickIntervalAndFormat(intervalValue, intervalPower);
     }
 
-    private double getRoundMax() {
-        return (min == max) ? max : getClosestTickNext(max, tickInterval);
+    private double getHalfPixelInterval() {
+        double pixelInterval = 0.5;
+        double interval = pixelInterval / pointsPerUnit;
+        return interval;
     }
 
-    private int calculateTicksAmount() {
-        return  (min == max || tickInterval == 0) ? 1 : (int) Math.round((getRoundMax() - getRoundMin()) / tickInterval) + 1;
+    private double getRoundMin(double ticksInterval) {
+        return (min == max) ? min : getClosestTickPrev(min, ticksInterval);
+    }
+    private double getRoundMax(double ticksInterval) {
+        return (min == max) ? max : getClosestTickNext(max, ticksInterval);
+    }
+
+
+    private int calculateTicksAmount(double ticksInterval) {
+        if (min == max) {
+           return 1;
+        }
+        if(ticksInterval == 0) {
+            return this.ticksAmount;
+        }
+        return  (int) Math.round((getRoundMax(ticksInterval) - getRoundMin(ticksInterval)) / ticksInterval) + 1;
 
     }
 
     public List<Tick> getTicks() {
         List<Tick> ticks = new ArrayList<Tick>();
-        double value = getRoundMin();
-        int ticksAmount = calculateTicksAmount();
+        int ticksAmount = calculateTicksAmount(ticksInterval);
         ticksAmount = (ticksAmount == 1) ? 1 : Math.max(ticksAmount, this.ticksAmount);
         if (units != null){
             numberFormat = new DecimalFormat(numberFormat.toPattern() + " "+units);
         }
+        double value = getRoundMin(ticksInterval);
         for (int i = 1; i <= ticksAmount; i++) {
             String label = numberFormat.format(value);
             ticks.add(new Tick(value, label));
-            value = value + tickInterval;
+            value = value + ticksInterval;
         }
         return ticks;
     }
+
 }

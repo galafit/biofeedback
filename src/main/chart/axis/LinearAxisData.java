@@ -1,12 +1,7 @@
 package main.chart.axis;
 
 import java.awt.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.*;
 import java.util.List;
-
-import static java.lang.Math.pow;
 
 /**
  * Created by hdablin on 08.04.17.
@@ -29,13 +24,15 @@ public class LinearAxisData extends AxisData {
             tickProvider.setTicksAmount(ticksAmount);
         }
         else if( tickInterval > 0) {
-            tickProvider.setTickInterval(tickInterval);
+            tickProvider.setTicksInterval(tickInterval);
         } else {
             tickProvider.setTickPixelInterval(getTicksSettings().getTickPixelInterval());
         }
         List<Tick> ticks = tickProvider.getTicks();
-        roundMin = ticks.get(0).getValue();
-        roundMax = ticks.get(ticks.size() - 1).getValue();
+        if(ticks.size() > 1) {
+            roundMin = ticks.get(0).getValue();
+            roundMax = ticks.get(ticks.size() - 1).getValue();
+        }
         return ticks;
     }
 
@@ -53,7 +50,7 @@ public class LinearAxisData extends AxisData {
             tickProvider.setTicksAmount(ticksAmount);
         }
         else if(tickInterval > 0) {
-            tickProvider.setTickInterval(tickInterval);
+            tickProvider.setTicksInterval(tickInterval);
         } else {
             tickProvider.setMinTickPixelInterval(minTickPixelInterval);
         }

@@ -30,7 +30,6 @@ public class MainFrame extends JFrame {
         yAxis2.getGridSettings().setGridLineWidth(0);
         yAxis2.getGridSettings().setMinorGridLineWidth(0);
         yAxis2.setOpposite(true);
-
        // yAxis2.setVisible(false);
 
         xAxis2.getGridSettings().setGridLineWidth(0);
@@ -47,6 +46,7 @@ public class MainFrame extends JFrame {
         for (int i = 0; i <15 ; i++) {
             xyList.addItem(i,rand.nextInt(100)/100.0);
         }
+       // xyList.addItem(15, -1);
 
 
         XYList xyList2 = new XYList();
