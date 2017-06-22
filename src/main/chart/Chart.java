@@ -167,6 +167,45 @@ public class Chart extends JPanel {
         }
     }
 
+    private Rectangle calculateAxisPositions(Graphics2D g, Rectangle area, int[] xAxisOriginPoints, int[] yAxisOriginPoints) {
+        //Calculate axis position and indents of xAxisList
+        int width = getSize().width;
+        int height = getSize().height;
+        int topIndent = chartPadding;
+        int bottomIndent = chartPadding;
+        int leftIndent = chartPadding;
+        int rightIndent = chartPadding;
+        for (int i = xAxisList.size() - 1; i >= 0 ; i--) {
+
+            int size = xAxisList.get(i).getWidth(g, area);
+
+            if (!xAxisList.get(i).isOpposite()){
+                bottomIndent += size;
+                xAxisOriginPoints[i] = area.height - bottomIndent;
+            } else {
+                topIndent += size;
+                xAxisOriginPoints[i] = topIndent;
+            }
+        }
+        //Calculate axis position and indents of yAxisList
+        for (int i = yAxisList.size() - 1; i >= 0 ; i--) {
+
+            int size = yAxisList.get(i).getWidth(g, area);
+
+            if (!yAxisList.get(i).isOpposite()){
+                leftIndent += size;
+                yAxisOriginPoints[i] = leftIndent;
+            } else {
+                rightIndent += size;
+                yAxisOriginPoints[i] = area.width - rightIndent;
+            }
+        }
+
+        Rectangle newArea = new Rectangle(leftIndent,topIndent,width - leftIndent - rightIndent,height - topIndent - bottomIndent);
+        return newArea;
+
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -175,10 +214,6 @@ public class Chart extends JPanel {
         int width = getSize().width;
         int height = getSize().height;
 
-        int topIndent = chartPadding;
-        int bottomIndent = chartPadding;
-        int leftIndent = chartPadding;
-        int rightIndent = chartPadding;
 
         int[] xAxisOriginPoints = new int[xAxisList.size()];
         int[] yAxisOriginPoints = new int[yAxisList.size()];
@@ -195,46 +230,15 @@ public class Chart extends JPanel {
             graph.rangeYaxis();
         }
 
-        if (isTicksAligned()) {
-            alignAxis(xAxisList, g2d, fullArea);
-            alignAxis(yAxisList, g2d, fullArea);
-        }
-
-        //Calculate axis position and indents of xAxisList
-        for (int i = xAxisList.size() - 1; i >= 0 ; i--) {
-
-            int size = xAxisList.get(i).getWidth(g2d, fullArea);
-
-            if (!xAxisList.get(i).isOpposite()){
-                bottomIndent += size;
-                xAxisOriginPoints[i] = fullArea.height - bottomIndent;
-            } else {
-                topIndent += size;
-                xAxisOriginPoints[i] = topIndent;
-            }
-        }
-        //Calculate axis position and indents of yAxisList
-        for (int i = yAxisList.size() - 1; i >= 0 ; i--) {
-
-            int size = yAxisList.get(i).getWidth(g2d, fullArea);
-
-            if (!yAxisList.get(i).isOpposite()){
-                leftIndent += size;
-                yAxisOriginPoints[i] = leftIndent;
-            } else {
-                rightIndent += size;
-                yAxisOriginPoints[i] = fullArea.width - rightIndent;
-            }
-        }
-
-        Rectangle area = new Rectangle(leftIndent,topIndent,width - leftIndent - rightIndent,height - topIndent - bottomIndent);
-        //g2d.setColor(Color.GRAY);
-        //g2d.drawRect(area.x, area.y, area.width, area.height);
+        Rectangle area = calculateAxisPositions(g2d, fullArea, xAxisOriginPoints, yAxisOriginPoints);
 
         if (isTicksAligned()) {
             alignAxis(xAxisList, g2d, area);
             alignAxis(yAxisList, g2d, area);
         }
+
+        area = calculateAxisPositions(g2d, fullArea, xAxisOriginPoints, yAxisOriginPoints);
+
 
         for (int i = 0; i < xAxisList.size(); i++) {
             xAxisList.get(i).draw(g2d, area, xAxisOriginPoints[i]);
@@ -244,7 +248,6 @@ public class Chart extends JPanel {
             yAxisList.get(i).draw(g2d, area, yAxisOriginPoints[i]);
         }
 
-       // setFunctions(area);
         g2d.setClip(area);
 
         for (Graph graph : graphs) {
