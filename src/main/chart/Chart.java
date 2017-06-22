@@ -195,6 +195,11 @@ public class Chart extends JPanel {
             graph.rangeYaxis();
         }
 
+        if (isTicksAligned()) {
+            alignAxis(xAxisList, g2d, fullArea);
+            alignAxis(yAxisList, g2d, fullArea);
+        }
+
         //Calculate axis position and indents of xAxisList
         for (int i = xAxisList.size() - 1; i >= 0 ; i--) {
 

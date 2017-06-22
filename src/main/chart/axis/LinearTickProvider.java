@@ -122,7 +122,8 @@ class LinearTickProvider {
             givenTicksAmount = 2;
         }
         ticksAmount = givenTicksAmount;
-        int[] roundValues = {10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100};
+      //  int[] roundValues = {10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100};
+        int[] roundValues = {10,  20,  30, 40, 50, 60, 80, 100};
         setRoundTickInterval(givenTicksAmount, roundValues);
     }
 
@@ -229,11 +230,6 @@ class LinearTickProvider {
         setTickIntervalAndFormat(intervalValue, intervalPower);
     }
 
-    private double getHalfPixelInterval() {
-        double pixelInterval = 0.5;
-        double interval = pixelInterval / pointsPerUnit;
-        return interval;
-    }
 
     private double getRoundMin(double ticksInterval) {
         return (min == max) ? min : getClosestTickPrev(min, ticksInterval);

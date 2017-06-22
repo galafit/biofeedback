@@ -12,7 +12,6 @@ import java.util.List;
 public class AxisPainter {
     private AxisData axis;
 
-
     public AxisPainter(AxisData axis) {
         this.axis = axis;
     }
