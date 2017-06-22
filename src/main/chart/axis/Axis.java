@@ -11,6 +11,23 @@ public abstract class Axis {
     protected AxisData axisData;
     protected AxisPainter axisPainter;
 
+    public double getLowerPadding() {
+        return axisData.getLowerPadding();
+    }
+
+    public void setLowerPadding(double lowerPadding) {
+        axisData.setLowerPadding(lowerPadding);
+    }
+
+    public double getUpperPadding() {
+        return axisData.getUpperPadding();
+    }
+
+    public void setUpperPadding(double upperPadding) {
+        axisData.setUpperPadding(upperPadding);
+    }
+
+
     public boolean isOpposite() {
         return axisData.isOpposite();
     }

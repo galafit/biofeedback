@@ -4,6 +4,7 @@ import com.sun.istack.internal.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Created by galafit on 17/6/17.
  */
-class LinearTickProvider {
+class TickProviderTest {
     double ticksInterval;
     double min;
     double max;
@@ -20,7 +21,8 @@ class LinearTickProvider {
     int ticksAmount;
     String units;
 
-    public LinearTickProvider(double min, double max, double pointsPerUnit, @Nullable  String units) {
+
+    public TickProviderTest(double min, double max, double pointsPerUnit, @Nullable  String units) {
         this.min = min;
         this.max = max;
         this.pointsPerUnit = pointsPerUnit;
@@ -70,7 +72,7 @@ class LinearTickProvider {
         int power = scientificNumber.getPower() - numberOfFirstDigits;
 
         NormalizedDouble roundInterval = new NormalizedDouble(firstDigits, power);
-        setTickIntervalAndFormat(ticksInterval, roundInterval.getPower());
+        setTicksIntervalAndFormat(ticksInterval, roundInterval.getPower());
     }
 
     public void setTickPixelInterval(int tickPixelInterval) {
@@ -105,7 +107,7 @@ class LinearTickProvider {
                 power++;
                 break;
         }
-        setTickIntervalAndFormat(firstDigit * Math.pow(10, power), power);
+        setTicksIntervalAndFormat(firstDigit * Math.pow(10, power), power);
 
     }
 
@@ -117,9 +119,6 @@ class LinearTickProvider {
     public void setTicksAmount(int givenTicksAmount) {
         if(max == min) {
             return;
-        }
-        if(givenTicksAmount < 2) {
-            givenTicksAmount = 2;
         }
         ticksAmount = givenTicksAmount;
         int[] roundValues = {10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100};
@@ -144,9 +143,15 @@ class LinearTickProvider {
     }
 
 
-    private void setTickIntervalAndFormat(double ticksInterval, int formatPower) {
-        this.ticksInterval = ticksInterval;
-        numberFormat = getTickLabelFormat(formatPower);
+    private void setTicksIntervalAndFormat(double ticksInterval, int formatPower) {
+        if(calculateTicksAmount(ticksInterval) == 2) { // special case handled apart
+            this.ticksInterval = max - min;
+            numberFormat = getTickLabelFormat(getPixelInterval().getPower());
+        }
+        else{
+            this.ticksInterval = ticksInterval;
+            numberFormat = getTickLabelFormat(formatPower);
+        }
     }
 
     /**
@@ -193,7 +198,6 @@ class LinearTickProvider {
     }
 
 
-
     /**
      * Find and set round ticksInterval such that:
      * resultantTicksAmount <= givenTicksAmount
@@ -226,48 +230,104 @@ class LinearTickProvider {
             intervalValue = normalizedDouble.getDouble();
 
         }
-        setTickIntervalAndFormat(intervalValue, intervalPower);
+        setTicksIntervalAndFormat(intervalValue, intervalPower);
     }
 
-    private double getHalfPixelInterval() {
-        double pixelInterval = 0.5;
+
+    private NormalizedDouble getPixelInterval() {
+        int[] roundValues = {10, 20,  30, 40, 50, 60, 80, 90};
+        double pixelInterval = 1;
         double interval = pixelInterval / pointsPerUnit;
-        return interval;
+        return roundIntervalDown(interval, roundValues);
     }
 
-    private double getRoundMin(double ticksInterval) {
-        return (min == max) ? min : getClosestTickPrev(min, ticksInterval);
+    private double getRoundMin(double roundTicksInterval) {
+        if(min == max) {
+            return min;
+        }
+        double tickNext = getClosestTickNext(min, roundTicksInterval);
+        double tickPrev  = getClosestTickPrev(min, roundTicksInterval);
+        double pixelInterval = getPixelInterval().getDouble();
+
+        if(min - tickPrev < pixelInterval) {
+            return tickPrev;
+        }
+        if(tickNext - min < pixelInterval) {
+            return tickNext;
+        }
+        return tickPrev;
     }
-    private double getRoundMax(double ticksInterval) {
-        return (min == max) ? max : getClosestTickNext(max, ticksInterval);
+
+    private double getRoundMax(double roundTicksInterval) {
+        if(min == max) {
+            return max;
+        }
+        double tickNext = getClosestTickNext(max, roundTicksInterval);
+        double tickPrev = getClosestTickPrev(max, roundTicksInterval);
+        double pixelInterval = getPixelInterval().getDouble();
+        if(tickNext - max < pixelInterval) {
+            return tickNext;
+        }
+        if(max - tickPrev < pixelInterval) {
+            return tickPrev;
+        }
+        return tickNext;
     }
 
 
     private int calculateTicksAmount(double ticksInterval) {
         if (min == max) {
-           return 1;
+            return 1;
         }
-        if(ticksInterval == 0) {
-            return this.ticksAmount;
+        if(Math.round((max - min) / ticksInterval) <= 1) {
+            return 2;
         }
-        return  (int) Math.round((getRoundMax(ticksInterval) - getRoundMin(ticksInterval)) / ticksInterval) + 1;
-
+        return (int) Math.round((getRoundMax(ticksInterval) - getRoundMin(ticksInterval)) / ticksInterval) + 1;
     }
 
     public List<Tick> getTicks() {
         List<Tick> ticks = new ArrayList<Tick>();
         int ticksAmount = calculateTicksAmount(ticksInterval);
         ticksAmount = (ticksAmount == 1) ? 1 : Math.max(ticksAmount, this.ticksAmount);
-        if (units != null){
-            numberFormat = new DecimalFormat(numberFormat.toPattern() + " "+units);
+        double roundMin = getRoundMin(ticksInterval);
+        double roundMax = getRoundMax(ticksInterval);
+        double pixelInterval = getPixelInterval().getDouble();
+        if(ticksAmount == 2) {
+            roundMin = getRoundMin(pixelInterval);
+            roundMax = getRoundMax(pixelInterval);
         }
-        double value = getRoundMin(ticksInterval);
+        double value = roundMin;
+       /* if (units != null){
+            numberFormat = new DecimalFormat(numberFormat.toPattern() + " "+units);
+        }*/
         for (int i = 1; i <= ticksAmount; i++) {
             String label = numberFormat.format(value);
-            ticks.add(new Tick(value, label));
+            try {
+                if(numberFormat.parse(label).doubleValue() == 0) { // cut minus
+                    label = numberFormat.format(0);
+                }
+            } catch (ParseException e) {
+                // do nothing !
+            }
+            if (units != null){
+                label = label + " "+units;
+            }
+            if(i == 1) {
+                if(Math.abs(min - roundMin) < pixelInterval) {
+                    ticks.add(new Tick(min, label));
+                }
+            } else if (i == ticksAmount) {
+                if (Math.abs(roundMax - max) < pixelInterval) {
+                    ticks.add(new Tick(max, label));
+                }
+            } else {
+                ticks.add(new Tick(value, label));
+            }
             value = value + ticksInterval;
         }
         return ticks;
     }
 
 }
+
+

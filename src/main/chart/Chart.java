@@ -16,8 +16,8 @@ import java.util.List;
 public class Chart extends JPanel {
     private List<Graph> graphs = new ArrayList<>();
     private Map<Integer,Function2D> functionMap = new Hashtable<Integer, Function2D>();
-    private List<Axis> xAxis = new ArrayList<>();
-    private List<Axis> yAxis = new ArrayList<>();
+    private List<Axis> xAxisList = new ArrayList<>();
+    private List<Axis> yAxisList = new ArrayList<>();
     private int chartPadding = 10;
 
     private final Color GREY = new Color(150, 150, 150);
@@ -33,10 +33,10 @@ public class Chart extends JPanel {
     public Chart() {
         Axis x = new LinearAxis();
         x.setHorizontal(true);
-        xAxis.add(x);
+        xAxisList.add(x);
         Axis y = new LinearAxis();
         y.setHorizontal(false);
-        yAxis.add(y);
+        yAxisList.add(y);
     }
 
     public boolean isTicksAligned() {
@@ -48,29 +48,29 @@ public class Chart extends JPanel {
     }
 
     public Axis getXAxis(int xAxisIndex){
-        if (xAxisIndex >= xAxis.size()){
+        if (xAxisIndex >= xAxisList.size()){
             return null;
         }
-        return xAxis.get(xAxisIndex);
+        return xAxisList.get(xAxisIndex);
     }
 
     public Axis getYAxis(int yAxisIndex){
-        if (yAxisIndex >= yAxis.size()){
+        if (yAxisIndex >= yAxisList.size()){
             return null;
         }
-        return yAxis.get(yAxisIndex);
+        return yAxisList.get(yAxisIndex);
     }
 
     public void addYAxis(Axis axis){
         axis.setHorizontal(false);
-        axis.getViewSettings().setAxisColor(colors[xAxis.size() % colors.length]);
-        yAxis.add(axis);
+        axis.getViewSettings().setAxisColor(colors[xAxisList.size() % colors.length]);
+        yAxisList.add(axis);
     }
 
     public void addXAxis(Axis axis){
         axis.setHorizontal(true);
-        axis.getViewSettings().setAxisColor(colors[xAxis.size() % colors.length]);
-        xAxis.add(axis);
+        axis.getViewSettings().setAxisColor(colors[xAxisList.size() % colors.length]);
+        xAxisList.add(axis);
     }
 
     public void addGraph(Graph graph, DataList data){
@@ -78,26 +78,26 @@ public class Chart extends JPanel {
     }
 
     public void addGraph(Graph graph, int xAxisIndex, int yAxisIndex){
-        if (xAxisIndex >= xAxis.size()) {
-            xAxisIndex = xAxis.size() - 1;
+        if (xAxisIndex >= xAxisList.size()) {
+            xAxisIndex = xAxisList.size() - 1;
         }
-        if (yAxisIndex >= yAxis.size()) {
-            yAxisIndex = yAxis.size() - 1;
+        if (yAxisIndex >= yAxisList.size()) {
+            yAxisIndex = yAxisList.size() - 1;
         }
 
-        graph.setAxis(xAxis.get(xAxisIndex), yAxis.get(yAxisIndex));
+        graph.setAxis(xAxisList.get(xAxisIndex), yAxisList.get(yAxisIndex));
         graph.rangeXaxis();
         graph.rangeYaxis();
         boolean isGraphExist = false;
         for (Graph graph1 : graphs) {
-            if (graph1.getYAxis() == yAxis.get(yAxisIndex)){
+            if (graph1.getYAxis() == yAxisList.get(yAxisIndex)){
                 isGraphExist = true;
                 break;
             }
         }
 
         if (!isGraphExist) {
-            graph.setColor(yAxis.get(yAxisIndex).getViewSettings().getAxisColor());
+            graph.setColor(yAxisList.get(yAxisIndex).getViewSettings().getAxisColor());
         } else {
             graph.setColor(graphicColors[graphs.size() % graphicColors.length]);
         }
@@ -147,14 +147,26 @@ public class Chart extends JPanel {
         for (Object key: keys) {
             Function2D function = functionMap.get(key);
             Graph graph = graphs.get((Integer)key);
+            Axis xAxis = graph.getXAxis();
+            boolean isEndOnTick = xAxis.isEndOnTick();
+            double lowerPadding = xAxis.getLowerPadding();
+            double upperPadding = xAxis.getUpperPadding();
+            xAxis.setUpperPadding(0);
+            xAxis.setLowerPadding(0);
+            xAxis.setEndOnTick(false);
             XYList data = new XYList();
             for (int i = area.x; i <= area.width + area.x; i++ ){
-                double value = graph.getXAxis().pointsToValue(i,area);
+                double value = xAxis.pointsToValue(i,area);
                 data.addItem(value,function.apply(value));
             }
             graph.setData(data);
+            // restore axis settings
+            xAxis.setEndOnTick(isEndOnTick);
+            xAxis.setLowerPadding(lowerPadding);
+            xAxis.setUpperPadding(upperPadding);
         }
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -168,13 +180,14 @@ public class Chart extends JPanel {
         int leftIndent = chartPadding;
         int rightIndent = chartPadding;
 
-        int[] xAxisOriginPoints = new int[xAxis.size()];
-        int[] yAxisOriginPoints = new int[yAxis.size()];
+        int[] xAxisOriginPoints = new int[xAxisList.size()];
+        int[] yAxisOriginPoints = new int[yAxisList.size()];
 
         Rectangle fullArea = new Rectangle(0,0,width,height);
 
         setFunctions(fullArea);
-        for (Axis axis : yAxis){
+
+        for (Axis axis : yAxisList){
             axis.resetRange();
         }
 
@@ -182,12 +195,12 @@ public class Chart extends JPanel {
             graph.rangeYaxis();
         }
 
-        //Calculate axis position and indents of xAxis
-        for (int i = xAxis.size() - 1; i >= 0 ; i--) {
+        //Calculate axis position and indents of xAxisList
+        for (int i = xAxisList.size() - 1; i >= 0 ; i--) {
 
-            int size = xAxis.get(i).getWidth(g2d, fullArea);
+            int size = xAxisList.get(i).getWidth(g2d, fullArea);
 
-            if (!xAxis.get(i).isOpposite()){
+            if (!xAxisList.get(i).isOpposite()){
                 bottomIndent += size;
                 xAxisOriginPoints[i] = fullArea.height - bottomIndent;
             } else {
@@ -195,12 +208,12 @@ public class Chart extends JPanel {
                 xAxisOriginPoints[i] = topIndent;
             }
         }
-        //Calculate axis position and indents of yAxis
-        for (int i = yAxis.size() - 1; i >= 0 ; i--) {
+        //Calculate axis position and indents of yAxisList
+        for (int i = yAxisList.size() - 1; i >= 0 ; i--) {
 
-            int size = yAxis.get(i).getWidth(g2d, fullArea);
+            int size = yAxisList.get(i).getWidth(g2d, fullArea);
 
-            if (!yAxis.get(i).isOpposite()){
+            if (!yAxisList.get(i).isOpposite()){
                 leftIndent += size;
                 yAxisOriginPoints[i] = leftIndent;
             } else {
@@ -214,28 +227,16 @@ public class Chart extends JPanel {
         //g2d.drawRect(area.x, area.y, area.width, area.height);
 
         if (isTicksAligned()) {
-            alignAxis(xAxis, g2d, area);
+            alignAxis(xAxisList, g2d, area);
+            alignAxis(yAxisList, g2d, area);
         }
 
-        setFunctions(area);
-        for (Axis axis : yAxis){
-           axis.resetRange();
+        for (int i = 0; i < xAxisList.size(); i++) {
+            xAxisList.get(i).draw(g2d, area, xAxisOriginPoints[i]);
         }
 
-        for (Graph graph : graphs) {
-            graph.rangeYaxis();
-        }
-
-        if (isTicksAligned()) {
-            alignAxis(yAxis, g2d, area);
-        }
-
-        for (int i = 0; i < xAxis.size(); i++) {
-            xAxis.get(i).draw(g2d, area, xAxisOriginPoints[i]);
-        }
-
-        for (int i = 0; i < yAxis.size(); i++) {
-            yAxis.get(i).draw(g2d, area, yAxisOriginPoints[i]);
+        for (int i = 0; i < yAxisList.size(); i++) {
+            yAxisList.get(i).draw(g2d, area, yAxisOriginPoints[i]);
         }
 
        // setFunctions(area);

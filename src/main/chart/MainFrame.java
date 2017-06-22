@@ -65,7 +65,7 @@ public class MainFrame extends JFrame {
         chart.addGraph(new LineGraph(),sin);
 
         Function2D tg = new Tg();
-       // chart.addGraph(new LineGraph(), tg);
+        chart.addGraph(new LineGraph(), tg);
 
 
         chart.setPreferredSize(new Dimension(500, 500));

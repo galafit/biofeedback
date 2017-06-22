@@ -20,7 +20,6 @@ public abstract class AxisData {
     private boolean isAutoScale = true;
     private boolean isInverted = false;
     private boolean isOpposite = false;
-
     private double lowerPadding = 0.02;
     private double upperPadding = 0.02;
     private boolean isEndOnTick = false;
@@ -29,6 +28,23 @@ public abstract class AxisData {
     private AxisViewSettings axisViewSettings = new AxisViewSettings();
     private TicksSettings ticksSettings = new TicksSettings();
     private GridSettings gridSettings = new GridSettings();
+
+    public double getLowerPadding() {
+        return lowerPadding;
+    }
+
+    public void setLowerPadding(double lowerPadding) {
+        this.lowerPadding = lowerPadding;
+    }
+
+    public double getUpperPadding() {
+        return upperPadding;
+    }
+
+    public void setUpperPadding(double upperPadding) {
+        this.upperPadding = upperPadding;
+    }
+
 
     public AxisViewSettings getAxisViewSettings() {
         return axisViewSettings;
