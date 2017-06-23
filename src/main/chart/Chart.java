@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by hdablin on 24.03.17.
  */
-public class Chart extends JPanel {
+public class Chart {
     private List<Graph> graphs = new ArrayList<>();
     private Map<Integer,Function2D> functionMap = new Hashtable<Integer, Function2D>();
     private List<Axis> xAxisList = new ArrayList<>();
@@ -28,6 +28,11 @@ public class Chart extends JPanel {
     private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN,  Color.PINK};
 
     private boolean isTicksAligned = true;
+
+    private int[] xAxisOriginPoints;
+    private int[] yAxisOriginPoints;
+
+    private Rectangle paintingArea;
 
 
     public Chart() {
@@ -122,6 +127,7 @@ public class Chart extends JPanel {
     }
 
 
+
     private void alignAxis(List<Axis> axisList, Graphics2D g, Rectangle area){
         int maxSize = 0;
 
@@ -169,8 +175,8 @@ public class Chart extends JPanel {
 
     private Rectangle calculateAxisPositions(Graphics2D g, Rectangle area, int[] xAxisOriginPoints, int[] yAxisOriginPoints) {
         //Calculate axis position and indents of xAxisList
-        int width = getSize().width;
-        int height = getSize().height;
+        int width = area.width;
+        int height = area.height;
         int topIndent = chartPadding;
         int bottomIndent = chartPadding;
         int leftIndent = chartPadding;
@@ -206,19 +212,10 @@ public class Chart extends JPanel {
 
     }
 
+    public Rectangle getPaintingArea(Graphics2D g2d, Rectangle fullArea){
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        super.paintComponent(g2d);
-        int width = getSize().width;
-        int height = getSize().height;
-
-
-        int[] xAxisOriginPoints = new int[xAxisList.size()];
-        int[] yAxisOriginPoints = new int[yAxisList.size()];
-
-        Rectangle fullArea = new Rectangle(0,0,width,height);
+        xAxisOriginPoints = new int[xAxisList.size()];
+        yAxisOriginPoints = new int[yAxisList.size()];
 
         setFunctions(fullArea);
 
@@ -238,6 +235,35 @@ public class Chart extends JPanel {
         }
 
         area = calculateAxisPositions(g2d, fullArea, xAxisOriginPoints, yAxisOriginPoints);
+        paintingArea = area;
+        return area;
+
+
+    }
+
+    public void setPaintingArea(Rectangle area){
+        int shiftLeft, shiftRight;
+        shiftLeft = paintingArea.x - area.x;
+        shiftRight = paintingArea.width - area.width;
+
+        for (int i = 0; i < yAxisList.size(); i++) {
+            if (yAxisList.get(i).isOpposite()){
+                yAxisOriginPoints[i] -= shiftRight;
+            } else {
+                yAxisOriginPoints[i] += shiftLeft;
+            }
+        }
+
+    }
+
+    protected void draw(Graphics2D g2d, Rectangle fullArea) {
+        Rectangle area = paintingArea;
+
+        if (paintingArea == null){
+            area = getPaintingArea(g2d, fullArea);
+
+        } 
+
 
 
         for (int i = 0; i < xAxisList.size(); i++) {

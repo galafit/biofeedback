@@ -2,6 +2,7 @@ package main.chart;
 
 import main.chart.axis.Axis;
 import main.chart.axis.LinearAxis;
+import main.chart.functions.Foo;
 import main.chart.functions.Function2D;
 import main.chart.functions.Sin;
 import main.chart.functions.Tg;
@@ -64,14 +65,19 @@ public class MainFrame extends JFrame {
         Function2D sin = new Sin();
         chart.addGraph(new LineGraph(),sin);
 
-        Function2D tg = new Tg();
-        chart.addGraph(new LineGraph(), tg);
+        //Function2D tg = new Tg();
+        //chart.addGraph(new LineGraph(), tg);
+
+        Function2D foo = new Foo();
+        chart.addGraph(new LineGraph(), foo);
 
 
-        chart.setPreferredSize(new Dimension(500, 500));
-        chart.setBackground(Color.BLACK);
-        chart.setPreferredSize(new Dimension(500, 500));
-        add(chart,BorderLayout.CENTER);
+        ChartPanel chartPanel = new ChartPanel(chart);
+
+        chartPanel.setPreferredSize(new Dimension(500, 500));
+        chartPanel.setBackground(Color.BLACK);
+        chartPanel.setPreferredSize(new Dimension(500, 500));
+        add(chartPanel,BorderLayout.CENTER);
 
         pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
