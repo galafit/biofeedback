@@ -18,6 +18,7 @@ public class Chart implements Component {
     private List<Axis> xAxisList = new ArrayList<>();
     private List<Axis> yAxisList = new ArrayList<>();
     private int chartPadding = 10;
+    private int axisPadding = 10;
 
     private final Color GREY = new Color(150, 150, 150);
     private final Color BROWN = new Color(200, 102, 0 );
@@ -30,6 +31,7 @@ public class Chart implements Component {
     private int[] xAxisOriginPoints;
     private int[] yAxisOriginPoints;
     private Rectangle graphArea;
+
 
     public Chart() {
         Axis x = new LinearAxis();
@@ -62,13 +64,27 @@ public class Chart implements Component {
         return yAxisList.get(yAxisIndex);
     }
 
-    public void addYAxis(Axis axis){
+
+    public void addYAxis(AxisType axisType, boolean isOpposite){
+
+        Axis axis = new LinearAxis();
+        if (yAxisList.size() > 0) {
+            axis.getGridSettings().setGridLineWidth(0);
+            axis.getGridSettings().setMinorGridLineWidth(0);
+        }
+        axis.setOpposite(isOpposite);
         axis.setHorizontal(false);
-        axis.getViewSettings().setAxisColor(colors[xAxisList.size() % colors.length]);
+        axis.getViewSettings().setAxisColor(colors[yAxisList.size() % colors.length]);
         yAxisList.add(axis);
     }
 
-    public void addXAxis(Axis axis){
+    public void addXAxis(AxisType axisType, boolean isOpposite){
+        Axis axis = new LinearAxis();
+        if (xAxisList.size() > 0) {
+            axis.getGridSettings().setGridLineWidth(0);
+            axis.getGridSettings().setMinorGridLineWidth(0);
+        }
+        axis.setOpposite(isOpposite);
         axis.setHorizontal(true);
         axis.getViewSettings().setAxisColor(colors[xAxisList.size() % colors.length]);
         xAxisList.add(axis);
@@ -167,9 +183,13 @@ public class Chart implements Component {
         int bottomIndent = chartPadding;
         int leftIndent = chartPadding;
         int rightIndent = chartPadding;
-        for (int i = xAxisList.size() - 1; i >= 0 ; i--) {
-            int size = xAxisList.get(i).getWidth(g, fullArea);
 
+        int xAxisAmount =  xAxisList.size() - 1;
+        for (int i = xAxisAmount; i >= 0 ; i--) {
+            int size = xAxisList.get(i).getWidth(g, fullArea);
+            if (i != xAxisAmount) {
+                size += axisPadding;
+            }
             if (!xAxisList.get(i).isOpposite()){
                 bottomIndent += size;
                 xAxisOriginPoints[i] = fullArea.y + fullArea.height - bottomIndent;
@@ -179,8 +199,12 @@ public class Chart implements Component {
             }
         }
         //Calculate axis position and indents of yAxisList
-        for (int i = yAxisList.size() - 1; i >= 0 ; i--) {
+        int yAxisAmount = yAxisList.size() - 1;
+        for (int i = yAxisAmount; i >= 0 ; i--) {
             int size = yAxisList.get(i).getWidth(g, fullArea);
+            if (i != yAxisAmount) {
+                size += axisPadding;
+            }
             if (!yAxisList.get(i).isOpposite()){
                 leftIndent += size;
                 yAxisOriginPoints[i] = fullArea.x + leftIndent;
@@ -227,6 +251,8 @@ public class Chart implements Component {
         graphArea.width = areaWidth;
     }
 
+
+
     void draw(Graphics2D g2d) {
         for (int i = 0; i < xAxisList.size(); i++) {
             xAxisList.get(i).draw(g2d, graphArea, xAxisOriginPoints[i]);
@@ -236,14 +262,15 @@ public class Chart implements Component {
             yAxisList.get(i).draw(g2d, graphArea, yAxisOriginPoints[i]);
         }
 
-        // g2d.setClip(area);
+        Rectangle clipState = g2d.getClipBounds();
+        g2d.setClip(graphArea);
 
         for (Graph graph : graphs) {
             graph.draw(g2d, graphArea);
         }
+
+        g2d.setClip(clipState);
     }
-
-
 
 
 

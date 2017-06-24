@@ -138,6 +138,14 @@ public abstract class AxisData {
 
     }
 
+    public Double getRawMin(){
+        return (min == null) ? DEFAULT_MIN : min;
+    }
+
+    public Double getRawMax(){
+        return (max == null) ? DEFAULT_MAX : max;
+    }
+
     /**
      * If isAutoScale = FALSE this method simply sets: min = newMin, max = newMax.
      * But if isAutoScale = TRUE then it only extends the range and sets:

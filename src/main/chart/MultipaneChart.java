@@ -9,8 +9,23 @@ import java.util.List;
  */
 public class MultipaneChart implements Component {
     private List<Chart> charts = new ArrayList<Chart>();
+    private List<Integer> chartWeights = new ArrayList<Integer>();
+    private boolean isChartsSynchronized = true;
+
+    public boolean isChartsSynchronized() {
+        return isChartsSynchronized;
+    }
+
+    public void setChartsSynchronized(boolean chartsSynchronized) {
+        isChartsSynchronized = chartsSynchronized;
+    }
 
     public void addChart(Chart chart){
+       addChart(chart, 1);
+    }
+
+    public void addChart(Chart chart, int weight){
+        chartWeights.add(weight);
         charts.add(chart);
     }
 
@@ -22,18 +37,46 @@ public class MultipaneChart implements Component {
         return charts.size();
     }
 
+    private Range getMaxRange(){
+        double min = Double.MAX_VALUE;
+        double max = - Double.MAX_VALUE;
+
+        for (Chart chart : charts) {
+            max = Math.max(max, chart.getXAxis(0).getRawMax());
+            min = Math.min(min, chart.getXAxis(0).getRawMin());
+        }
+        return new Range(min,max);
+    }
+
+    private void synchronizeRanges(){
+        Range range = getMaxRange();
+        for (Chart chart : charts) {
+            chart.getXAxis(0).setRange(range.getMin(), range.getMax());
+        }
+    }
 
     public void draw(Graphics2D g2d, Rectangle fullArea) {
 
-        int chartHeight = (chartAmount() == 0) ? fullArea.height : fullArea.height / chartAmount();
+        if (isChartsSynchronized()) {
+            synchronizeRanges();
+        }
+
+        int weightSum = 0;
+        for (Integer chartWeight : chartWeights) {
+            weightSum += chartWeight;
+        }
+
+        int oneWeightHeight = (chartAmount() == 0) ? fullArea.height : fullArea.height / weightSum;
 
         int chartY = fullArea.y;
         List<Rectangle> chartGraphAreas = new ArrayList<Rectangle>(chartAmount());
 
-        for (Chart chart : charts) {
+
+        for (int i = 0; i < chartAmount(); i++) {
+            int chartHeight = oneWeightHeight * chartWeights.get(i);
             Rectangle chartRectangle = new Rectangle(fullArea.x,chartY,fullArea.width,chartHeight);
             chartY = chartY + chartHeight;
-            chartGraphAreas.add(chart.getGraphArea(g2d, chartRectangle));
+            chartGraphAreas.add(charts.get(i).getGraphArea(g2d, chartRectangle));
         }
 
         int maxX = Integer.MIN_VALUE;

@@ -1,6 +1,7 @@
 package main.chart;
 
 import main.chart.axis.Axis;
+import main.chart.axis.AxisType;
 import main.chart.axis.LinearAxis;
 import main.chart.functions.Foo;
 import main.chart.functions.Function2D;
@@ -24,22 +25,10 @@ public class MainFrame extends JFrame {
 
         Chart chart = new Chart();
 
-        Axis yAxis2 = new LinearAxis();
-        Axis xAxis2 = new LinearAxis();
 
 
-        yAxis2.getGridSettings().setGridLineWidth(0);
-        yAxis2.getGridSettings().setMinorGridLineWidth(0);
-        yAxis2.setOpposite(true);
-       // yAxis2.setVisible(false);
-
-        xAxis2.getGridSettings().setGridLineWidth(0);
-        xAxis2.getGridSettings().setMinorGridLineWidth(0);
-        xAxis2.setOpposite(true);
-
-
-        chart.addYAxis(yAxis2);
-        chart.addXAxis(xAxis2);
+        chart.addYAxis(AxisType.NUMERIC, true);
+        chart.addXAxis(AxisType.NUMERIC, true);
 
         XYList xyList = new XYList();
         Random rand = new Random();
@@ -71,19 +60,20 @@ public class MainFrame extends JFrame {
         chart.addGraph(new LineGraph(), foo);
 
         Chart chart1 = new Chart();
+        xyList.addItem(18,30);
+        xyList.addItem(-3,17);
         chart1.addGraph(new LineGraph(),xyList);
 
 
-        Axis yAxis3 = new LinearAxis();
-        yAxis3.getGridSettings().setGridLineWidth(0);
-        yAxis3.getGridSettings().setMinorGridLineWidth(0);
-        yAxis3.setOpposite(true);
-        chart1.addYAxis(yAxis3);
+        chart1.addYAxis(AxisType.NUMERIC, false);
+        chart1.addYAxis(AxisType.NUMERIC, false);
 
+        chart1.addXAxis(AxisType.NUMERIC, true);
+        chart1.addXAxis(AxisType.NUMERIC, true);
 
         MultipaneChart multipaneChart = new MultipaneChart();
-        multipaneChart.addChart(chart);
-        multipaneChart.addChart(chart1);
+        multipaneChart.addChart(chart,1);
+        multipaneChart.addChart(chart1,2);
 
 
         ChartPanel chartPanel = new ChartPanel(multipaneChart);

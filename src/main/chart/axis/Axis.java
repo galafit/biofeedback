@@ -102,6 +102,10 @@ public abstract class Axis {
         return axisData.getMax();
     }
 
+    public Double getRawMin(){ return axisData.getRawMin();}
+
+    public Double getRawMax(){ return axisData.getRawMax();}
+
     public void draw(Graphics2D g, Rectangle area, int anchorPoint){
         axisPainter.draw(g, area, anchorPoint);
     }
