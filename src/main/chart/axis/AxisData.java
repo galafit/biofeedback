@@ -113,6 +113,10 @@ public abstract class AxisData {
     public abstract double pointsToValue(int point, Rectangle area);
 
     public Double getMin() {
+        if(min == null) {
+            return DEFAULT_MIN;
+        }
+
         double resultantMin = (min == null) ? DEFAULT_MIN : min;
         double resultantMax = (max == null) ? DEFAULT_MAX : max;
 
@@ -123,6 +127,9 @@ public abstract class AxisData {
     }
 
     public Double getMax() {
+        if(max == null) {
+            return DEFAULT_MAX;
+        }
         double resultantMin = (min == null) ? DEFAULT_MIN : min;
         double resultantMax = (max == null) ? DEFAULT_MAX : max;
 

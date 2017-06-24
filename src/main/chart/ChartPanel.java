@@ -7,9 +7,9 @@ import java.awt.*;
  * Created by hdablin on 23.06.17.
  */
 public class ChartPanel extends JPanel {
-    private Chart chart;
+    private Component chart;
 
-    public ChartPanel(Chart chart) {
+    public ChartPanel(Component chart) {
         this.chart = chart;
     }
 

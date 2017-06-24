@@ -55,6 +55,7 @@ public class LinearAxisData extends AxisData {
             tickProvider.setMinTickPixelInterval(minTickPixelInterval);
         }
         List<Tick> ticks = tickProvider.getTicks();
+
         if(ticks.size() > 1) {
             roundMin = ticks.get(0).getValue();
             roundMax = ticks.get(ticks.size() - 1).getValue();

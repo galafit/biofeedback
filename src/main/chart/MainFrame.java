@@ -56,23 +56,37 @@ public class MainFrame extends JFrame {
             xyList2.addItem(4057.0789,i);
         }
 
-        Graph graph1 = new LineGraph();
-        Graph graph2 = new LineGraph();
 
-        chart.addGraph(graph1,xyList);
-        chart.addGraph(graph2, xyList2, 1,1);
+        chart.addGraph(new LineGraph(),xyList);
+        chart.addGraph(new LineGraph(), xyList2, 1,1);
+
 
         Function2D sin = new Sin();
-        chart.addGraph(new LineGraph(),sin);
+        //chart.addGraph(new LineGraph(),sin);
 
-        //Function2D tg = new Tg();
+        Function2D tg = new Tg();
         //chart.addGraph(new LineGraph(), tg);
 
         Function2D foo = new Foo();
         chart.addGraph(new LineGraph(), foo);
 
+        Chart chart1 = new Chart();
+        chart1.addGraph(new LineGraph(),xyList);
 
-        ChartPanel chartPanel = new ChartPanel(chart);
+
+        Axis yAxis3 = new LinearAxis();
+        yAxis3.getGridSettings().setGridLineWidth(0);
+        yAxis3.getGridSettings().setMinorGridLineWidth(0);
+        yAxis3.setOpposite(true);
+        chart1.addYAxis(yAxis3);
+
+
+        MultipaneChart multipaneChart = new MultipaneChart();
+        multipaneChart.addChart(chart);
+        multipaneChart.addChart(chart1);
+
+
+        ChartPanel chartPanel = new ChartPanel(multipaneChart);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);

@@ -304,11 +304,12 @@ public class AxisPainter {
 
         } else { //VERTICAL position
             //RIGTH axis position
+            int labelY = tickPoint + getStringHeight(g, label, font) / 2 - 1;
             if (axis.isOpposite()) {
-                g.drawString(label, axisOriginPoint + labelPosition, tickPoint + getStringHeight(g, label, font) / 2);
+                g.drawString(label, axisOriginPoint + labelPosition, labelY);
             } else { //LEFT axis position
                 labelPosition += getStringWidth(g, label, font) + 1;
-                g.drawString(label, axisOriginPoint - labelPosition, tickPoint + getStringHeight(g, label, font) / 2);
+                g.drawString(label, axisOriginPoint - labelPosition, labelY);
             }
         }
     }
@@ -324,7 +325,7 @@ public class AxisPainter {
     }
 
     private int getStringHeight(Graphics2D g, String label, Font font) {
-        // return (int)(g.getFontMetrics().getStringBounds(label,(Graphics2D)(g)).getHeight());
+         //return (int)(g.getFontMetrics().getStringBounds(label,(Graphics2D)(g)).getHeight());
         return (int)Math.round(getStringBounds(g, label, font).getHeight());
     }
 
