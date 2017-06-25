@@ -1,13 +1,10 @@
 package main.chart;
 
-import main.chart.axis.Axis;
 import main.chart.axis.AxisType;
-import main.chart.axis.LinearAxis;
 import main.chart.functions.Foo;
 import main.chart.functions.Function2D;
 import main.chart.functions.Sin;
 import main.chart.functions.Tg;
-import main.functions.Function;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,13 +19,10 @@ public class MainFrame extends JFrame {
 
         setTitle("Test chart");
 
-
         Chart chart = new Chart();
 
-
-
-        chart.addYAxis(AxisType.NUMERIC, true);
-        chart.addXAxis(AxisType.NUMERIC, true);
+        chart.addYAxis(AxisType.LINEAR, true);
+       // chart.addXAxis(AxisType.LINEAR, true);
 
         XYList xyList = new XYList();
         Random rand = new Random();
@@ -46,8 +40,9 @@ public class MainFrame extends JFrame {
         }
 
 
+
         chart.addGraph(new LineGraph(),xyList);
-        chart.addGraph(new LineGraph(), xyList2, 1,1);
+       // chart.addGraph(new LineGraph(), xyList2, 1,1);
 
 
         Function2D sin = new Sin();
@@ -60,16 +55,17 @@ public class MainFrame extends JFrame {
         chart.addGraph(new LineGraph(), foo);
 
         Chart chart1 = new Chart();
+
         xyList.addItem(18,30);
         xyList.addItem(-3,17);
         chart1.addGraph(new LineGraph(),xyList);
 
 
-        chart1.addYAxis(AxisType.NUMERIC, false);
-        chart1.addYAxis(AxisType.NUMERIC, false);
+        chart1.addYAxis(AxisType.LINEAR, false);
+        chart1.addYAxis(AxisType.LINEAR, false);
 
-        chart1.addXAxis(AxisType.NUMERIC, true);
-        chart1.addXAxis(AxisType.NUMERIC, true);
+      //  chart1.addXAxis(AxisType.LINEAR, true);
+      //  chart1.addXAxis(AxisType.LINEAR, true);
 
         MultipaneChart multipaneChart = new MultipaneChart();
         multipaneChart.addChart(chart,1);

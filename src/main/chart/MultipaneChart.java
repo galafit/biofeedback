@@ -87,7 +87,7 @@ public class MultipaneChart implements Component {
         }
 
         for (Chart chart : charts) {
-            chart.adjustGraphArea(maxX, minEnd - maxX);
+            chart.adjustGraphArea(g2d, maxX, minEnd - maxX);
             chart.draw(g2d);
         }
     }

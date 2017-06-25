@@ -134,6 +134,7 @@ public class Chart implements Component {
 
     private void alignAxis(List<Axis> axisList, Graphics2D g, Rectangle area){
         int maxSize = 0;
+        if(axisList.size() > 1) {
             for (Axis axis : axisList) {
                 axis.getTicksSettings().setTicksAmount(0);
             }
@@ -146,6 +147,7 @@ public class Chart implements Component {
                 axis.getTicksSettings().setTicksAmount(maxSize);
                 axis.setEndOnTick(true);
             }
+        }
     }
 
 
@@ -235,7 +237,7 @@ public class Chart implements Component {
         return graphArea;
     }
 
-    void adjustGraphArea (int areaX, int areaWidth)  {
+    void adjustGraphArea (Graphics2D g2d, int areaX, int areaWidth)  {
         int shiftLeft, shiftRight;
         shiftLeft = areaX - graphArea.x;
         shiftRight = graphArea.x + graphArea.width - areaX - areaWidth;
@@ -249,6 +251,10 @@ public class Chart implements Component {
         }
         graphArea.x = areaX;
         graphArea.width = areaWidth;
+        if (isTicksAligned()) {
+            alignAxis(xAxisList, g2d, graphArea);
+            alignAxis(yAxisList, g2d, graphArea);
+        }
     }
 
 
@@ -262,14 +268,14 @@ public class Chart implements Component {
             yAxisList.get(i).draw(g2d, graphArea, yAxisOriginPoints[i]);
         }
 
-        Rectangle clipState = g2d.getClipBounds();
+        Rectangle clip = g2d.getClipBounds();
         g2d.setClip(graphArea);
 
         for (Graph graph : graphs) {
             graph.draw(g2d, graphArea);
         }
 
-        g2d.setClip(clipState);
+        g2d.setClip(clip);
     }
 
 

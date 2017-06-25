@@ -88,7 +88,8 @@ public class AxisPainter {
             } else {
                 labelsSize = getMaxTickLabelsHeight(g, getLabelFont(), ticks);
             }
-            int tickPixelInterval = (int)((ticks.get(1).getValue() - ticks.get(0).getValue()) * axis.pointsPerUnit(area));
+            double ticksInterval = ticks.get(1).getValue() - ticks.get(0).getValue();
+            int tickPixelInterval = (int)(ticksInterval * axis.pointsPerUnit(area));
             // min space between labels = 2 symbols size (roughly)
             int labelSpace = 2 * axis.getTicksSettings().getTickLabelsFontSize();
             int requiredSpace = labelsSize + labelSpace;

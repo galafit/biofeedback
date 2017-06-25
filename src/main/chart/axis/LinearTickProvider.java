@@ -19,12 +19,14 @@ class LinearTickProvider {
     DecimalFormat numberFormat = new DecimalFormat();
     int ticksAmount;
     String units;
+    boolean isHorizontal;
 
-    public LinearTickProvider(double min, double max, double pointsPerUnit, @Nullable  String units) {
+    public LinearTickProvider(double min, double max, double pointsPerUnit, @Nullable  String units, boolean isHorizontal) {
         this.min = min;
         this.max = max;
         this.pointsPerUnit = pointsPerUnit;
         this.units = units;
+        this.isHorizontal = isHorizontal;
     }
 
     private double getClosestTickPrev(double value, double tickInterval) {
@@ -106,7 +108,6 @@ class LinearTickProvider {
                 break;
         }
         setTickIntervalAndFormat(firstDigit * Math.pow(10, power), power);
-
     }
 
     /**

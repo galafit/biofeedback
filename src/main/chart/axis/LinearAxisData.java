@@ -16,7 +16,7 @@ public class LinearAxisData extends AxisData {
         roundMin = null;
         String units = getUnits();
         units = getAxisViewSettings().isUnitsVisible() ? units : null;
-        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units);
+        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units, isHorizontal());
 
         double tickInterval = getTicksSettings().getTickInterval();
         int ticksAmount = getTicksSettings().getTicksAmount();
@@ -42,7 +42,7 @@ public class LinearAxisData extends AxisData {
         roundMin = null;
         String units = getUnits();
         units = getAxisViewSettings().isUnitsVisible() ? units : null;
-        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units);
+        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units, isHorizontal());
 
         double tickInterval = getTicksSettings().getTickInterval();
         int ticksAmount = getTicksSettings().getTicksAmount();
