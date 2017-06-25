@@ -30,7 +30,7 @@ public class Chart implements Component {
     private boolean isTicksAligned = true;
     private int[] xAxisOriginPoints;
     private int[] yAxisOriginPoints;
-    private Rectangle graphArea;
+    protected Rectangle graphArea;
 
 
     public Chart() {

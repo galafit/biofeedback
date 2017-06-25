@@ -39,6 +39,10 @@ public class MainFrame extends JFrame {
             xyList2.addItem(4057.0789,i);
         }
 
+        XYList xyList3 = new XYList();
+        for (int i = -78; i <156 ; i++) {
+            xyList3.addItem(i,rand.nextInt(90));
+        }
 
 
         chart.addGraph(new LineGraph(),xyList);
@@ -58,7 +62,8 @@ public class MainFrame extends JFrame {
 
         xyList.addItem(18,30);
         xyList.addItem(-3,17);
-        chart1.addGraph(new LineGraph(),xyList);
+      //  chart1.addGraph(new LineGraph(),xyList);
+        chart1.addGraph(new LineGraph(),xyList3);
 
 
         chart1.addYAxis(AxisType.LINEAR, false);
@@ -67,12 +72,18 @@ public class MainFrame extends JFrame {
       //  chart1.addXAxis(AxisType.LINEAR, true);
       //  chart1.addXAxis(AxisType.LINEAR, true);
 
-        MultipaneChart multipaneChart = new MultipaneChart();
-        multipaneChart.addChart(chart,1);
-        multipaneChart.addChart(chart1,2);
+        PreviewChart previewChart = new PreviewChart();
+      //  previewChart.addChart(chart,1);
+
+        Preview preview = new Preview();
+        previewChart.addChart(chart1,2);
+        previewChart.addPreview(preview,3);
+
+        previewChart.addPreview(new Preview());
+        previewChart.addChart(chart);
 
 
-        ChartPanel chartPanel = new ChartPanel(multipaneChart);
+        ChartPanel chartPanel = new ChartPanel(previewChart);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);
