@@ -70,16 +70,16 @@ public class MainFrame extends JFrame {
       //  chart1.addXAxis(AxisType.LINEAR, true);
 
         PreviewChart previewChart = new PreviewChart();
-      //  previewChart.addChart(chart,1);
+      //  previewChart.addChartPanel(chart,1);
 
         previewChart.addChart(chart1,2);
-        previewChart.addChart(chart);
-        previewChart.addPreview(new Chart());
-        previewChart.addPreview(new Chart());
+        previewChart.addChartPanel(chart);
+        previewChart.addPreviewPanel(new Chart());
+        previewChart.addPreviewPanel(new Chart());
 
 
 
-        ChartPanel chartPanel = new ChartPanel(previewChart);
+        PreviewChartPanel chartPanel = new PreviewChartPanel(previewChart);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);

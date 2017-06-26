@@ -19,42 +19,77 @@ public class PreviewChart implements Drawable {
     private Color cursorColor = Color.RED;
     private int cursorWidth = 5;
 
+    private double xAxisPointsPerUnit;
+
+    public PreviewChart() {
+        addChartPanel();
+    }
+
     private boolean isChartsSynchronized = true;
 
     public boolean isChartsSynchronized() {
         return isChartsSynchronized;
     }
 
+    public int getCursorPosition() {
+        return cursorPosition;
+    }
+
+    public void setCursorPosition(int mousePosition) {
+        if(previews.size() > 0) {
+            Rectangle firstArea = previews.get(0).getGraphArea();
+            if (mousePosition <= firstArea.x) {
+                mousePosition = 0;
+            } else if (mousePosition >= firstArea.x + firstArea.width){
+                mousePosition = firstArea.width;
+            } else {
+                mousePosition -= firstArea.x;
+            }
+            this.cursorPosition = mousePosition;
+        }
+    }
+
     public void setChartsSynchronized(boolean chartsSynchronized) {
         isChartsSynchronized = chartsSynchronized;
     }
 
-    public void addChart(Chart chart){
-        addChart(chart, 1);
+    public void addChartPanel(){
+        addChartPanel( 1);
     }
 
-    public void addChart(Chart chart, int weight){
+    public void addChartPanel(int weight){
         if (weight <= 0){
             String errorMessage = "Wrong weight: {0}. Expected > 0.";
             String formattedError = MessageFormat.format(errorMessage,weight);
             throw new IllegalArgumentException(formattedError);
         }
         chartWeights.add(weight);
+        Chart chart = new Chart();
+        chart.getXAxis(0).setAutoScale(false);
+        chart.setTicksAligned(false);
         charts.add(chart);
     }
 
-    public void addPreview(Chart preview, int weight){
+    public void addPreviewPanel(int weight){
         if (weight <= 0){
             String errorMessage = "Wrong weight: {0}. Expected > 0.";
             String formattedError = MessageFormat.format(errorMessage,weight);
             throw new IllegalArgumentException(formattedError);
         }
         previewWeights.add(weight);
+        Chart preview = new Chart();
+        preview.getXAxis(0).setAutoScale(false);
+        preview.setTicksAligned(false);
         previews.add(preview);
     }
 
-    public void addPreview(Chart preview){
-        addPreview(preview, 1);
+    public void addPreviewPanel(){
+        addPreviewPanel(1);
+    }
+
+    public void addGraph(int chartPanelIndex, Graph graph, DataList dataList){
+        charts.get(chartPanelIndex).addGraph(graph, dataList);
+
     }
 
 
