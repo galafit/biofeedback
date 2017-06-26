@@ -66,21 +66,17 @@ public class MainFrame extends JFrame {
         chart1.addGraph(new LineGraph(),xyList3);
 
 
-        chart1.addYAxis(AxisType.LINEAR, false);
-        chart1.addYAxis(AxisType.LINEAR, false);
-
       //  chart1.addXAxis(AxisType.LINEAR, true);
       //  chart1.addXAxis(AxisType.LINEAR, true);
 
         PreviewChart previewChart = new PreviewChart();
       //  previewChart.addChart(chart,1);
 
-        Preview preview = new Preview();
         previewChart.addChart(chart1,2);
-        previewChart.addPreview(preview,3);
-
-        previewChart.addPreview(new Preview());
         previewChart.addChart(chart);
+        previewChart.addPreview(new Chart());
+        previewChart.addPreview(new Chart());
+
 
 
         ChartPanel chartPanel = new ChartPanel(previewChart);

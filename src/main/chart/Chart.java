@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by hdablin on 24.03.17.
  */
-public class Chart implements Component {
+public class Chart implements Drawable {
     private List<Graph> graphs = new ArrayList<>();
     private Map<Integer,Function2D> functionMap = new Hashtable<Integer, Function2D>();
     private List<Axis> xAxisList = new ArrayList<>();
@@ -218,7 +218,11 @@ public class Chart implements Component {
         graphArea = new Rectangle(fullArea.x + leftIndent, fullArea.y +topIndent,fullArea.width - leftIndent - rightIndent,fullArea.height - topIndent - bottomIndent);
     }
 
-     Rectangle getGraphArea(Graphics2D g2d, Rectangle fullArea){
+    Rectangle getGraphArea() {
+        return graphArea;
+    }
+
+     Rectangle calculateGraphArea(Graphics2D g2d, Rectangle fullArea){
         setFunctions(fullArea);
 
         for (Axis axis : yAxisList){
@@ -281,7 +285,7 @@ public class Chart implements Component {
 
 
     public void draw(Graphics2D g2d, Rectangle fullArea) {
-        getGraphArea(g2d, fullArea);
+        calculateGraphArea(g2d, fullArea);
         draw(g2d);
     }
 }

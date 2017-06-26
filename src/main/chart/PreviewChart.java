@@ -9,11 +9,15 @@ import java.util.List;
 /**
  * Created by hdablin on 25.06.17.
  */
-public class PreviewChart implements Component{
+public class PreviewChart implements Drawable {
     private List<Chart> charts = new ArrayList<Chart>();
-    private List<Preview> previews = new ArrayList<Preview>();
+    private List<Chart> previews = new ArrayList<Chart>();
     private List<Integer> chartWeights = new ArrayList<Integer>();
     private List<Integer> previewWeights = new ArrayList<Integer>();
+
+    private int cursorPosition = 50;
+    private Color cursorColor = Color.RED;
+    private int cursorWidth = 5;
 
     private boolean isChartsSynchronized = true;
 
@@ -39,7 +43,7 @@ public class PreviewChart implements Component{
         charts.add(chart);
     }
 
-    public void addPreview(Preview preview, int weight){
+    public void addPreview(Chart preview, int weight){
         if (weight <= 0){
             String errorMessage = "Wrong weight: {0}. Expected > 0.";
             String formattedError = MessageFormat.format(errorMessage,weight);
@@ -49,7 +53,7 @@ public class PreviewChart implements Component{
         previews.add(preview);
     }
 
-    public void addPreview(Preview preview){
+    public void addPreview(Chart preview){
         addPreview(preview, 1);
     }
 
@@ -73,21 +77,24 @@ public class PreviewChart implements Component{
         }
     }
 
-    public void draw(Graphics2D g2d, Rectangle fullArea) {
-
-        if (isChartsSynchronized()) {
-            synchronizeRanges(charts);
-
-            List<Chart> castedPreviews = new ArrayList<Chart>();
-            for (Preview preview : previews) {
-                castedPreviews.add(preview);
-            }
-
-            synchronizeRanges(castedPreviews);
+    public void drawCursor(Graphics2D g2d) {
+        if(previews.size() > 0) {
+            Rectangle firstArea = previews.get(0).getGraphArea();
+            Rectangle lastArea = previews.get(previews.size() - 1).getGraphArea();
+            g2d.setColor(cursorColor);
+            int cursorX = firstArea.x + cursorPosition;
+            int cursorY = firstArea.y;
+            int cursorHeight = lastArea.y + lastArea.height - firstArea.y;
+            g2d.drawRect(cursorX, cursorY, cursorWidth,  cursorHeight);
 
         }
+    }
 
-
+    public void draw(Graphics2D g2d, Rectangle fullArea) {
+        if (isChartsSynchronized()) {
+            synchronizeRanges(charts);
+            synchronizeRanges(previews);
+        }
 
         List<Chart> chartsAndPreviews = new AbstractList<Chart>() {
             @Override
@@ -103,7 +110,6 @@ public class PreviewChart implements Component{
             public int size() {
                 return charts.size() + previews.size();
             }
-
         };
 
         List<Integer> allWeights = new AbstractList<Integer>() {
@@ -128,9 +134,7 @@ public class PreviewChart implements Component{
             weightSum += allWeights.get(j);
         }
 
-
         int oneWeightHeight = (chartsAndPreviews.size() == 0) ? fullArea.height : fullArea.height / weightSum;
-
         int chartY = fullArea.y;
         List<Rectangle> chartGraphAreas = new ArrayList<Rectangle>(chartsAndPreviews.size());
 
@@ -139,7 +143,7 @@ public class PreviewChart implements Component{
             int chartHeight = oneWeightHeight * allWeights.get(i);
             Rectangle chartRectangle = new Rectangle(fullArea.x,chartY,fullArea.width,chartHeight);
             chartY = chartY + chartHeight;
-            chartGraphAreas.add(chartsAndPreviews.get(i).getGraphArea(g2d, chartRectangle));
+            chartGraphAreas.add(chartsAndPreviews.get(i).calculateGraphArea(g2d, chartRectangle));
         }
 
         int maxX = Integer.MIN_VALUE;
@@ -153,7 +157,7 @@ public class PreviewChart implements Component{
             chartsAndPreviews.get(i).adjustGraphArea(g2d, maxX, minEnd - maxX);
             chartsAndPreviews.get(i).draw(g2d);
         }
+        drawCursor(g2d);
     }
-
 
 }

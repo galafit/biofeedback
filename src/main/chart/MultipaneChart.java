@@ -7,10 +7,11 @@ import java.util.List;
 /**
  * Created by hdablin on 23.06.17.
  */
-public class MultipaneChart implements Component {
+public class MultipaneChart implements Drawable {
     private List<Chart> charts = new ArrayList<Chart>();
     private List<Integer> chartWeights = new ArrayList<Integer>();
     private boolean isChartsSynchronized = true;
+
 
     public boolean isChartsSynchronized() {
         return isChartsSynchronized;
@@ -76,7 +77,7 @@ public class MultipaneChart implements Component {
             int chartHeight = oneWeightHeight * chartWeights.get(i);
             Rectangle chartRectangle = new Rectangle(fullArea.x,chartY,fullArea.width,chartHeight);
             chartY = chartY + chartHeight;
-            chartGraphAreas.add(charts.get(i).getGraphArea(g2d, chartRectangle));
+            chartGraphAreas.add(charts.get(i).calculateGraphArea(g2d, chartRectangle));
         }
 
         int maxX = Integer.MIN_VALUE;
