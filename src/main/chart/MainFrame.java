@@ -69,13 +69,12 @@ public class MainFrame extends JFrame {
       //  chart1.addXAxis(AxisType.LINEAR, true);
       //  chart1.addXAxis(AxisType.LINEAR, true);
 
-        PreviewChart previewChart = new PreviewChart();
+        PreviewChart previewChart = new PreviewChart(1000);
       //  previewChart.addChartPanel(chart,1);
 
-        previewChart.addChart(chart1,2);
-        previewChart.addChartPanel(chart);
-        previewChart.addPreviewPanel(new Chart());
-        previewChart.addPreviewPanel(new Chart());
+        previewChart.addChart(chart1);
+        previewChart.addPreviewPanel();
+
 
 
 

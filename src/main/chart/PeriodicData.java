@@ -28,6 +28,10 @@ public class PeriodicData extends AbstractList<DataItem>{
         data.add(dataValue);
     }
 
+    public int getIndex (double value){
+        return (int)((value - startValue) * samplesPerUnit);
+    }
+
 
 
     @Override

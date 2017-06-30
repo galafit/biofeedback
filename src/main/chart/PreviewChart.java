@@ -14,15 +14,15 @@ public class PreviewChart implements Drawable {
     private List<Chart> previews = new ArrayList<Chart>();
     private List<Integer> chartWeights = new ArrayList<Integer>();
     private List<Integer> previewWeights = new ArrayList<Integer>();
-
-    private int cursorPosition = 50;
+    private ScrollModel scrollModel;
     private Color cursorColor = Color.RED;
-    private int cursorWidth = 5;
+    private int fullCahrtWidth;
 
     private double xAxisPointsPerUnit;
 
-    public PreviewChart() {
-        addChartPanel();
+    public PreviewChart(int fullCahrtWidth) {
+        this.fullCahrtWidth = fullCahrtWidth;
+        scrollModel = new PreviewScrollModel();
     }
 
     private boolean isChartsSynchronized = true;
@@ -31,9 +31,6 @@ public class PreviewChart implements Drawable {
         return isChartsSynchronized;
     }
 
-    public int getCursorPosition() {
-        return cursorPosition;
-    }
 
     public void setCursorPosition(int mousePosition) {
         if(previews.size() > 0) {
@@ -45,12 +42,21 @@ public class PreviewChart implements Drawable {
             } else {
                 mousePosition -= firstArea.x;
             }
-            this.cursorPosition = mousePosition;
+            int scrollPosition = mousePosition;
+            if (scrollPosition > scrollModel.getMax() - scrollModel.getScrollWidth()){
+                scrollPosition = scrollModel.getMax() - scrollModel.getScrollWidth();
+            }
+            scrollModel.setScrollPosition(scrollPosition);
         }
     }
 
     public void setChartsSynchronized(boolean chartsSynchronized) {
         isChartsSynchronized = chartsSynchronized;
+    }
+
+    public void addChart (Chart chart){
+        charts.add(chart);
+        chartWeights.add(1);
     }
 
     public void addChartPanel(){
@@ -117,10 +123,10 @@ public class PreviewChart implements Drawable {
             Rectangle firstArea = previews.get(0).getGraphArea();
             Rectangle lastArea = previews.get(previews.size() - 1).getGraphArea();
             g2d.setColor(cursorColor);
-            int cursorX = firstArea.x + cursorPosition;
+            int cursorX = firstArea.x + scrollModel.getScrollPosition();
             int cursorY = firstArea.y;
             int cursorHeight = lastArea.y + lastArea.height - firstArea.y;
-            g2d.drawRect(cursorX, cursorY, cursorWidth,  cursorHeight);
+            g2d.drawRect(cursorX, cursorY, scrollModel.getScrollWidth(),  cursorHeight);
 
         }
     }
@@ -193,6 +199,55 @@ public class PreviewChart implements Drawable {
             chartsAndPreviews.get(i).draw(g2d);
         }
         drawCursor(g2d);
+    }
+
+    public int getPaintingAreaWidth (){
+        return charts.get(0).getGraphArea().width;
+    }
+
+    class PreviewScrollModel implements ScrollModel{
+        int scrollPosition;
+
+
+        @Override
+        public int getMin() {
+            return 0;
+        }
+
+        @Override
+        public int getMax() {
+            return getPaintingAreaWidth();
+        }
+
+        @Override
+        public int getScrollPosition() {
+            return scrollPosition;
+        }
+
+        @Override
+        public int getScrollWidth() {
+            return getPaintingAreaWidth() * getPaintingAreaWidth() / fullCahrtWidth;
+        }
+
+        @Override
+        public void setMin(int min) {
+
+        }
+
+        @Override
+        public void setMax(int max) {
+
+        }
+
+        @Override
+        public void setScrollPosition(int scrollPosition) {
+            this.scrollPosition = scrollPosition;
+        }
+
+        @Override
+        public void setScrollWidth(int scrollWidth) {
+
+        }
     }
 
 }
