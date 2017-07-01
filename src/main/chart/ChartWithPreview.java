@@ -57,6 +57,8 @@ public class ChartWithPreview implements Drawable {
         charts.add(chart);
     }
 
+
+
     public void addPreviewPanel(int weight) {
         if (weight <= 0) {
             String errorMessage = "Wrong weight: {0}. Expected > 0.";
@@ -99,6 +101,20 @@ public class ChartWithPreview implements Drawable {
         for (Chart chart : previews) {
             chart.getXAxis(0).setRange(range.getMin(), range.getMax());
         }
+    }
+
+    public boolean isMouseInsideCursor(int mousePosition){
+        if (previews.size() > 0) {
+
+            Rectangle firstArea = previews.get(0).getGraphArea();
+            mousePosition = mousePosition - firstArea.x;
+
+            if (mousePosition >= scrollModel.getScrollPosition() && mousePosition <= (scrollModel.getScrollPosition() + scrollModel.getScrollWidth())) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     public void setCursorPosition(int mousePosition) {

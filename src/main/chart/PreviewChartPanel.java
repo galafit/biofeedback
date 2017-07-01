@@ -4,21 +4,44 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 /**
  * Created by hdablin on 26.06.17.
  */
 public class PreviewChartPanel extends JPanel {
     private ChartWithPreview chartWithPreview;
+    private boolean isMousePressedInsideCursor = false;
 
     public PreviewChartPanel(ChartWithPreview chartWithPreview) {
         this.chartWithPreview = chartWithPreview;
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 chartWithPreview.setCursorPosition(e.getX());
                 repaint();
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                isMousePressedInsideCursor = chartWithPreview.isMouseInsideCursor(e.getX());
+            }
+
+        });
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                if (isMousePressedInsideCursor){
+                    chartWithPreview.setCursorPosition(e.getX());
+                    repaint();
+                }
+
             }
         });
     }
