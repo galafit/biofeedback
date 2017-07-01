@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionAdapter;
 public class PreviewChartPanel extends JPanel {
     private ChartWithPreview chartWithPreview;
     private boolean isMousePressedInsideCursor = false;
+    private int mousePressedX;
 
     public PreviewChartPanel(ChartWithPreview chartWithPreview) {
         this.chartWithPreview = chartWithPreview;
@@ -20,14 +21,16 @@ public class PreviewChartPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                chartWithPreview.setCursorPosition(e.getX());
-                repaint();
-
+                if (!isMousePressedInsideCursor){
+                    chartWithPreview.setCursorPosition(e.getX());
+                    repaint();
+                }
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+                mousePressedX = e.getX();
                 isMousePressedInsideCursor = chartWithPreview.isMouseInsideCursor(e.getX());
             }
 
@@ -38,7 +41,7 @@ public class PreviewChartPanel extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
                 if (isMousePressedInsideCursor){
-                    chartWithPreview.setCursorPosition(e.getX());
+                    chartWithPreview.moveCursorPosition(e.getX() - mousePressedX);
                     repaint();
                 }
 

@@ -117,6 +117,10 @@ public class ChartWithPreview implements Drawable {
         return false;
     }
 
+    public void moveCursorPosition(int offset){
+        scrollModel.setScrollPosition(scrollModel.getScrollPosition() + offset);
+    }
+
     public void setCursorPosition(int mousePosition) {
         if (previews.size() > 0) {
             double scrollPosition = mousePosition;
