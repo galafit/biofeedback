@@ -1,6 +1,7 @@
 package main.chart;
 
 import java.awt.*;
+import java.awt.geom.GeneralPath;
 import java.util.List;
 
 /**
@@ -9,21 +10,20 @@ import java.util.List;
 public class LineGraph extends Graph {
 
 
-    public void draw(Graphics g, Rectangle area) {
+    public void draw(Graphics2D g, Rectangle area) {
         if (dataItemList == null) {return;}
         g.setColor(color);
+        GeneralPath path = new GeneralPath();
+        double x = xAxis.valueToPoint(dataItemList.get(0).getX(), area);
+        double y = yAxis.valueToPoint(dataItemList.get(0).getY(), area);
 
-        for (int i = 0; i < dataItemList.size(); i++) {
-
-            if (i > 0) {
-                int pointX = xAxis.valueToPoint(dataItemList.get(i).getX(), area);
-                int pointY = yAxis.valueToPoint(dataItemList.get(i).getY(), area);
-
-                int previousPointX = xAxis.valueToPoint(dataItemList.get(i - 1).getX(), area);
-                int previousPointY = yAxis.valueToPoint(dataItemList.get(i - 1).getY(), area);
-                g.drawLine(previousPointX, previousPointY, pointX, pointY);
-            }
+        path.moveTo(x, y);
+        for (int i = 1; i < dataItemList.size(); i++) {
+            x = xAxis.valueToPoint(dataItemList.get(i).getX(), area);
+            y = yAxis.valueToPoint(dataItemList.get(i).getY(), area);
+            path.lineTo(x, y);
         }
+        g.draw(path);
     }
 
 }

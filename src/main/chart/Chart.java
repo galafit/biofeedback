@@ -64,6 +64,13 @@ public class Chart implements Drawable {
         return yAxisList.get(yAxisIndex);
     }
 
+    public int getXAxisAmount() {
+        return xAxisList.size();
+    }
+
+    public int getYAxisAmount() {
+        return yAxisList.size();
+    }
 
     public void addYAxis(AxisType axisType, boolean isOpposite){
 

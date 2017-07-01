@@ -40,45 +40,39 @@ public class MainFrame extends JFrame {
         }
 
         XYList xyList3 = new XYList();
-        for (int i = -78; i <156 ; i++) {
-            xyList3.addItem(i,rand.nextInt(90));
+        for (int i = 0; i <150 ; i++) {
+            xyList3.addItem(i,i);
         }
 
 
         chart.addGraph(new LineGraph(),xyList);
        // chart.addGraph(new LineGraph(), xyList2, 1,1);
 
-
-        Function2D sin = new Sin();
-        //chart.addGraph(new LineGraph(),sin);
-
-        Function2D tg = new Tg();
-        //chart.addGraph(new LineGraph(), tg);
-
         Function2D foo = new Foo();
         chart.addGraph(new LineGraph(), foo);
 
         Chart chart1 = new Chart();
 
-        xyList.addItem(18,30);
-        xyList.addItem(-3,17);
-      //  chart1.addGraph(new LineGraph(),xyList);
         chart1.addGraph(new LineGraph(),xyList3);
 
+        Function2D sin = new Sin();
+        chart1.addGraph(new LineGraph(),sin);
 
-      //  chart1.addXAxis(AxisType.LINEAR, true);
-      //  chart1.addXAxis(AxisType.LINEAR, true);
-
-        PreviewChart previewChart = new PreviewChart(1000);
-      //  previewChart.addChartPanel(chart,1);
-
-        previewChart.addChart(chart1);
-        previewChart.addPreviewPanel();
+        Function2D tg = new Tg();
+       // chart1.addGraph(new LineGraph(), tg);
 
 
+        ChartWithPreview chartWithPreview = new ChartWithPreview(1000);
+      //  chartWithPreview.addChartPanel(chart,1);
+
+        chartWithPreview.addChart(chart1);
+        chartWithPreview.addPreviewPanel();
 
 
-        PreviewChartPanel chartPanel = new PreviewChartPanel(previewChart);
+
+
+        PreviewChartPanel chartPanel = new PreviewChartPanel(chartWithPreview);
+        //ChartPanel chartPanel = new ChartPanel(chart1);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);

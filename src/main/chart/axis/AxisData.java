@@ -14,20 +14,33 @@ public abstract class AxisData {
 
     private Double min = null;
     private Double max = null;
-    private final double DEFAULT_MIN = -3;
-    private final double DEFAULT_MAX = 3;
+    private final double DEFAULT_MIN = 0;
+    private final double DEFAULT_MAX = 10;
     private boolean isHorizontal;
     private boolean isAutoScale = true;
     private boolean isInverted = false;
     private boolean isOpposite = false;
-    private double lowerPadding = 0.02;
-    private double upperPadding = 0.02;
+    private double lowerPadding = 0.00;
+    private double upperPadding = 0.00;
     private boolean isEndOnTick = false;
+
+    protected Double length = null;
+    protected Double origin = null;
+
 
 
     private AxisViewSettings axisViewSettings = new AxisViewSettings();
     private TicksSettings ticksSettings = new TicksSettings();
     private GridSettings gridSettings = new GridSettings();
+
+
+    public void setLength(Double length) {
+        this.length = length;
+    }
+
+    public void setOrigin(Double origin) {
+        this.origin = origin;
+    }
 
     public double getLowerPadding() {
         return lowerPadding;
@@ -109,8 +122,8 @@ public abstract class AxisData {
 
     abstract public Double pointsPerUnit(Rectangle area);
 
-    abstract public int valueToPoint(double value, Rectangle area);
-    public abstract double pointsToValue(int point, Rectangle area);
+    abstract public double valueToPoint(double value, Rectangle area);
+    public abstract double pointToValue(double point, Rectangle area);
 
     public Double getMin() {
         if(min == null) {

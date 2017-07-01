@@ -6,6 +6,6 @@ package main.chart.functions;
 public class Sin implements Function2D {
     @Override
     public double apply(double value) {
-        return Math.sin(value);
+        return 100*Math.sin(value);
     }
 }

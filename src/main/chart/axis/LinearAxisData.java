@@ -80,37 +80,31 @@ public class LinearAxisData extends AxisData {
         return super.getMax();
     }
 
-    @Override
-    public Double pointsPerUnit(Rectangle area) {
+    protected double pointsPerUnit(double length) {
         double min = getMin();
         double max = getMax();
 
         if (max == min) {return Double.NaN;}
-
-        if (isHorizontal()) {
-            return (area.getWidth()) / (max - min);
-        }
-        return (area.getHeight())/ (max - min);
+        return length / (max - min);
     }
 
     @Override
-    public int valueToPoint(double value, Rectangle area) {
+    public Double pointsPerUnit(Rectangle area) {
+        Double axisLength = length;
+        if(axisLength == null) {
+            axisLength = isHorizontal() ? area.getWidth() : area.getHeight();
+        }
+        return pointsPerUnit(axisLength);
+    }
+
+    private double valueToPoint(double value, double origin, double length) {
         double axisMin = getMin();
         double axisMax = getMax();
-        double min = 0;
-        double max = 0;
-        if (isHorizontal()) {
-            min = area.getX();
-            max = area.getMaxX();
-        }
-        else  {
-            max = area.getMinY();
-            min = area.getMaxY();
-        }
-
+        double min = origin;
+        double max = origin + length;
         double point;
         if (axisMin == axisMax){
-           point = min + (max - min) / 2;
+            point = min + (max - min) / 2;
         } else {
             if (isInverted()) {
                 point = max - ((value - axisMin) / (axisMax - axisMin)) * (max - min);
@@ -119,25 +113,14 @@ public class LinearAxisData extends AxisData {
                 point = min + ((value - axisMin) / (axisMax - axisMin)) * (max - min);
             }
         }
-        Long l =  Math.round(point);
-        return l.intValue();
+        return point;
     }
 
-    @Override
-    public double pointsToValue(int point, Rectangle area) {
+    private double pointToValue(double point, double origin, double length) {
         double axisMin = getMin();
         double axisMax = getMax();
-        double min = 0;
-        double max = 0;
-        if (isHorizontal()) {
-            min = area.getX();
-            max = area.getMaxX();
-        }
-        else  {
-            max = area.getMinY();
-            min = area.getMaxY();
-        }
-
+        double min = origin;
+        double max = origin + length;
         if (axisMin == axisMax){
             return axisMax;
         }
@@ -147,6 +130,56 @@ public class LinearAxisData extends AxisData {
         else {
             return axisMin + (point - min) / (max - min) * (axisMax - axisMin);
         }
+    }
+
+
+    @Override
+    public double valueToPoint(double value, Rectangle area) {
+       Double axisOrigin = origin;
+       Double axisLength = length;
+       if(axisOrigin == null) {
+           if (isHorizontal()) {
+               axisOrigin = area.getX();;
+           }
+           else  {
+               axisOrigin = area.getMaxY();
+           }
+       }
+       if(axisLength == null) {
+           if (isHorizontal()) {
+               axisLength = area.getMaxX() - axisOrigin;
+           }
+           else  {
+               axisLength = area.getMinY() - axisOrigin;
+           }
+       }
+        return valueToPoint(value, axisOrigin, axisLength);
+    }
+
+
+
+
+    @Override
+    public double pointToValue(double point, Rectangle area) {
+        Double axisOrigin = origin;
+        Double axisLength = length;
+        if(axisOrigin == null) {
+            if (isHorizontal()) {
+                axisOrigin = area.getX();;
+            }
+            else  {
+                axisOrigin = area.getMaxY();
+            }
+        }
+        if(axisLength == null) {
+            if (isHorizontal()) {
+                axisLength = area.getMaxX() - axisOrigin;
+            }
+            else  {
+                axisLength = area.getMinY() - axisOrigin;
+            }
+        }
+        return pointToValue(point, axisOrigin, axisLength);
     }
 
 }

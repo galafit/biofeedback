@@ -186,7 +186,7 @@ public class AxisPainter {
         double min = axis.getMin();
         for (Tick tick : ticks) {
             if (min <= tick.getValue() && tick.getValue() <= max) {
-                int tickPoint = axis.valueToPoint(tick.getValue(), area);
+                int tickPoint = (int)axis.valueToPoint(tick.getValue(), area);
                 drawTick(g, axisOriginPoint, tickPoint);
             }
         }
@@ -200,7 +200,7 @@ public class AxisPainter {
         double min = axis.getMin();
         for (Tick tick : ticks) {
             if (min <= tick.getValue() && tick.getValue() <= max) {
-                int tickPoint = axis.valueToPoint(tick.getValue(), area);
+                int tickPoint = (int)axis.valueToPoint(tick.getValue(), area);
                 drawLabel(g, labelFont, axisOriginPoint, tickPoint, tick.getLabel());
             }
         }
@@ -217,9 +217,9 @@ public class AxisPainter {
         for (Tick tick : ticks) {
             if (min < tick.getValue() && tick.getValue() < max) {
                 if (axis.isHorizontal()) {
-                    g.drawLine(axis.valueToPoint(tick.getValue(), area), area.y + 1, axis.valueToPoint(tick.getValue(), area), area.y  + area.height - 1);
+                    g.drawLine((int)axis.valueToPoint(tick.getValue(), area), area.y + 1, (int)axis.valueToPoint(tick.getValue(), area), area.y  + area.height - 1);
                 } else {
-                    g.drawLine(area.x + 1, axis.valueToPoint(tick.getValue(), area), area.x + area.width - 1, axis.valueToPoint(tick.getValue(), area));
+                    g.drawLine(area.x + 1, (int)axis.valueToPoint(tick.getValue(), area), area.x + area.width - 1, (int)axis.valueToPoint(tick.getValue(), area));
                 }
             }
         }
@@ -245,9 +245,9 @@ public class AxisPainter {
             while (minorTickValue < max) {
                 if (min < minorTickValue) {
                     if (axis.isHorizontal()) {
-                        g.drawLine(axis.valueToPoint(minorTickValue, area), area.y + 1, axis.valueToPoint(minorTickValue, area), area.y + area.height - 1);
+                        g.drawLine((int)axis.valueToPoint(minorTickValue, area), area.y + 1, (int)axis.valueToPoint(minorTickValue, area), area.y + area.height - 1);
                     } else {
-                        g.drawLine(area.x + 1, axis.valueToPoint(minorTickValue, area), area.x + area.width - 1, axis.valueToPoint(minorTickValue, area));
+                        g.drawLine(area.x + 1, (int)axis.valueToPoint(minorTickValue, area), area.x + area.width - 1, (int)axis.valueToPoint(minorTickValue, area));
                     }
                 }
                 minorTickValue += minorTickInterval;

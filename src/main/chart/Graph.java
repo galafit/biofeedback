@@ -89,5 +89,5 @@ public abstract class Graph {
         this.yAxis = yAxis;
     }
 
-    public abstract void draw(Graphics g, Rectangle area);
+    public abstract void draw(Graphics2D g, Rectangle area);
 }

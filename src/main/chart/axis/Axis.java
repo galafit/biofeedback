@@ -11,6 +11,14 @@ public abstract class Axis {
     protected AxisData axisData;
     protected AxisPainter axisPainter;
 
+    public void setLength(double length) {
+        axisData.setLength(length);
+    }
+
+    public void setOrigin(double origin) {
+        axisData.setOrigin(origin);
+    }
+
     public double getLowerPadding() {
         return axisData.getLowerPadding();
     }
@@ -77,12 +85,12 @@ public abstract class Axis {
         axisData.setAutoScale(isAutoScale);
     }
 
-    public int valueToPoint(double value, Rectangle area){
+    public double valueToPoint(double value, Rectangle area){
         return axisData.valueToPoint(value, area);
     }
 
     public double pointsToValue(int point, Rectangle area) {
-        return axisData.pointsToValue(point, area);
+        return axisData.pointToValue(point, area);
     }
     /**
      * If isAutoScale = FALSE this method simply sets: min = newMin, max = newMax.
