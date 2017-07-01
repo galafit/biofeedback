@@ -29,6 +29,13 @@ public abstract class Graph {
         }
     }
 
+    public int getDataSize(){
+        if (dataItemList != null){
+            return dataItemList.size();
+        }
+        return 0;
+    }
+
 
     protected void rangeYaxis(){
         if (yAxis.isAutoScale()){

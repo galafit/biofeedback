@@ -19,25 +19,44 @@ public class ChartWithPreview implements Drawable {
     private List<Integer> previewWeights = new ArrayList<Integer>();
     private PreviewScrollModel scrollModel;
     private Color cursorColor = Color.RED;
-    private int fullChartWidth;
+    private Integer fullChartWidth;
 
     private double xAxisPointsPerUnit;
 
-    public ChartWithPreview(int fullChartWidth) {
+    public ChartWithPreview(Integer fullChartWidth) {
         this.fullChartWidth = fullChartWidth;
         scrollModel = new PreviewScrollModel();
     }
 
+    private int getFullChartWidth(){
+        int width = 0;
+        for (Chart chart : charts) {
+            width = Math.max(width,chart.getMaxGraphSize());
+        }
+        return width;
+    }
+
     private boolean isChartsSynchronized = true;
+
+    private void setAxisLength(int length){
+        for (Chart chart : charts) {
+            for (int i = 0; i < chart.getXAxisAmount(); i++) {
+                Axis xAxis = chart.getXAxis(i);
+                xAxis.setLength(length);
+            }
+        }
+    }
 
     public void addChart(Chart chart) {
         charts.add(chart);
         chartWeights.add(2);
-        for (int i = 0; i < chart.getXAxisAmount(); i++) {
-            Axis xAxis = chart.getXAxis(i);
-            xAxis.setLength(fullChartWidth);
-            xAxis.setOrigin(0);
+        int length = 100;
+        if (fullChartWidth != null){
+            length = fullChartWidth;
+        } else {
+            length = chart.getMaxGraphSize();
         }
+        //setAxisLength(length);
     }
 
     public void addChartPanel() {
@@ -141,12 +160,15 @@ public class ChartWithPreview implements Drawable {
 
     private void setChartsAxisOrigins() {
         // axis position/point corresponding scroll position
-        double axisPosition = scrollModel.getScrollPosition() * fullChartWidth / getPaintingAreaWidth();
-        double axisOrigin = getPaintingAreaX() - axisPosition;
-        for (Chart chart : charts) {
-            for (int i = 0; i < chart.getXAxisAmount(); i++) {
-                Axis xAxis = chart.getXAxis(i);
-                xAxis.setOrigin(axisOrigin);
+        if (scrollModel != null) {
+            System.out.println("!Null");
+            double axisPosition = scrollModel.getScrollPosition() * getFullChartWidth() / getPaintingAreaWidth();
+            double axisOrigin = getPaintingAreaX() - axisPosition;
+            for (Chart chart : charts) {
+                for (int i = 0; i < chart.getXAxisAmount(); i++) {
+                    Axis xAxis = chart.getXAxis(i);
+                    xAxis.setOrigin(axisOrigin);
+                }
             }
         }
     }
@@ -263,13 +285,16 @@ public class ChartWithPreview implements Drawable {
 
         @Override
         public double getScrollWidth() {
-            return getPaintingAreaWidth() * getPaintingAreaWidth() / fullChartWidth;
+            return getPaintingAreaWidth() * getPaintingAreaWidth() / getFullChartWidth();
         }
 
         @Override
         public void setScrollPosition(double scrollPosition) {
             if (scrollPosition > getMax() - getScrollWidth()) {
                 scrollPosition = getMax() - getScrollWidth();
+            }
+            if (scrollPosition < getMin()){
+                scrollPosition = getMin();
             }
             this.scrollPosition = scrollPosition;
         }

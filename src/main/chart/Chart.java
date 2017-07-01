@@ -42,6 +42,14 @@ public class Chart implements Drawable {
         yAxisList.add(y);
     }
 
+    public int getMaxGraphSize(){
+        int maxSize = 0;
+        for (Graph graph : graphs) {
+            maxSize = Math.max(maxSize,graph.getDataSize());
+        }
+        return maxSize;
+    }
+
     public boolean isTicksAligned() {
         return isTicksAligned;
     }

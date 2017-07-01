@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
         }
 
         XYList xyList3 = new XYList();
-        for (int i = 0; i <150 ; i++) {
+        for (int i = 0; i <15000 ; i++) {
             xyList3.addItem(i,i);
         }
 
@@ -62,7 +62,7 @@ public class MainFrame extends JFrame {
        // chart1.addGraph(new LineGraph(), tg);
 
 
-        ChartWithPreview chartWithPreview = new ChartWithPreview(1000);
+        ChartWithPreview chartWithPreview = new ChartWithPreview(null);
       //  chartWithPreview.addChartPanel(chart,1);
 
         chartWithPreview.addChart(chart1);
