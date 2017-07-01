@@ -53,7 +53,7 @@ public class MainFrame extends JFrame {
 
         Chart chart1 = new Chart();
 
-        chart1.addGraph(new LineGraph(),xyList3);
+        chart1.addGraph(new AreaGraph(),xyList3);
 
         Function2D sin = new Sin();
         chart1.addGraph(new LineGraph(),sin);

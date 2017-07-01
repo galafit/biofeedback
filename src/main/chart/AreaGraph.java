@@ -2,34 +2,41 @@ package main.chart;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 
 /**
  * Created by hdablin on 26.04.17.
  */
 public class AreaGraph extends Graph {
 
-    public AreaGraph(DataList dataItemList) {
-        this.dataItemList = dataItemList;
-    }
-
     @Override
     public void draw(Graphics2D g, Rectangle area) {
         g.setColor(color);
 
-        for (int i = 0; i < dataItemList.size(); i++) {
+        GeneralPath path = new GeneralPath();
+        double x_0 = xAxis.valueToPoint(dataItemList.get(0).getX(), area);
+        double y_0 = yAxis.valueToPoint(dataItemList.get(0).getY(), area);
 
-            if (i > 0) {
-                double pointX = xAxis.valueToPoint(dataItemList.get(i).getX(), area);
-                double pointY = yAxis.valueToPoint(dataItemList.get(i).getY(), area);
+        double x = x_0;
+        double y = y_0;
+        path.moveTo(x, y);
+        for (int i = 1; i < dataItemList.size(); i++) {
+            x = xAxis.valueToPoint(dataItemList.get(i).getX(), area);
+            y = yAxis.valueToPoint(dataItemList.get(i).getY(), area);
+            path.lineTo(x, y);
+        }
+        g.draw(path);
 
-                double previousPointX = xAxis.valueToPoint(dataItemList.get(i - 1).getX(), area);
-                double previousPointY = yAxis.valueToPoint(dataItemList.get(i - 1).getY(), area);
+        path.lineTo(x, area.getY() + area.getHeight());
+        path.lineTo(x_0, area.getY() + area.getHeight());
+        path.lineTo(x_0, y_0);
+        Color transparentColor =new Color(color.getRed(), color.getGreen(), color.getBlue(), 130 );
+        g.setColor(transparentColor);
+        g.fill(path);
 
-                GeneralPath path = new GeneralPath();
 
 
-                Shape line = new Line2D.Double(previousPointX, previousPointY, pointX, pointY);
+
+
 
            /*     g.drawLine(previousPointX, previousPointY, pointX, pointY);
 
@@ -40,10 +47,6 @@ public class AreaGraph extends Graph {
                 p.addPoint(previousPointX,yAxis.valueToPoint(0,area));
 
                 g.fillPolygon(p);*/
-            }
 
-
-
-        }
     }
 }

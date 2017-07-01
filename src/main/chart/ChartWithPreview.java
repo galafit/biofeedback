@@ -32,7 +32,7 @@ public class ChartWithPreview implements Drawable {
 
     public void addChart(Chart chart) {
         charts.add(chart);
-        chartWeights.add(1);
+        chartWeights.add(2);
         for (int i = 0; i < chart.getXAxisAmount(); i++) {
             Axis xAxis = chart.getXAxis(i);
             xAxis.setLength(fullChartWidth);
