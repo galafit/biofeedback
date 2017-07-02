@@ -3,7 +3,6 @@ package main.chart;
 import main.chart.axis.Axis;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.text.MessageFormat;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -76,8 +75,6 @@ public class ChartWithPreview implements Drawable {
         charts.add(chart);
     }
 
-
-
     public void addPreviewPanel(int weight) {
         if (weight <= 0) {
             String errorMessage = "Wrong weight: {0}. Expected > 0.";
@@ -123,25 +120,24 @@ public class ChartWithPreview implements Drawable {
     }
 
     public boolean isMouseInsideCursor(int mouseX, int mouseY){
-        return scrollPainter.isMouseInsideCursor(mouseX, mouseY);
+        return scrollPainter.isMouseInsideScroll(mouseX, mouseY);
     }
 
-    public void moveCursorPosition(int offset){
-        scrollPainter.moveCursorPosition(offset);
+    public void moveCursorPosition(int shift){
+        scrollPainter.moveScrollPosition(shift);
         setChartsAxisOrigins();
     }
 
     public void setCursorPosition(int mousePosition) {
-        scrollPainter.setCursorPosition(mousePosition);
+        scrollPainter.setScrollPosition(mousePosition);
         setChartsAxisOrigins();
     }
 
 
     private void setChartsAxisOrigins() {
-        // axis position/point corresponding scroll position
-
-            double axisPosition = scrollPainter.getScrollPosition() * getFullChartWidth() / getPaintingAreaWidth();
-            double axisOrigin = getPaintingAreaX() - axisPosition;
+        // viewport position corresponding scroll position
+            double viewportPosition = scrollPainter.getViewportPosition();
+            double axisOrigin = getPaintingAreaX() - viewportPosition;
             for (Chart chart : charts) {
                 for (int i = 0; i < chart.getXAxisAmount(); i++) {
                     Axis xAxis = chart.getXAxis(i);
@@ -232,46 +228,48 @@ public class ChartWithPreview implements Drawable {
         return getPreviewArea().contains(mouseX, mouseY);
     }
 
-    private double getPaintingAreaWidth() {
-        return charts.get(0).getGraphArea().getWidth();
+    private int getPaintingAreaWidth() {
+        return charts.get(0).getGraphArea().width;
     }
 
-    private double getPaintingAreaX() {
-        return charts.get(0).getGraphArea().getX();
+    private int getPaintingAreaX() {
+        return charts.get(0).getGraphArea().x;
     }
 
     class PreviewScrollModel implements ScrollModel {
-        double scrollPosition;
+        long viewportPosition;
 
         @Override
-        public double getMin() {
+        public long getMin() {
             return 0;
         }
 
         @Override
-        public double getMax() {
+        public long getMax() {
+            return getFullChartWidth();
+        }
+
+
+        @Override
+        public long getViewportWidth() {
             return getPaintingAreaWidth();
         }
 
         @Override
-        public double getScrollPosition() {
-            return scrollPosition;
+        public long getViewportPosition() {
+            return viewportPosition;
         }
 
         @Override
-        public double getScrollWidth() {
-            return getPaintingAreaWidth() * getPaintingAreaWidth() / getFullChartWidth();
-        }
+        public void setViewportPosition(long newPosition) {
+            if (newPosition > getMax() - getViewportWidth()) {
+                newPosition = getMax() - getViewportWidth();
+            }
+            if (newPosition < getMin()){
+                newPosition = getMin();
+            }
+            viewportPosition = newPosition;
 
-        @Override
-        public void setScrollPosition(double scrollPosition) {
-            if (scrollPosition > getMax() - getScrollWidth()) {
-                scrollPosition = getMax() - getScrollWidth();
-            }
-            if (scrollPosition < getMin()){
-                scrollPosition = getMin();
-            }
-            this.scrollPosition = scrollPosition;
         }
     }
 

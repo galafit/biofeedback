@@ -15,15 +15,28 @@ public class ScrollPainter {
         this.scrollModel = scrollModel;
     }
 
-    public double getScrollPosition(){
-        return scrollModel.getScrollPosition();
+   private long scrollPositionToViewportPosition (double scrollPosition) {
+       long viewportPosition = Math.round(scrollPosition * (scrollModel.getMax() - scrollModel.getMin()) / paintingArea.getWidth());
+       return viewportPosition;
+   }
+
+   public long getViewportPosition() {
+        return scrollModel.getViewportPosition();
+   }
+
+    public double getScrollWidth() {
+        return paintingArea.getWidth() * scrollModel.getViewportWidth() / (scrollModel.getMax() - scrollModel.getMin());
     }
 
-    public boolean isMouseInsideCursor(int mouseX, int mouseY) {
+    public double getScrollPosition(){
+        return scrollModel.getViewportPosition() * paintingArea.getWidth() / (scrollModel.getMax() - scrollModel.getMin());
+    }
+
+    public boolean isMouseInsideScroll(int  mouseX, int mouseY) {
         if (paintingArea != null) {
-            double cursorAreaX = paintingArea.getX() + scrollModel.getScrollPosition();
+            double cursorAreaX = paintingArea.getX() + getScrollPosition();
             double cursorAreaY = paintingArea.getY();
-            Rectangle2D cursorArea = new Rectangle2D.Double(cursorAreaX, cursorAreaY, scrollModel.getScrollWidth(), paintingArea.height);
+            Rectangle2D cursorArea = new Rectangle2D.Double(cursorAreaX, cursorAreaY, getScrollWidth(), paintingArea.getHeight());
             return cursorArea.contains(mouseX, mouseY);
         }
         return false;
@@ -31,30 +44,31 @@ public class ScrollPainter {
 
 
 
-    public void moveCursorPosition(int offset){
-        scrollModel.setScrollPosition(scrollModel.getScrollPosition() + offset);
+    public void moveScrollPosition(int shift){
+        double newScrollPosition = getScrollPosition() + shift;
+        scrollModel.setViewportPosition(scrollPositionToViewportPosition(newScrollPosition));
     }
 
-    public void setCursorPosition(int mousePosition) {
+    public void setScrollPosition(int mousePosition) {
         if (paintingArea != null) {
-            double scrollPosition = mousePosition;
-            if (scrollPosition <= paintingArea.getX()) {
-                scrollPosition = 0;
-            } else if (scrollPosition >= paintingArea.getX() + paintingArea.getWidth()) {
-                scrollPosition = paintingArea.getWidth();
+            double newScrollPosition = mousePosition;
+            if (newScrollPosition <= paintingArea.getX()) {
+                newScrollPosition = 0;
+            } else if (newScrollPosition >= paintingArea.getX() + paintingArea.getWidth()) {
+                newScrollPosition = paintingArea.getWidth();
             } else {
-                scrollPosition -= paintingArea.getX();
+                newScrollPosition -= paintingArea.getX();
             }
-            scrollModel.setScrollPosition(scrollPosition);
+            scrollModel.setViewportPosition(scrollPositionToViewportPosition(newScrollPosition));
         }
     }
 
     public void draw(Graphics2D g2d, Rectangle area){
         paintingArea = area;
         g2d.setColor(cursorColor);
-        double cursorX = area.getX() + scrollModel.getScrollPosition();
+        double cursorX = area.getX() + getScrollPosition();
         double cursorY = area.getY();
         double cursorHeight = area.height;
-        g2d.draw(new Rectangle2D.Double(cursorX, cursorY, scrollModel.getScrollWidth(), cursorHeight));
+        g2d.draw(new Rectangle2D.Double(cursorX, cursorY, getScrollWidth(), cursorHeight));
     }
 }
