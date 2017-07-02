@@ -244,6 +244,7 @@ public class Chart implements Drawable {
             axis.resetRange();
         }
         for (Graph graph : graphs) {
+            graph.setDataRange(fullArea);
             graph.rangeYaxis();
         }
 

@@ -17,15 +17,15 @@ public class ChartWithPreview implements Drawable {
     private List<Chart> previews = new ArrayList<Chart>();
     private List<Integer> chartWeights = new ArrayList<Integer>();
     private List<Integer> previewWeights = new ArrayList<Integer>();
-    private PreviewScrollModel scrollModel;
-    private Color cursorColor = Color.RED;
+    private boolean isChartsSynchronized = true;
+    private ScrollPainter scrollPainter;
     private Integer fullChartWidth;
 
-    private double xAxisPointsPerUnit;
+
 
     public ChartWithPreview(Integer fullChartWidth) {
         this.fullChartWidth = fullChartWidth;
-        scrollModel = new PreviewScrollModel();
+        scrollPainter = new ScrollPainter(new PreviewScrollModel());
     }
 
     private int getFullChartWidth(){
@@ -36,7 +36,7 @@ public class ChartWithPreview implements Drawable {
         return width;
     }
 
-    private boolean isChartsSynchronized = true;
+
 
     private void setAxisLength(int length){
         for (Chart chart : charts) {
@@ -56,7 +56,7 @@ public class ChartWithPreview implements Drawable {
         } else {
             length = chart.getMaxGraphSize();
         }
-        //setAxisLength(length);
+        setAxisLength(length);
     }
 
     public void addChartPanel() {
@@ -122,47 +122,25 @@ public class ChartWithPreview implements Drawable {
         }
     }
 
-    public boolean isMouseInsideCursor(int mousePosition){
-        if (previews.size() > 0) {
-
-            Rectangle firstArea = previews.get(0).getGraphArea();
-            mousePosition = mousePosition - firstArea.x;
-
-            if (mousePosition >= scrollModel.getScrollPosition() && mousePosition <= (scrollModel.getScrollPosition() + scrollModel.getScrollWidth())) {
-                return true;
-            }
-            return false;
-        }
-        return false;
+    public boolean isMouseInsideCursor(int mouseX, int mouseY){
+        return scrollPainter.isMouseInsideCursor(mouseX, mouseY);
     }
 
     public void moveCursorPosition(int offset){
-        scrollModel.setScrollPosition(scrollModel.getScrollPosition() + offset);
+        scrollPainter.moveCursorPosition(offset);
+        setChartsAxisOrigins();
     }
 
     public void setCursorPosition(int mousePosition) {
-        if (previews.size() > 0) {
-            double scrollPosition = mousePosition;
-            Rectangle firstArea = previews.get(0).getGraphArea();
-            if (scrollPosition <= firstArea.getX()) {
-                scrollPosition = 0;
-            } else if (scrollPosition >= firstArea.getX() + firstArea.getWidth()) {
-                scrollPosition = firstArea.getWidth();
-            } else {
-                scrollPosition -= firstArea.getX();
-            }
-
-            scrollModel.setScrollPosition(scrollPosition);
-            setChartsAxisOrigins();
-        }
+        scrollPainter.setCursorPosition(mousePosition);
+        setChartsAxisOrigins();
     }
 
 
     private void setChartsAxisOrigins() {
         // axis position/point corresponding scroll position
-        if (scrollModel != null) {
-            System.out.println("!Null");
-            double axisPosition = scrollModel.getScrollPosition() * getFullChartWidth() / getPaintingAreaWidth();
+
+            double axisPosition = scrollPainter.getScrollPosition() * getFullChartWidth() / getPaintingAreaWidth();
             double axisOrigin = getPaintingAreaX() - axisPosition;
             for (Chart chart : charts) {
                 for (int i = 0; i < chart.getXAxisAmount(); i++) {
@@ -170,21 +148,9 @@ public class ChartWithPreview implements Drawable {
                     xAxis.setOrigin(axisOrigin);
                 }
             }
-        }
+
     }
 
-    public void drawCursor(Graphics2D g2d) {
-        if (previews.size() > 0) {
-            Rectangle firstArea = previews.get(0).getGraphArea();
-            Rectangle lastArea = previews.get(previews.size() - 1).getGraphArea();
-            g2d.setColor(cursorColor);
-            double cursorX = firstArea.getX() + scrollModel.getScrollPosition();
-            double cursorY = firstArea.getY();
-            double cursorHeight = lastArea.getY() + lastArea.getHeight() - firstArea.getY();
-            g2d.draw(new Rectangle2D.Double(cursorX, cursorY, scrollModel.getScrollWidth(), cursorHeight));
-
-        }
-    }
 
     public void draw(Graphics2D g2d, Rectangle fullArea) {
         if (isChartsSynchronized) {
@@ -253,8 +219,17 @@ public class ChartWithPreview implements Drawable {
             chartsAndPreviews.get(i).adjustGraphArea(g2d, maxX, minEnd - maxX);
             chartsAndPreviews.get(i).draw(g2d);
         }
+        scrollPainter.draw(g2d, getPreviewArea());
+    }
 
-        drawCursor(g2d);
+    private Rectangle getPreviewArea(){
+        Rectangle firstArea = previews.get(0).getGraphArea();
+        Rectangle lastArea = previews.get(previews.size() - 1).getGraphArea();
+        return new Rectangle(firstArea.x,firstArea.y,firstArea.width,(int)lastArea.getMaxY() - firstArea.y);
+    }
+
+    public boolean isMouseInPreviewArea(int mouseX, int mouseY){
+        return getPreviewArea().contains(mouseX, mouseY);
     }
 
     private double getPaintingAreaWidth() {

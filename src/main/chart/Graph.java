@@ -29,6 +29,15 @@ public abstract class Graph {
         }
     }
 
+    protected void setDataRange(Rectangle area){
+        double xMin = xAxis.pointsToValue(area.x, area);
+        double xMax = xAxis.pointsToValue(area.x + area.width, area);
+        if (dataItemList instanceof SliceDataList){
+            SliceDataList sliceDataList = (SliceDataList) dataItemList;
+            sliceDataList.setStartAndWindow(xMin, xMax - xMin);
+        }
+    }
+
     public int getDataSize(){
         if (dataItemList != null){
             return dataItemList.size();

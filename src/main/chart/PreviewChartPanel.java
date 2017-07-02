@@ -21,7 +21,7 @@ public class PreviewChartPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if (!isMousePressedInsideCursor){
+                if (chartWithPreview.isMouseInPreviewArea(e.getX(), e.getY()) && !isMousePressedInsideCursor){
                     chartWithPreview.setCursorPosition(e.getX());
                     repaint();
                 }
@@ -31,7 +31,7 @@ public class PreviewChartPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 mousePressedX = e.getX();
-                isMousePressedInsideCursor = chartWithPreview.isMouseInsideCursor(e.getX());
+                isMousePressedInsideCursor = chartWithPreview.isMouseInsideCursor(e.getX(),e.getY());
             }
 
         });

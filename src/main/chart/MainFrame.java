@@ -39,10 +39,12 @@ public class MainFrame extends JFrame {
             xyList2.addItem(4057.0789,i);
         }
 
-        XYList xyList3 = new XYList();
+        PeriodicData periodicData = new PeriodicData(0,1);
         for (int i = 0; i <15000 ; i++) {
-            xyList3.addItem(i,i);
+            periodicData.addData(i);
         }
+
+        SliceDataList sliceDataList = new SliceDataList(periodicData);
 
 
         chart.addGraph(new LineGraph(),xyList);
@@ -53,7 +55,7 @@ public class MainFrame extends JFrame {
 
         Chart chart1 = new Chart();
 
-        chart1.addGraph(new AreaGraph(),xyList3);
+        chart1.addGraph(new AreaGraph(),sliceDataList);
 
         Function2D sin = new Sin();
         chart1.addGraph(new LineGraph(),sin);

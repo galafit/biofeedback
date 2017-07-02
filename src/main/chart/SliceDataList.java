@@ -11,8 +11,8 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
    private PeriodicData periodicData;
    private double window = 0;
    private double start;
-   private double yMin = Double.MAX_VALUE;
-   private double yMax = -Double.MAX_VALUE;
+   private double yMin;
+   private double yMax;
 
     public SliceDataList(PeriodicData periodicData) {
         this.periodicData = periodicData;
@@ -25,11 +25,19 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
 
        int minIndex = getMinIndex();
        int maxIndex = getMaxIndex();
+       setMinMax(minIndex, maxIndex);
 
+   }
+
+   private void setMinMax(int minIndex, int maxIndex){
+       double yMin = Double.MAX_VALUE;
+       double yMax = -Double.MAX_VALUE;
        for (int i = minIndex; i <= maxIndex; i++) {
            yMin = Math.min(yMin, periodicData.get(i).getY());
            yMax = Math.max (yMax, periodicData.get(i).getY());
        }
+       this.yMin = yMin;
+       this.yMax = yMax;
    }
 
    public int getMinIndex(){
@@ -39,7 +47,7 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
 
    public int getMaxIndex(){
        int index = periodicData.getIndex(start + window) + 1;
-       return Math.min(index, periodicData.size());
+       return Math.min(index, periodicData.size() - 1);
    }
 
     @Override
@@ -54,12 +62,12 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
 
     @Override
     public Double getXmin() {
-        return periodicData.get(getMinIndex()).getX();
+        return periodicData.get(0).getX();
     }
 
     @Override
     public Double getXmax() {
-        return periodicData.get(getMaxIndex()).getX();
+        return periodicData.get(periodicData.size() - 1).getX();
     }
 
     @Override
