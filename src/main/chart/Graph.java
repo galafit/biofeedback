@@ -25,7 +25,6 @@ public abstract class Graph {
             if(xMin != null && !xMin.isNaN() && xMax != null && !xMax.isNaN()) {
                 xAxis.setRange(xMin, xMax);
             }
-
         }
     }
 
@@ -34,12 +33,16 @@ public abstract class Graph {
         double xMax = xAxis.pointsToValue(area.x + area.width, area);
         if (dataItemList instanceof SliceDataList){
             SliceDataList sliceDataList = (SliceDataList) dataItemList;
-            sliceDataList.setStartAndWindow(xMin, xMax - xMin);
+            sliceDataList.setRange(xMin, xMax);
         }
     }
 
     public int getDataSize(){
         if (dataItemList != null){
+            if (dataItemList instanceof SliceDataList){
+                SliceDataList sliceDataList = (SliceDataList) dataItemList;
+                return sliceDataList.getFullSize();
+            }
             return dataItemList.size();
         }
         return 0;

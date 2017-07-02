@@ -29,24 +29,9 @@ public class AreaGraph extends Graph {
         path.lineTo(x, area.getY() + area.getHeight());
         path.lineTo(x_0, area.getY() + area.getHeight());
         path.lineTo(x_0, y_0);
-        Color transparentColor =new Color(color.getRed(), color.getGreen(), color.getBlue(), 130 );
+        Color transparentColor =new Color(color.getRed(), color.getGreen(), color.getBlue(), 100 );
         g.setColor(transparentColor);
         g.fill(path);
-
-
-
-
-
-
-           /*     g.drawLine(previousPointX, previousPointY, pointX, pointY);
-
-                Polygon p = new Polygon();
-                p.addPoint(previousPointX,previousPointY);
-                p.addPoint(pointX,pointY);
-                p.addPoint(pointX,yAxis.valueToPoint(0,area));
-                p.addPoint(previousPointX,yAxis.valueToPoint(0,area));
-
-                g.fillPolygon(p);*/
 
     }
 }
