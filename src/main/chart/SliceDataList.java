@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class SliceDataList extends AbstractList<DataItem> implements DataList{
    private PeriodicData periodicData;
-   private int window;
+   private int window = -1;
    private int startIndex;
    private Double yMin = null;
    private Double yMax = null;
@@ -25,15 +25,16 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
    }
 
    private void setMinMax(){
-       double yMin = Double.MAX_VALUE;
-       double yMax = -Double.MAX_VALUE;
-       for (int i = startIndex; i <= startIndex + window; i++) {
-           yMin = Math.min(yMin, periodicData.get(i).getY());
-           yMax = Math.max (yMax, periodicData.get(i).getY());
-       }
-
-       this.yMin = yMin;
-       this.yMax = yMax;
+        if(window >=0) {
+            double yMin = Double.MAX_VALUE;
+            double yMax = -Double.MAX_VALUE;
+            for (int i = startIndex; i <= startIndex + window; i++) {
+                yMin = Math.min(yMin, periodicData.get(i).getY());
+                yMax = Math.max (yMax, periodicData.get(i).getY());
+            }
+            this.yMin = yMin;
+            this.yMax = yMax;
+        }
    }
 
    public int getMinIndex(double startValue){

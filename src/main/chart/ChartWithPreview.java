@@ -44,10 +44,13 @@ public class ChartWithPreview implements Drawable {
 
 
     private void setAxisLength(int length){
+        int j = 0;
         for (Chart chart : charts) {
+            j++;
             for (int i = 0; i < chart.getXAxisAmount(); i++) {
                 Axis xAxis = chart.getXAxis(i);
                 xAxis.setLength(length);
+                //xAxis.setLength(chart.getMaxGraphSize());
             }
         }
     }

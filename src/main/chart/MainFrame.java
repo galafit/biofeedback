@@ -27,7 +27,7 @@ public class MainFrame extends JFrame {
         XYList xyList = new XYList();
         Random rand = new Random();
         // xyList.addItem(-2.5,-8);
-        for (int i = 0; i <15 ; i++) {
+        for (int i = -1000; i <1500 ; i++) {
             xyList.addItem(i,rand.nextInt(100)/100.0);
         }
        // xyList.addItem(15, -1);
@@ -51,10 +51,9 @@ public class MainFrame extends JFrame {
 
         Function2D foo = new Foo();
         chart.addGraph(new LineGraph(), foo);
+
         Chart chart1 = new Chart();
-
         chart1.addGraph(new AreaGraph(),sliceDataList);
-
         Function2D sin = new Sin();
         chart1.addGraph(new LineGraph(),sin);
 
@@ -66,6 +65,7 @@ public class MainFrame extends JFrame {
       //  chartWithPreview.addChartPanel(chart,1);
 
         chartWithPreview.addChart(chart1);
+        chartWithPreview.addChart(chart);
         chartWithPreview.addPreviewPanel();
 
 
