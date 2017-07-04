@@ -16,7 +16,6 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
 
     public SliceDataList(PeriodicData periodicData) {
         this.periodicData = periodicData;
-        window = periodicData.size() - 1;
     }
 
     public void setRange(double startValue, double endValue){
@@ -32,6 +31,7 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
            yMin = Math.min(yMin, periodicData.get(i).getY());
            yMax = Math.max (yMax, periodicData.get(i).getY());
        }
+
        this.yMin = yMin;
        this.yMax = yMax;
    }

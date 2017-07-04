@@ -14,23 +14,23 @@ import java.util.List;
  */
 public class Chart implements Drawable {
     private List<Graph> graphs = new ArrayList<>();
-    private Map<Integer,Function2D> functionMap = new Hashtable<Integer, Function2D>();
+    private Map<Integer, Function2D> functionMap = new Hashtable<Integer, Function2D>();
     private List<Axis> xAxisList = new ArrayList<>();
     private List<Axis> yAxisList = new ArrayList<>();
     private int chartPadding = 10;
     private int axisPadding = 10;
 
     private final Color GREY = new Color(150, 150, 150);
-    private final Color BROWN = new Color(200, 102, 0 );
+    private final Color BROWN = new Color(200, 102, 0);
     private final Color ORANGE = new Color(255, 153, 0);
 
     private Color[] colors = {GREY, BROWN, Color.GREEN, Color.YELLOW};
-    private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN,  Color.PINK};
+    private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN, Color.PINK};
 
-    private boolean isTicksAligned = true;
-    private int[] xAxisOriginPoints;
-    private int[] yAxisOriginPoints;
-    protected Rectangle graphArea;
+    private boolean isTicksAlignmentEnable = true;
+    private int[] xAxisPositions;
+    private int[] yAxisPositions;
+    private Rectangle graphArea; // area to draw graphs
 
 
     public Chart() {
@@ -42,33 +42,27 @@ public class Chart implements Drawable {
         yAxisList.add(y);
     }
 
-    public int getMaxGraphSize(){
+    public int getMaxGraphSize() {
         int maxSize = 0;
-        for (Graph graph : graphs) {
-            maxSize = Math.max(maxSize,graph.getDataSize());
+        // Graphics with functions are not taken into account
+        for (int i = 0; i < graphs.size(); i++) {
+            if(functionMap.get(new Integer(i)) == null) {
+                maxSize = Math.max(maxSize, graphs.get(i).getDataSize());
+            }
         }
         return maxSize;
     }
 
-    public boolean isTicksAligned() {
-        return isTicksAligned;
+    // define whether ticks on different(opposite) xAxis or yAxis should be aligned/synchronized
+    public void enableTicksAlignment(boolean isEnabled) {
+        isTicksAlignmentEnable = isEnabled;
     }
 
-    public void setTicksAligned(boolean ticksAligned) {
-        isTicksAligned = ticksAligned;
-    }
-
-    public Axis getXAxis(int xAxisIndex){
-        if (xAxisIndex >= xAxisList.size()){
-            return null;
-        }
+    public Axis getXAxis(int xAxisIndex) {
         return xAxisList.get(xAxisIndex);
     }
 
-    public Axis getYAxis(int yAxisIndex){
-        if (yAxisIndex >= yAxisList.size()){
-            return null;
-        }
+    public Axis getYAxis(int yAxisIndex) {
         return yAxisList.get(yAxisIndex);
     }
 
@@ -80,8 +74,7 @@ public class Chart implements Drawable {
         return yAxisList.size();
     }
 
-    public void addYAxis(AxisType axisType, boolean isOpposite){
-
+    public void addYAxis(AxisType axisType, boolean isOpposite) {
         Axis axis = new LinearAxis();
         if (yAxisList.size() > 0) {
             axis.getGridSettings().setGridLineWidth(0);
@@ -93,7 +86,7 @@ public class Chart implements Drawable {
         yAxisList.add(axis);
     }
 
-    public void addXAxis(AxisType axisType, boolean isOpposite){
+    public void addXAxis(AxisType axisType, boolean isOpposite) {
         Axis axis = new LinearAxis();
         if (xAxisList.size() > 0) {
             axis.getGridSettings().setGridLineWidth(0);
@@ -105,17 +98,30 @@ public class Chart implements Drawable {
         xAxisList.add(axis);
     }
 
-    public void addGraph(Graph graph, DataList data){
-       addGraph(graph, data,0,0);
+    public void addGraph(Graph graph, DataList data) {
+        addGraph(graph, data, 0, 0);
     }
 
-    public void addGraph(Graph graph, int xAxisIndex, int yAxisIndex){
+    public void addGraph(Graph graph, DataList data, int xAxisIndex, int yAxisIndex) {
+        graph.setData(data);
+        addGraph(graph, xAxisIndex, yAxisIndex);
+
+    }
+    public void addGraph(Graph graph, Function2D function, int xAxisIndex, int yAxisIndex) {
+        addGraph(graph, xAxisIndex, yAxisIndex);
+        functionMap.put(graphs.size() - 1, function);
+    }
+
+    public void addGraph(Graph graph, Function2D function) {
+        addGraph(graph, function, 0, 0);
+    }
+
+    private void addGraph(Graph graph, int xAxisIndex, int yAxisIndex) {
         graph.setAxis(xAxisList.get(xAxisIndex), yAxisList.get(yAxisIndex));
         graph.rangeXaxis();
-        graph.rangeYaxis();
         boolean isGraphExist = false;
         for (Graph graph1 : graphs) {
-            if (graph1.getYAxis() == yAxisList.get(yAxisIndex)){
+            if (graph1.getYAxis() == yAxisList.get(yAxisIndex)) {
                 isGraphExist = true;
                 break;
             }
@@ -127,35 +133,17 @@ public class Chart implements Drawable {
             graph.setColor(graphicColors[graphs.size() % graphicColors.length]);
         }
         graphs.add(graph);
-
-
     }
 
-    public void addGraph(Graph graph, DataList data, int xAxisIndex, int yAxisIndex){
-        graph.setData(data);
-        addGraph(graph,xAxisIndex,yAxisIndex);
-
-    }
-
-    public void addGraph(Graph graph, Function2D function, int xAxisIndex, int yAxisIndex) {
-        addGraph(graph,xAxisIndex,yAxisIndex);
-        functionMap.put(graphs.size() - 1, function);
-    }
-
-    public void addGraph(Graph graph, Function2D function){
-        addGraph(graph, function,0,0);
-    }
-
-
-    private void alignAxis(List<Axis> axisList, Graphics2D g, Rectangle area){
+    private void alignAxisTicks(List<Axis> axisList, Graphics2D g, Rectangle area) {
         int maxSize = 0;
-        if(axisList.size() > 1) {
+        if (axisList.size() > 1) {
             for (Axis axis : axisList) {
                 axis.getTicksSettings().setTicksAmount(0);
             }
 
             for (Axis axis : axisList) {
-                maxSize = Math.max(maxSize, axis.getTicks(g,area).size());
+                maxSize = Math.max(maxSize, axis.getTicks(g, area).size());
             }
 
             for (Axis axis : axisList) {
@@ -166,11 +154,29 @@ public class Chart implements Drawable {
     }
 
 
-    private void setFunctions(Rectangle area){
+    private void tieAxisStartValuesToArea(Rectangle area) {
+        for (Axis axis : xAxisList) {
+           if(axis.getStartValue() != null) {
+               double startPoint = axis.valueToPoint(axis.getStartValue(), area);
+               double newMinPoint = area.getX() - (startPoint - axis.getMinPoint(area));
+               axis.setMinPoint(newMinPoint);
+           }
+        }
+    }
+
+
+    /**
+     * We create XYList for every function. For every area point is calculated corresponding
+     * value and function(value) and added to the list. So:
+     * resultant XYLists contains «area.width» elements. Then those XYLists are added to
+     * the corresponding Graphs.
+     * @param area
+     */
+    private void setFunctions(Rectangle area) {
         Set keys = functionMap.keySet();
-        for (Object key: keys) {
+        for (Object key : keys) {
             Function2D function = functionMap.get(key);
-            Graph graph = graphs.get((Integer)key);
+            Graph graph = graphs.get((Integer) key);
             Axis xAxis = graph.getXAxis();
             boolean isEndOnTick = xAxis.isEndOnTick();
             double lowerPadding = xAxis.getLowerPadding();
@@ -179,9 +185,9 @@ public class Chart implements Drawable {
             xAxis.setLowerPadding(0);
             xAxis.setEndOnTick(false);
             XYList data = new XYList();
-            for (int i = area.x; i <= area.width + area.x; i++ ){
-                double value = xAxis.pointsToValue(i,area);
-                data.addItem(value,function.apply(value));
+            for (int i = area.x; i <= area.width + area.x; i++) {
+                double value = xAxis.pointsToValue(i, area);
+                data.addItem(value, function.apply(value));
             }
             graph.setData(data);
             // restore axis settings
@@ -191,56 +197,71 @@ public class Chart implements Drawable {
         }
     }
 
-    //Calculate axis position and indents
-    private void defineGraphAreaAndAxisPositions(Graphics2D g, Rectangle fullArea) {
-        xAxisOriginPoints = new int[xAxisList.size()];
-        yAxisOriginPoints = new int[yAxisList.size()];
+    //Calculate and set axis positions and graphArea
+    private void setGraphAreaAndAxisPositions(Graphics2D g, Rectangle fullArea) {
+        xAxisPositions = new int[xAxisList.size()];
+        yAxisPositions = new int[yAxisList.size()];
 
         int topIndent = chartPadding;
         int bottomIndent = chartPadding;
         int leftIndent = chartPadding;
         int rightIndent = chartPadding;
 
-        int xAxisAmount =  xAxisList.size() - 1;
-        for (int i = xAxisAmount; i >= 0 ; i--) {
+        //Calculate position and indents of xAxisList
+        int xAxisAmount = xAxisList.size() - 1;
+        for (int i = xAxisAmount; i >= 0; i--) {
             int size = xAxisList.get(i).getWidth(g, fullArea);
             if (i != xAxisAmount) {
                 size += axisPadding;
             }
-            if (!xAxisList.get(i).isOpposite()){
+            if (!xAxisList.get(i).isOpposite()) {
                 bottomIndent += size;
-                xAxisOriginPoints[i] = fullArea.y + fullArea.height - bottomIndent;
+                xAxisPositions[i] = fullArea.y + fullArea.height - bottomIndent;
             } else {
                 topIndent += size;
-                xAxisOriginPoints[i] = fullArea.y + topIndent;
+                xAxisPositions[i] = fullArea.y + topIndent;
             }
         }
-        //Calculate axis position and indents of yAxisList
+        //Calculate position and indents of yAxisList
         int yAxisAmount = yAxisList.size() - 1;
-        for (int i = yAxisAmount; i >= 0 ; i--) {
+        for (int i = yAxisAmount; i >= 0; i--) {
             int size = yAxisList.get(i).getWidth(g, fullArea);
             if (i != yAxisAmount) {
                 size += axisPadding;
             }
-            if (!yAxisList.get(i).isOpposite()){
+            if (!yAxisList.get(i).isOpposite()) {
                 leftIndent += size;
-                yAxisOriginPoints[i] = fullArea.x + leftIndent;
+                yAxisPositions[i] = fullArea.x + leftIndent;
             } else {
                 rightIndent += size;
-                yAxisOriginPoints[i] = fullArea.x + fullArea.width - rightIndent;
+                yAxisPositions[i] = fullArea.x + fullArea.width - rightIndent;
             }
         }
-        graphArea = new Rectangle(fullArea.x + leftIndent, fullArea.y +topIndent,fullArea.width - leftIndent - rightIndent,fullArea.height - topIndent - bottomIndent);
+        Rectangle graphArea = new Rectangle(fullArea.x + leftIndent, fullArea.y + topIndent, fullArea.width - leftIndent - rightIndent, fullArea.height - topIndent - bottomIndent);
+        setGraphArea(graphArea);
     }
 
     Rectangle getGraphArea() {
         return graphArea;
     }
 
-     Rectangle calculateGraphArea(Graphics2D g2d, Rectangle fullArea){
-        setFunctions(fullArea);
+    private void setGraphArea(Rectangle newGraphArea) {
+        graphArea = newGraphArea;
+        tieAxisStartValuesToArea(newGraphArea);
+        for (Axis axis : yAxisList) {
+            axis.resetRange();
+        }
+        for (Graph graph : graphs) {
+            graph.setDataRange(newGraphArea);
+            graph.rangeYaxis();
+        }
 
-        for (Axis axis : yAxisList){
+    }
+
+    Rectangle calculateGraphArea(Graphics2D g2d, Rectangle fullArea) {
+        tieAxisStartValuesToArea(fullArea);
+        setFunctions(fullArea);
+        for (Axis axis : yAxisList) {
             axis.resetRange();
         }
         for (Graph graph : graphs) {
@@ -248,44 +269,43 @@ public class Chart implements Drawable {
             graph.rangeYaxis();
         }
 
-        defineGraphAreaAndAxisPositions(g2d, fullArea);
-        if (isTicksAligned()) {
-            alignAxis(xAxisList, g2d, graphArea);
-            alignAxis(yAxisList, g2d, graphArea);
+        setGraphAreaAndAxisPositions(g2d, fullArea);
+
+        if (isTicksAlignmentEnable) {
+            alignAxisTicks(xAxisList, g2d, graphArea);
+            alignAxisTicks(yAxisList, g2d, graphArea);
         }
-        defineGraphAreaAndAxisPositions(g2d, fullArea);
+        setGraphAreaAndAxisPositions(g2d, fullArea);
         return graphArea;
     }
 
-    void adjustGraphArea (Graphics2D g2d, int areaX, int areaWidth)  {
+    // used in multi-pane charts to align its graph areas
+    void reduceGraphArea(Graphics2D g2d, int graphAreaX, int graphAreaWidth) {
         int shiftLeft, shiftRight;
-        shiftLeft = areaX - graphArea.x;
-        shiftRight = graphArea.x + graphArea.width - areaX - areaWidth;
+        Rectangle graphArea = this.graphArea;
+        shiftLeft = graphAreaX - graphArea.x;
+        shiftRight = graphArea.x + graphArea.width - graphAreaX - graphAreaWidth;
 
         for (int i = 0; i < yAxisList.size(); i++) {
-            if (yAxisList.get(i).isOpposite()){
-                yAxisOriginPoints[i] -= shiftRight;
+            if (yAxisList.get(i).isOpposite()) {
+                yAxisPositions[i] -= shiftRight;
             } else {
-                yAxisOriginPoints[i] += shiftLeft;
+                yAxisPositions[i] += shiftLeft;
             }
         }
-        graphArea.x = areaX;
-        graphArea.width = areaWidth;
-        if (isTicksAligned()) {
-            alignAxis(xAxisList, g2d, graphArea);
-            alignAxis(yAxisList, g2d, graphArea);
-        }
+        graphArea.x = graphAreaX;
+        graphArea.width = graphAreaWidth;
+        setGraphArea(graphArea);
     }
-
 
 
     void draw(Graphics2D g2d) {
         for (int i = 0; i < xAxisList.size(); i++) {
-            xAxisList.get(i).draw(g2d, graphArea, xAxisOriginPoints[i]);
+            xAxisList.get(i).draw(g2d, graphArea, xAxisPositions[i]);
         }
 
         for (int i = 0; i < yAxisList.size(); i++) {
-            yAxisList.get(i).draw(g2d, graphArea, yAxisOriginPoints[i]);
+            yAxisList.get(i).draw(g2d, graphArea, yAxisPositions[i]);
         }
 
         Rectangle clip = g2d.getClipBounds();
@@ -297,7 +317,6 @@ public class Chart implements Drawable {
 
         g2d.setClip(clip);
     }
-
 
 
     public void draw(Graphics2D g2d, Rectangle fullArea) {

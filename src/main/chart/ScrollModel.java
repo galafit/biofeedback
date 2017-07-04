@@ -1,7 +1,7 @@
 package main.chart;
 
 /**
- * Created by hdablin on 30.06.17.
+ * https://docs.google.com/document/d/1x4MSKJopdGXbtrOhlEc4gD2hA0fKTB2f4ps3F2z4Dgw/edit
  */
 public interface ScrollModel {
     public long getMin();

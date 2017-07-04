@@ -88,7 +88,7 @@ public class MultipaneChart implements Drawable {
         }
 
         for (Chart chart : charts) {
-            chart.adjustGraphArea(g2d, maxX, minEnd - maxX);
+            chart.reduceGraphArea(g2d, maxX, minEnd - maxX);
             chart.draw(g2d);
         }
     }

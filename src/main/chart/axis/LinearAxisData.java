@@ -80,7 +80,7 @@ public class LinearAxisData extends AxisData {
         return super.getMax();
     }
 
-    protected double pointsPerUnit(double length) {
+    private double pointsPerUnit(double length) {
         double min = getMin();
         double max = getMax();
 
@@ -88,20 +88,20 @@ public class LinearAxisData extends AxisData {
         return length / (max - min);
     }
 
-    @Override
-    public Double pointsPerUnit(Rectangle area) {
-        Double axisLength = length;
-        if(axisLength == null) {
-            axisLength = isHorizontal() ? area.getWidth() : area.getHeight();
-        }
-        return pointsPerUnit(axisLength);
+
+    private Double pointsPerUnit(Rectangle area) {
+        return pointsPerUnit(getLength(area));
     }
 
-    private double valueToPoint(double value, double origin, double length) {
+    @Override
+    protected double valueToPoint(double value, double minPoint, double length) {
         double axisMin = getMin();
         double axisMax = getMax();
-        double min = origin;
-        double max = origin + length;
+        double min = minPoint;
+        double max = minPoint + length;
+        if (!isHorizontal()) {
+            max = minPoint - length;
+        }
         double point;
         if (axisMin == axisMax){
             point = min + (max - min) / 2;
@@ -116,11 +116,16 @@ public class LinearAxisData extends AxisData {
         return point;
     }
 
-    private double pointToValue(double point, double origin, double length) {
+    @Override
+    protected double pointToValue(double point, double minPoint, double length) {
         double axisMin = getMin();
         double axisMax = getMax();
-        double min = origin;
-        double max = origin + length;
+        double min = minPoint;
+        double max = minPoint + length;
+        if (!isHorizontal()) {
+            max = minPoint - length;
+        }
+
         if (axisMin == axisMax){
             return axisMax;
         }
@@ -131,55 +136,4 @@ public class LinearAxisData extends AxisData {
             return axisMin + (point - min) / (max - min) * (axisMax - axisMin);
         }
     }
-
-
-    @Override
-    public double valueToPoint(double value, Rectangle area) {
-       Double axisOrigin = origin;
-       Double axisLength = length;
-       if(axisOrigin == null) {
-           if (isHorizontal()) {
-               axisOrigin = area.getX();;
-           }
-           else  {
-               axisOrigin = area.getMaxY();
-           }
-       }
-       if(axisLength == null) {
-           if (isHorizontal()) {
-               axisLength = area.getMaxX() - axisOrigin;
-           }
-           else  {
-               axisLength = area.getMinY() - axisOrigin;
-           }
-       }
-        return valueToPoint(value, axisOrigin, axisLength);
-    }
-
-
-
-
-    @Override
-    public double pointToValue(double point, Rectangle area) {
-        Double axisOrigin = origin;
-        Double axisLength = length;
-        if(axisOrigin == null) {
-            if (isHorizontal()) {
-                axisOrigin = area.getX();;
-            }
-            else  {
-                axisOrigin = area.getMaxY();
-            }
-        }
-        if(axisLength == null) {
-            if (isHorizontal()) {
-                axisLength = area.getMaxX() - axisOrigin;
-            }
-            else  {
-                axisLength = area.getMinY() - axisOrigin;
-            }
-        }
-        return pointToValue(point, axisOrigin, axisLength);
-    }
-
 }

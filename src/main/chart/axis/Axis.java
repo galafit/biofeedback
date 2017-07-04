@@ -11,12 +11,28 @@ public abstract class Axis {
     protected AxisData axisData;
     protected AxisPainter axisPainter;
 
+    public Double getLength(Rectangle area) {
+        return axisData.getLength(area);
+    }
+
+    public double getMinPoint(Rectangle area) {
+        return axisData.getMinPoint(area);
+    }
+
+    public Double getStartValue() {
+        return axisData.getStartValue();
+    }
+
+    public void setStartValue(double startValue) {
+        axisData.setStartValue(startValue);
+    }
+
     public void setLength(double length) {
         axisData.setLength(length);
     }
 
-    public void setOrigin(double origin) {
-        axisData.setOrigin(origin);
+    public void setMinPoint(double axisMinPoint) {
+        axisData.setOrigin(axisMinPoint);
     }
 
     public double getLowerPadding() {
@@ -85,11 +101,13 @@ public abstract class Axis {
         axisData.setAutoScale(isAutoScale);
     }
 
+
+
     public double valueToPoint(double value, Rectangle area){
         return axisData.valueToPoint(value, area);
     }
 
-    public double pointsToValue(int point, Rectangle area) {
+    public double pointsToValue(double point, Rectangle area) {
         return axisData.pointToValue(point, area);
     }
     /**

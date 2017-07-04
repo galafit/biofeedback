@@ -22,12 +22,18 @@ public class ChartWithPreview implements Drawable {
 
 
 
-    public ChartWithPreview(Integer fullChartWidth) {
-        this.fullChartWidth = fullChartWidth;
+    public ChartWithPreview() {
         scrollPainter = new ScrollPainter(new PreviewScrollModel());
     }
 
+    public void setFullChartWidth(int fullChartWidth) {
+        this.fullChartWidth = fullChartWidth;
+    }
+
     private int getFullChartWidth(){
+        if(fullChartWidth != null) {
+            return fullChartWidth;
+        }
         int width = 0;
         for (Chart chart : charts) {
             width = Math.max(width,chart.getMaxGraphSize());
@@ -49,13 +55,7 @@ public class ChartWithPreview implements Drawable {
     public void addChart(Chart chart) {
         charts.add(chart);
         chartWeights.add(2);
-        int length = 100;
-        if (fullChartWidth != null){
-            length = fullChartWidth;
-        } else {
-            length = chart.getMaxGraphSize();
-        }
-        setAxisLength(length);
+        setAxisLength(getFullChartWidth());
     }
 
     public void addChartPanel() {
@@ -70,8 +70,8 @@ public class ChartWithPreview implements Drawable {
         }
         chartWeights.add(weight);
         Chart chart = new Chart();
-        chart.getXAxis(0).setAutoScale(false);
-        chart.setTicksAligned(false);
+       // chart.getXAxis(0).setAutoScale(false);
+       // chart.enableTicksAlignment(false);
         charts.add(chart);
     }
 
@@ -83,9 +83,8 @@ public class ChartWithPreview implements Drawable {
         }
         previewWeights.add(weight);
         Chart preview = new Chart();
-        preview.getXAxis(0).setAutoScale(false);
-        // preview.getXAxis(0).setRange(0, 150);
-        preview.setTicksAligned(false);
+       // preview.getXAxis(0).setAutoScale(false);
+       // preview.enableTicksAlignment(false);
         previews.add(preview);
     }
 
@@ -133,18 +132,20 @@ public class ChartWithPreview implements Drawable {
         setChartsAxisOrigins();
     }
 
+    private double getPreviewXValue(double scrollPosition) {
+        Axis xAxis = previews.get(0).getXAxis(0);
+        Rectangle previewArea = previews.get(0).getGraphArea();
+        return xAxis.pointsToValue(previewArea.getX() + scrollPosition, previewArea);
+    }
+
 
     private void setChartsAxisOrigins() {
-        // viewport position corresponding scroll position
-            double viewportPosition = scrollPainter.getViewportPosition();
-            double axisOrigin = getPaintingAreaX() - viewportPosition;
-            for (Chart chart : charts) {
-                for (int i = 0; i < chart.getXAxisAmount(); i++) {
-                    Axis xAxis = chart.getXAxis(i);
-                    xAxis.setOrigin(axisOrigin);
-                }
+        for (Chart chart : charts) {
+            for (int i = 0; i < chart.getXAxisAmount(); i++) {
+                Axis xAxis = chart.getXAxis(i);
+                xAxis.setStartValue(getPreviewXValue(scrollPainter.getScrollPosition()));
             }
-
+        }
     }
 
 
@@ -209,10 +210,8 @@ public class ChartWithPreview implements Drawable {
             minEnd = Math.min(minEnd, area.x + area.width);
         }
 
-        setChartsAxisOrigins();
-
         for (int i = 0; i < chartsAndPreviews.size(); i++) {
-            chartsAndPreviews.get(i).adjustGraphArea(g2d, maxX, minEnd - maxX);
+            chartsAndPreviews.get(i).reduceGraphArea(g2d, maxX, minEnd - maxX);
             chartsAndPreviews.get(i).draw(g2d);
         }
         scrollPainter.draw(g2d, getPreviewArea());
@@ -246,7 +245,7 @@ public class ChartWithPreview implements Drawable {
 
         @Override
         public long getMax() {
-            return getFullChartWidth();
+            return Math.max(getFullChartWidth(),getPaintingAreaWidth());
         }
 
 

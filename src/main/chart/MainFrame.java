@@ -38,9 +38,8 @@ public class MainFrame extends JFrame {
             //xyList2.addItem(i,rand.nextInt(100));
             xyList2.addItem(4057.0789,i);
         }
-
         PeriodicData periodicData = new PeriodicData(0,1);
-        for (int i = 0; i <15000 ; i++) {
+        for (int i = 0; i <15000; i++) {
             periodicData.addData(i);
         }
 
@@ -52,7 +51,6 @@ public class MainFrame extends JFrame {
 
         Function2D foo = new Foo();
         chart.addGraph(new LineGraph(), foo);
-
         Chart chart1 = new Chart();
 
         chart1.addGraph(new AreaGraph(),sliceDataList);
@@ -64,7 +62,7 @@ public class MainFrame extends JFrame {
        // chart1.addGraph(new LineGraph(), tg);
 
 
-        ChartWithPreview chartWithPreview = new ChartWithPreview(null);
+        ChartWithPreview chartWithPreview = new ChartWithPreview();
       //  chartWithPreview.addChartPanel(chart,1);
 
         chartWithPreview.addChart(chart1);
@@ -74,7 +72,7 @@ public class MainFrame extends JFrame {
 
 
         PreviewChartPanel chartPanel = new PreviewChartPanel(chartWithPreview);
-        //ChartPanel chartPanel = new ChartPanel(chart1);
+        //ChartPanel chartPanel = new ChartPanel(chart);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);
