@@ -24,6 +24,12 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
        setMinMax();
    }
 
+   public void setRange(int startIndex, int window){
+        this.startIndex = startIndex;
+        this.window = window;
+        setMinMax();
+   }
+
    private void setMinMax(){
         if(window >=0) {
             double yMin = Double.MAX_VALUE;
@@ -34,6 +40,9 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
             }
             this.yMin = yMin;
             this.yMax = yMax;
+        } else {
+            yMin = null;
+            yMax = null;
         }
    }
 

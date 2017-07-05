@@ -14,10 +14,10 @@ public class PeriodicData extends AbstractList<DataItem>{
     private double samplesPerUnit;
 
     public PeriodicData(double startValue, double samplesPerUnit) {
-           this(startValue, samplesPerUnit, new ArrayList<Double>());
+           this(new ArrayList<Double>(), startValue, samplesPerUnit);
     }
 
-    public PeriodicData(double startValue, double samplesPerUnit, List<Double> data) {
+    public PeriodicData(List<Double> data, double startValue, double samplesPerUnit) {
         this.startValue = startValue;
         this.samplesPerUnit = samplesPerUnit;
         this.data = data;
@@ -32,7 +32,17 @@ public class PeriodicData extends AbstractList<DataItem>{
         return (int)((value - startValue) * samplesPerUnit);
     }
 
+    public List<Double> getDataList(){
+        return data;
+    }
 
+    public double getStartValue() {
+        return startValue;
+    }
+
+    public double getSamplesPerUnit() {
+        return samplesPerUnit;
+    }
 
     @Override
     public DataItem get(int index) {
