@@ -26,31 +26,27 @@ public class MainFrame extends JFrame {
 
         XYList xyList = new XYList();
         Random rand = new Random();
-        // xyList.addItem(-2.5,-8);
         for (int i = -1000; i <1500 ; i++) {
-            xyList.addItem(i,rand.nextInt(100)/100.0);
+            xyList.addItem(i,rand.nextInt(100)/10.0);
         }
-       // xyList.addItem(15, -1);
-
 
         XYList xyList2 = new XYList();
         for (int i = 0; i <6 ; i++) {
-            //xyList2.addItem(i,rand.nextInt(100));
             xyList2.addItem(4057.0789,i);
         }
-        PeriodicData periodicData = new PeriodicData(0,1);
-        for (int i = 0; i <1500; i++) {
-            periodicData.addData(i);
-        }
-
-        SliceDataList sliceDataList = new SliceDataList(periodicData);
-
 
         chart.addGraph(new LineGraph(),xyList);
-       // chart.addGraph(new LineGraph(), xyList2, 1,1);
+        //chart.addGraph(new LineGraph(), xyList2, 1,1);
 
         Function2D foo = new Foo();
-       // chart.addGraph(new LineGraph(), foo);
+        chart.addGraph(new LineGraph(), foo);
+
+
+        PeriodicData periodicData = new PeriodicData(0,1);
+        for (int i = 0; i <15000; i++) {
+            periodicData.addData(i);
+        }
+        SliceDataList sliceDataList = new SliceDataList(periodicData);
 
         Chart chart1 = new Chart();
         chart1.addGraph(new AreaGraph(),sliceDataList);
@@ -62,10 +58,9 @@ public class MainFrame extends JFrame {
 
 
         ChartWithPreview chartWithPreview = new ChartWithPreview();
-      //  chartWithPreview.addChartPanel(chart,1);
 
         chartWithPreview.addChart(chart1);
-        //chartWithPreview.addChart(chart);
+        chartWithPreview.addChart(chart);
         chartWithPreview.addPreviewPanel();
 
 

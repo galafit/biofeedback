@@ -27,7 +27,7 @@ public class Chart implements Drawable {
     private Color[] colors = {GREY, BROWN, Color.GREEN, Color.YELLOW};
     private Color[] graphicColors = {Color.MAGENTA, Color.RED, ORANGE, Color.CYAN, Color.PINK};
 
-    private boolean isTicksAlignmentEnable = true;
+    private boolean isTicksAlignmentEnable = false;
     private int[] xAxisPositions;
     private int[] yAxisPositions;
     private Rectangle graphArea; // area to draw graphs
@@ -274,8 +274,8 @@ public class Chart implements Drawable {
         if (isTicksAlignmentEnable) {
             alignAxisTicks(xAxisList, g2d, graphArea);
             alignAxisTicks(yAxisList, g2d, graphArea);
+            setGraphAreaAndAxisPositions(g2d, fullArea);
         }
-        setGraphAreaAndAxisPositions(g2d, fullArea);
         return graphArea;
     }
 

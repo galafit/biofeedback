@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,16 +80,58 @@ public class AxisPainter {
         }
     }
 
+    private double getStartValue(Rectangle area) {
+        if(axis.isHorizontal()) {
+            return axis.pointToValue(area.getX(), area);
+        } else {
+            return axis.pointToValue(area.getMaxY(), area);
+        }
+    }
+
+    private double getEndValue(Rectangle area) {
+        if(axis.isHorizontal()) {
+            return axis.pointToValue(area.getMaxX(), area);
+
+        } else {
+            return axis.pointToValue(area.getY(), area);
+        }
+    }
+
+    private List<Tick> createTicksList(TickProvider tickProvider, Rectangle area) {
+
+        List<Tick> ticks = new ArrayList<Tick>();
+        if(axis.getMin() == axis.getMax()) {
+            ticks.add(tickProvider.getClosestTickPrev(axis.getMin()));
+            return ticks;
+        }
+
+        double startValue = getStartValue(area);
+        double endValue = getEndValue(area);
+
+        Tick tick = tickProvider.getClosestTickPrev(startValue);
+        ticks.add(tick);
+        int maxTicksAmount = 500;
+        for (int i = 0; i < maxTicksAmount; i++) {
+            tick = tickProvider.getNext();
+            ticks.add(tick);
+            if(tick.getValue() >= endValue) {
+                break;
+            }
+        }
+        return ticks;
+    }
+
     public List<Tick> getTicks(Graphics2D g, Rectangle area) {
-        List<Tick> ticks =  axis.getTicks(area);
+        TickProvider tickProvider =  axis.getTickProvider(area);
+        List<Tick> ticks = createTicksList(tickProvider, area);
+        int labelsSize;
+
         if(ticks.size() > 1) {
-            int labelsSize = 0;
             if(axis.isHorizontal()) {
                 labelsSize = getMaxTickLabelsWidth(g, getLabelFont(), ticks);
             } else {
                 labelsSize = getMaxTickLabelsHeight(g, getLabelFont(), ticks);
             }
-            double ticksInterval = ticks.get(1).getValue() - ticks.get(0).getValue();
             double tickPixelInterval = axis.valueToPoint(ticks.get(1).getValue(), area) - axis.valueToPoint(ticks.get(0).getValue(), area);
 
             // min space between labels = 2 symbols size (roughly)
@@ -96,7 +139,8 @@ public class AxisPainter {
             int requiredSpace = labelsSize + labelSpace;
 
             if (requiredSpace > tickPixelInterval) {
-                ticks = axis.getTicks(area, requiredSpace);
+                tickProvider.setMinTickPixelInterval(requiredSpace);
+                return createTicksList(tickProvider, area);
             }
         }
         return ticks;
@@ -183,10 +227,10 @@ public class AxisPainter {
         g.setColor(getAxisColor());
         Font labelFont = getLabelFont();
         g.setFont(labelFont);
-        double max = axis.getMax();
-        double min = axis.getMin();
+        double startValue = getStartValue(area);
+        double endValue = getEndValue(area);
         for (Tick tick : ticks) {
-            if (min <= tick.getValue() && tick.getValue() <= max) {
+            if (startValue <= tick.getValue() && tick.getValue() <= endValue) {
                 int tickPoint = (int)axis.valueToPoint(tick.getValue(), area);
                 drawTick(g, axisOriginPoint, tickPoint);
             }
@@ -197,10 +241,10 @@ public class AxisPainter {
         g.setColor(getAxisColor());
         Font labelFont = getLabelFont();
         g.setFont(labelFont);
-        double max = axis.getMax();
-        double min = axis.getMin();
+        double startValue = getStartValue(area);
+        double endValue = getEndValue(area);
         for (Tick tick : ticks) {
-            if (min <= tick.getValue() && tick.getValue() <= max) {
+            if (startValue <= tick.getValue() && tick.getValue() <= endValue) {
                 int tickPoint = (int)axis.valueToPoint(tick.getValue(), area);
                 drawLabel(g, labelFont, axisOriginPoint, tickPoint, tick.getLabel());
             }
@@ -213,10 +257,10 @@ public class AxisPainter {
         g.setColor(axis.getGridSettings().getGridColor());
         Stroke defaultStroke = g.getStroke();
         g.setStroke(gridLineStile.getStroke(gridWidth));
-        double max = axis.getMax();
-        double min = axis.getMin();
+        double startValue = getStartValue(area);
+        double endValue = getEndValue(area);
         for (Tick tick : ticks) {
-            if (min < tick.getValue() && tick.getValue() < max) {
+            if (startValue < tick.getValue() && tick.getValue() < endValue) {
                 if (axis.isHorizontal()) {
                     g.drawLine((int)axis.valueToPoint(tick.getValue(), area), area.y + 1, (int)axis.valueToPoint(tick.getValue(), area), area.y  + area.height - 1);
                 } else {
@@ -237,14 +281,14 @@ public class AxisPainter {
             g.setColor(axis.getGridSettings().getMinorGridColor());
             Stroke defaultStroke = g.getStroke();
             g.setStroke(gridLineStile.getStroke(gridWidth));
-            double max = axis.getMax();
-            double min = axis.getMin();
+            double startValue = getStartValue(area);
+            double endValue = getEndValue(area);
             double tickInterval = ticks.get(1).getValue() - ticks.get(0).getValue();
             double minorTickInterval = tickInterval / gridDivider;
 
             double minorTickValue = ticks.get(0).getValue();
-            while (minorTickValue < max) {
-                if (min < minorTickValue) {
+            while (minorTickValue < endValue) {
+                if (startValue < minorTickValue) {
                     if (axis.isHorizontal()) {
                         g.drawLine((int)axis.valueToPoint(minorTickValue, area), area.y + 1, (int)axis.valueToPoint(minorTickValue, area), area.y + area.height - 1);
                     } else {

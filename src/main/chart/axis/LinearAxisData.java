@@ -10,13 +10,14 @@ public class LinearAxisData extends AxisData {
     private Double roundMin = null;
     private Double roundMax = null;
 
+
     @Override
-    public List<Tick> getTicks(Rectangle area) {
+    public TickProvider getTickProvider(Rectangle area) {
         roundMax = null;
         roundMin = null;
         String units = getUnits();
         units = getAxisViewSettings().isUnitsVisible() ? units : null;
-        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units, isHorizontal());
+        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units);
 
         double tickInterval = getTicksSettings().getTickInterval();
         int ticksAmount = getTicksSettings().getTicksAmount();
@@ -28,44 +29,17 @@ public class LinearAxisData extends AxisData {
         } else {
             tickProvider.setTickPixelInterval(getTicksSettings().getTickPixelInterval());
         }
-        List<Tick> ticks = tickProvider.getTicks();
-        if(ticks.size() > 1) {
-            roundMin = ticks.get(0).getValue();
-            roundMax = ticks.get(ticks.size() - 1).getValue();
+        if(getMin() != getMax()) {
+           // roundMin = tickProvider.getClosestTickPrev(getMin()).getValue();
+           // roundMax = tickProvider.getClosestTickNext(getMax()).getValue();
         }
-        return ticks;
+
+        return tickProvider;
     }
 
-    @Override
-    public List<Tick> getTicks(Rectangle area, double minTickPixelInterval) {
-        roundMax = null;
-        roundMin = null;
-        String units = getUnits();
-        units = getAxisViewSettings().isUnitsVisible() ? units : null;
-        LinearTickProvider tickProvider = new LinearTickProvider(getMin(), getMax(), pointsPerUnit(area), units, isHorizontal());
-
-        double tickInterval = getTicksSettings().getTickInterval();
-        int ticksAmount = getTicksSettings().getTicksAmount();
-        if(ticksAmount > 0) {
-            tickProvider.setTicksAmount(ticksAmount);
-        }
-        else if(tickInterval > 0) {
-            tickProvider.setTicksInterval(tickInterval);
-        } else {
-            tickProvider.setMinTickPixelInterval(minTickPixelInterval);
-        }
-        List<Tick> ticks = tickProvider.getTicks();
-
-        if(ticks.size() > 1) {
-            roundMin = ticks.get(0).getValue();
-            roundMax = ticks.get(ticks.size() - 1).getValue();
-        }
-
-        return ticks;
-    }
 
     @Override
-    public Double getMin() {
+    public double getMin() {
         if (isEndOnTick() && roundMin != null){
             return roundMin;
         }
@@ -73,7 +47,7 @@ public class LinearAxisData extends AxisData {
     }
 
     @Override
-    public Double getMax() {
+    public double getMax() {
         if (isEndOnTick() && roundMax != null){
             return roundMax;
         }

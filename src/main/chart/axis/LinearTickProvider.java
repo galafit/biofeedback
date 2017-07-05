@@ -7,35 +7,73 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Created by galafit on 17/6/17.
+ * Created by galafit on 5/7/17.
  */
-class LinearTickProvider {
-    double ticksInterval;
-    double min;
-    double max;
-    double pointsPerUnit;
-    DecimalFormat numberFormat = new DecimalFormat();
-    int ticksAmount;
-    String units;
-    boolean isHorizontal;
+class LinearTickProvider implements TickProvider {
+    private double ticksInterval;
+    private double min;
+    private double max;
+    private double pointsPerUnit;
+    private DecimalFormat numberFormat = new DecimalFormat();
+    private int ticksAmount;
+    private String units;
+    private double lastTickValue;
 
-    public LinearTickProvider(double min, double max, double pointsPerUnit, @Nullable  String units, boolean isHorizontal) {
+
+    public LinearTickProvider(double min, double max, double pointsPerUnit, @Nullable String units) {
         this.min = min;
         this.max = max;
         this.pointsPerUnit = pointsPerUnit;
         this.units = units;
-        this.isHorizontal = isHorizontal;
     }
 
     private double getClosestTickPrev(double value, double tickInterval) {
+        if (min == max) {
+            return min;
+        }
         return Math.floor(value / tickInterval) * tickInterval;
     }
 
     private double getClosestTickNext(double value, double tickInterval) {
+        if (min == max) {
+            return max;
+        }
         return Math.ceil(value / tickInterval) * tickInterval;
     }
+
+    public Tick getClosestTickPrev(double value) {
+        double tickValue = getClosestTickPrev(value, ticksInterval);
+        lastTickValue = tickValue;
+        return new Tick(tickValue, numberFormat.format(tickValue));
+    }
+
+    public Tick getClosestTickNext(double value) {
+        double tickValue = getClosestTickNext(value, ticksInterval);
+        lastTickValue = tickValue;
+        return new Tick(tickValue, numberFormat.format(tickValue));
+    }
+
+    public Tick getNext() {
+        lastTickValue += ticksInterval;
+        return new Tick(lastTickValue, numberFormat.format(lastTickValue));
+    }
+
+
+    public List<Tick> getTicks() {
+        List<Tick> ticks = new ArrayList<Tick>();
+        int ticksAmount = calculateTicksAmount(ticksInterval);
+        ticksAmount = (ticksAmount == 1) ? 1 : Math.max(ticksAmount, this.ticksAmount);
+
+        double value = getRoundMin(ticksInterval);
+        for (int i = 1; i <= ticksAmount; i++) {
+            String label = numberFormat.format(value);
+            ticks.add(new Tick(value, label));
+            value = value + ticksInterval;
+        }
+        return ticks;
+    }
+
 
 
     private DecimalFormat getTickLabelFormat(int power) {
@@ -124,8 +162,9 @@ class LinearTickProvider {
         }
         ticksAmount = givenTicksAmount;
         int[] roundValues = {10, 12, 15, 20, 25, 30, 40, 50, 60, 80, 100};
-      //  int[] roundValues = {10,  20,  30, 40, 50, 60, 80, 100};
+        //  int[] roundValues = {10,  20,  30, 40, 50, 60, 80, 100};
         setRoundTickInterval(givenTicksAmount, roundValues);
+
     }
 
     /**
@@ -146,9 +185,13 @@ class LinearTickProvider {
     }
 
 
+
     private void setTickIntervalAndFormat(double ticksInterval, int formatPower) {
         this.ticksInterval = ticksInterval;
         numberFormat = getTickLabelFormat(formatPower);
+        if (units != null){
+            numberFormat = new DecimalFormat(numberFormat.toPattern() + " "+units);
+        }
     }
 
     /**
@@ -241,9 +284,7 @@ class LinearTickProvider {
 
 
     private int calculateTicksAmount(double ticksInterval) {
-        if (min == max) {
-           return 1;
-        }
+
         if(ticksInterval == 0) {
             return this.ticksAmount;
         }
@@ -251,20 +292,5 @@ class LinearTickProvider {
 
     }
 
-    public List<Tick> getTicks() {
-        List<Tick> ticks = new ArrayList<Tick>();
-        int ticksAmount = calculateTicksAmount(ticksInterval);
-        ticksAmount = (ticksAmount == 1) ? 1 : Math.max(ticksAmount, this.ticksAmount);
-        if (units != null){
-            numberFormat = new DecimalFormat(numberFormat.toPattern() + " "+units);
-        }
-        double value = getRoundMin(ticksInterval);
-        for (int i = 1; i <= ticksAmount; i++) {
-            String label = numberFormat.format(value);
-            ticks.add(new Tick(value, label));
-            value = value + ticksInterval;
-        }
-        return ticks;
-    }
-
 }
+

@@ -22,7 +22,7 @@ public abstract class AxisData {
     private boolean isOpposite = false;
     private double lowerPadding = 0.00;
     private double upperPadding = 0.00;
-    private boolean isEndOnTick = false;
+    private boolean isEndOnTick = true;
 
 
     private Double length = null;
@@ -128,9 +128,12 @@ public abstract class AxisData {
         return isHorizontal;
     }
 
-    public Double getMin() {
+    public double getMin() {
         if(min == null) {
             return DEFAULT_MIN;
+        }
+        if(min == max) {
+            return min;
         }
 
         double resultantMin = (min == null) ? DEFAULT_MIN : min;
@@ -142,9 +145,12 @@ public abstract class AxisData {
 
     }
 
-    public Double getMax() {
+    public double getMax() {
         if(max == null) {
             return DEFAULT_MAX;
+        }
+        if(min == max) {
+            return max;
         }
         double resultantMin = (min == null) ? DEFAULT_MIN : min;
         double resultantMax = (max == null) ? DEFAULT_MAX : max;
@@ -185,8 +191,7 @@ public abstract class AxisData {
         }
     }
 
-    public abstract List<Tick> getTicks(Rectangle area);
-    public abstract List<Tick> getTicks(Rectangle area, double minTickPixelInterval);
+    public abstract TickProvider getTickProvider(Rectangle area);
 
     public boolean isAutoScale() {
         return isAutoScale;
