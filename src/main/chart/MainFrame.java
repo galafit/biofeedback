@@ -24,10 +24,10 @@ public class MainFrame extends JFrame {
         chart.addYAxis(AxisType.LINEAR, true);
        // chart.addXAxis(AxisType.LINEAR, true);
 
-        XYList xyList = new XYList();
+        PeriodicData xyList = new PeriodicData(-1,1);
         Random rand = new Random();
-        for (int i = -1000; i <1500 ; i++) {
-            xyList.addItem(i,rand.nextInt(100)/10.0);
+        for (int i = -3501; i <1500 ; i++) {
+            xyList.addData(rand.nextInt(100)*100.0);
         }
 
         XYList xyList2 = new XYList();
@@ -35,7 +35,7 @@ public class MainFrame extends JFrame {
             xyList2.addItem(4057.0789,i);
         }
 
-        chart.addGraph(new LineGraph(),xyList);
+        chart.addGraph(new LineGraph(),new SliceDataList(xyList));
         //chart.addGraph(new LineGraph(), xyList2, 1,1);
 
         Function2D foo = new Foo();
@@ -62,6 +62,9 @@ public class MainFrame extends JFrame {
         chartWithPreview.addChart(chart1);
         chartWithPreview.addChart(chart);
         chartWithPreview.addPreviewPanel();
+
+        chartWithPreview.addPreviewGraph(new LineGraph(),periodicData,0);
+        chartWithPreview.addPreviewGraph(new LineGraph(),xyList,0);
 
 
 

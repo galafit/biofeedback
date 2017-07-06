@@ -19,12 +19,21 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
     }
 
     public void setRange(double startValue, double endValue){
-       startIndex = getMinIndex(startValue);
-       window = getMaxIndex(endValue) - startIndex;
+       setRange(getMaxIndex(startValue),getMaxIndex(endValue) - getMaxIndex(startValue));
        setMinMax();
    }
 
    public void setRange(int startIndex, int window){
+        if (startIndex <0){
+            startIndex = 0;
+            window = window + startIndex;
+        }
+        if (startIndex > periodicData.size()){
+            window = -1;
+        }
+        if (window + startIndex > periodicData.size()){
+            window = periodicData.size() - startIndex;
+        }
         this.startIndex = startIndex;
         this.window = window;
         setMinMax();
@@ -67,6 +76,9 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
 
     @Override
     public int size() {
+        if (window < 0){
+            return 0;
+        }
         return window + 1;
     }
 

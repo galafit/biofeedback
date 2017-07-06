@@ -12,8 +12,9 @@ public class CompressedData {
     private int compressRatio = 1;
     private List<Double> compressedData;
 
-    public CompressedData(PeriodicData data) {
+    public CompressedData(PeriodicData data, int compressRatio) {
         this.data = data;
+        this.compressRatio = compressRatio;
         compress();
     }
 
@@ -23,10 +24,9 @@ public class CompressedData {
         double sum = 0;
         int count = 0;
         for (int i = 0; i < dataList.size(); i++) {
-            if (count < compressRatio){
-                sum += dataList.get(i);
-                count++;
-            }else{
+            sum += dataList.get(i);
+            count++;
+            if (count == compressRatio) {
                 compressedData.add(sum / compressRatio);
                 sum = 0;
                 count = 0;

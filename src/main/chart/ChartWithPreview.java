@@ -19,6 +19,7 @@ public class ChartWithPreview implements Drawable {
     private boolean isChartsSynchronized = true;
     private ScrollPainter scrollPainter;
     private Integer fullChartWidth;
+    private final int SCREEN_WIDTH = 500;
 
 
 
@@ -95,7 +96,13 @@ public class ChartWithPreview implements Drawable {
         addPreviewPanel(1);
     }
 
-    public void addGraph(int chartPanelIndex, Graph graph, DataList dataList) {
+    public void addPreviewGraph(Graph graph, PeriodicData periodicData, int previewIndex){
+        int compressionRatio = periodicData.size() / SCREEN_WIDTH;
+        CompressedData compressedData = new CompressedData(periodicData, compressionRatio);
+        previews.get(previewIndex).addGraph(graph,compressedData.getCompressedData());
+    }
+
+    public void addGraph(Graph graph, DataList dataList, int chartPanelIndex) {
         charts.get(chartPanelIndex).addGraph(graph, dataList);
 
     }

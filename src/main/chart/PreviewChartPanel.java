@@ -34,14 +34,6 @@ public class PreviewChartPanel extends JPanel {
                 isMousePressedInsideCursor = chartWithPreview.isMouseInsideCursor(e.getX(),e.getY());
             }
 
-           /* @Override
-            public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e);
-                if (isMousePressedInsideCursor){
-                    chartWithPreview.moveCursorPosition(e.getX() - mousePressedX);
-                    repaint();
-                }
-            } */
         });
 
         addMouseMotionListener(new MouseMotionAdapter() {
