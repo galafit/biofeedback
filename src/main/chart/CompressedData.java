@@ -1,5 +1,8 @@
 package main.chart;
 
+import main.chart.compressors.CompressFunction;
+import main.chart.compressors.SumCompression;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,24 +14,35 @@ public class CompressedData {
     private PeriodicData data;
     private int compressRatio = 1;
     private List<Double> compressedData;
+    private CompressFunction compressFunction;
+    private double[] buffer;
 
-    public CompressedData(PeriodicData data, int compressRatio) {
+    public CompressedData(PeriodicData data, int compressRatio, CompressFunction compressFunction) {
         this.data = data;
         this.compressRatio = compressRatio;
+        this.compressFunction = compressFunction;
+        buffer = new double[compressRatio];
+        compress();
+    }
+
+    public CompressedData(PeriodicData data, int compressRatio){
+        this(data, compressRatio, new SumCompression());
+    }
+
+    public void update(){
         compress();
     }
 
     private void compress(){
         compressedData = new ArrayList<Double>();
         List<Double> dataList = data.getDataList();
-        double sum = 0;
+
         int count = 0;
         for (int i = 0; i < dataList.size(); i++) {
-            sum += dataList.get(i);
+            buffer[count] = dataList.get(i);
             count++;
             if (count == compressRatio) {
-                compressedData.add(sum / compressRatio);
-                sum = 0;
+                compressedData.add(compressFunction.compress(buffer));
                 count = 0;
             }
         }

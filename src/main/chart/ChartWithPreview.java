@@ -21,10 +21,20 @@ public class ChartWithPreview implements Drawable {
     private Integer fullChartWidth;
     private final int SCREEN_WIDTH = 500;
 
-
-
     public ChartWithPreview() {
         scrollPainter = new ScrollPainter(new PreviewScrollModel());
+    }
+
+    public void update(){
+
+        for (Chart preview : previews) {
+            for (int i = 0; i < preview.getGraphsAmoiunt(); i++) {
+                SliceDataList sliceDataList = (SliceDataList)preview.getGraph(i).getDataItemList();
+                CompressedData compressedData = (CompressedData)(sliceDataList.getPeriodicData());
+                compressedData.update();
+            }
+        }
+        setAxisLength(getFullChartWidth());
     }
 
     public void setFullChartWidth(int fullChartWidth) {

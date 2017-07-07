@@ -18,4 +18,9 @@ public class ChartPanel extends JPanel {
         super.paintComponent(g);
         chart.draw((Graphics2D) g, new Rectangle(0,0,getWidth(),getHeight()));
     }
+
+    public void update(){
+        chart.update();
+        repaint();
+    }
 }

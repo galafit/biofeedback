@@ -98,6 +98,21 @@ public class Chart implements Drawable {
         xAxisList.add(axis);
     }
 
+    public void update(){
+        for (Graph graph : graphs) {
+            graph.rangeXaxis();
+        }
+    }
+
+    public Graph getGraph(int index){
+        return graphs.get(index);
+    }
+
+    public int getGraphsAmoiunt(){
+        return graphs.size();
+    }
+
+
     public void addGraph(Graph graph, DataList data) {
         addGraph(graph, data, 0, 0);
     }

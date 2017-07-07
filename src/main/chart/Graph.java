@@ -18,6 +18,10 @@ public abstract class Graph {
         dataItemList = data;
     }
 
+    public DataList getDataItemList() {
+        return dataItemList;
+    }
+
     protected void rangeXaxis(){
         if (xAxis.isAutoScale()){
             Double xMin = getXmin();

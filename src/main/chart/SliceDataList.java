@@ -40,10 +40,11 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
    }
 
    private void setMinMax(){
-        if(window >=0) {
+
+        if(window >0) {
             double yMin = Double.MAX_VALUE;
             double yMax = -Double.MAX_VALUE;
-            for (int i = startIndex; i <= startIndex + window; i++) {
+            for (int i = startIndex; i < startIndex + window; i++) {
                 yMin = Math.min(yMin, periodicData.get(i).getY());
                 yMax = Math.max (yMax, periodicData.get(i).getY());
             }
@@ -53,6 +54,7 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
             yMin = null;
             yMax = null;
         }
+
    }
 
    public int getMinIndex(double startValue){
@@ -79,7 +81,7 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
         if (window < 0){
             return 0;
         }
-        return window + 1;
+        return window;
     }
 
     @Override
@@ -106,5 +108,9 @@ public class SliceDataList extends AbstractList<DataItem> implements DataList{
             setMinMax();
         }
         return yMax;
+    }
+
+    public PeriodicData getPeriodicData() {
+        return periodicData;
     }
 }

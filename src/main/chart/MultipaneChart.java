@@ -12,7 +12,9 @@ public class MultipaneChart implements Drawable {
     private List<Integer> chartWeights = new ArrayList<Integer>();
     private boolean isChartsSynchronized = true;
 
+    public void update(){
 
+    }
     public boolean isChartsSynchronized() {
         return isChartsSynchronized;
     }

@@ -56,5 +56,9 @@ public class PreviewChartPanel extends JPanel {
         chartWithPreview.draw((Graphics2D) g, new Rectangle(0,0,getWidth(),getHeight()));
     }
 
+    public void update(){
+        chartWithPreview.update();
+        repaint();
+    }
 
 }
