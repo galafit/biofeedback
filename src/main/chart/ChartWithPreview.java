@@ -30,8 +30,8 @@ public class ChartWithPreview implements Drawable {
         for (Chart preview : previews) {
             for (int i = 0; i < preview.getGraphsAmoiunt(); i++) {
                 SliceDataList sliceDataList = (SliceDataList)preview.getGraph(i).getDataItemList();
-                CompressedData compressedData = (CompressedData)(sliceDataList.getPeriodicData());
-                compressedData.update();
+          //      CompressedData compressedData = (CompressedData)(sliceDataList.getPeriodicData());
+          //      compressedData.update();
             }
         }
         setAxisLength(getFullChartWidth());

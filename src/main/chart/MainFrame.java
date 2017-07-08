@@ -21,12 +21,19 @@ public class MainFrame extends JFrame {
 
         Chart chart = new Chart();
 
+
+        XYList xyList2 = new XYList();
+        for (int i = 0; i <6 ; i++) {
+            xyList2.addItem(4057.0789,i);
+        }
+
+
         chart.addYAxis(AxisType.LINEAR, true);
        // chart.addXAxis(AxisType.LINEAR, true);
 
-        PeriodicData periodicData = new PeriodicData(-1,1);
+        PeriodicData periodicData = new PeriodicData(-100,1);
         Random rand = new Random();
-        for (int i = -3501; i <1500 ; i++) {
+        for (int i = -3501; i <50000 ; i++) {
             periodicData.addData(rand.nextInt(100)*100.0);
         }
 
@@ -37,7 +44,7 @@ public class MainFrame extends JFrame {
 
 
         PeriodicData periodicData2 = new PeriodicData(0,1);
-        for (int i = 0; i <15000; i++) {
+        for (int i = 0; i <150; i++) {
             periodicData2.addData(i);
         }
         SliceDataList sliceDataList = new SliceDataList(periodicData2);
@@ -54,7 +61,7 @@ public class MainFrame extends JFrame {
         ChartWithPreview chartWithPreview = new ChartWithPreview();
 
         chartWithPreview.addChart(chart1);
-        chartWithPreview.addChart(chart);
+       // chartWithPreview.addChart(chart);
         chartWithPreview.addPreviewPanel();
 
         chartWithPreview.addPreviewGraph(new LineGraph(),periodicData2,0);
@@ -63,8 +70,8 @@ public class MainFrame extends JFrame {
 
 
 
-        PreviewChartPanel chartPanel = new PreviewChartPanel(chartWithPreview);
-        //ChartPanel chartPanel = new ChartPanel(chart);
+       // PreviewChartPanel chartPanel = new PreviewChartPanel(chartWithPreview);
+        ChartPanel chartPanel = new ChartPanel(chart);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);
@@ -75,7 +82,7 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        for (int j = 0; j < 100; j++) {
+     /*   for (int j = 0; j < 100; j++) {
             try {
                 Thread.sleep(1000);
                 for (int i = 0; i < 10; i++) {
@@ -86,7 +93,7 @@ public class MainFrame extends JFrame {
                 e.printStackTrace();
             }
 
-           /* try {
+            try {
                 Thread.sleep(1000);
                 for (int i = 0; i < 10; i++) {
                     periodicData2.addData(i*30);
@@ -94,8 +101,8 @@ public class MainFrame extends JFrame {
                 chartPanel.update();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            } */
-        }
+            }
+        }*/
     }
 
 

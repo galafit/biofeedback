@@ -26,7 +26,7 @@ public class MainFrame2 extends JFrame {
 
         PeriodicData periodicData = new PeriodicData(-1,1);
         Random rand = new Random();
-        for (int i = -35; i <150 ; i++) {
+        for (int i = -35; i <1500 ; i++) {
             periodicData.addData(rand.nextInt(100));
         }
 
