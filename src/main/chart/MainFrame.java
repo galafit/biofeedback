@@ -33,24 +33,24 @@ public class MainFrame extends JFrame {
 
         PeriodicData periodicData = new PeriodicData(-100,1);
         Random rand = new Random();
-        for (int i = -3501; i <50000 ; i++) {
+        for (int i = -3501; i <15000 ; i++) {
             periodicData.addData(rand.nextInt(100)*100.0);
         }
 
-        chart.addGraph(new LineGraph(),new SliceDataList(periodicData));
+        chart.addGraph(new LineGraph(),periodicData);
 
        // Function2D foo = new Foo();
        // chart.addGraph(new LineGraph(), foo);
 
 
         PeriodicData periodicData2 = new PeriodicData(0,1);
-        for (int i = 0; i <150; i++) {
+        for (int i = 0; i <15000; i++) {
             periodicData2.addData(i);
         }
-        SliceDataList sliceDataList = new SliceDataList(periodicData2);
+
 
         Chart chart1 = new Chart();
-        chart1.addGraph(new AreaGraph(),sliceDataList);
+        chart1.addGraph(new AreaGraph(),periodicData2);
         Function2D sin = new Sin();
         chart1.addGraph(new LineGraph(),sin);
 
@@ -61,7 +61,7 @@ public class MainFrame extends JFrame {
         ChartWithPreview chartWithPreview = new ChartWithPreview();
 
         chartWithPreview.addChart(chart1);
-       // chartWithPreview.addChart(chart);
+        chartWithPreview.addChart(chart);
         chartWithPreview.addPreviewPanel();
 
         chartWithPreview.addPreviewGraph(new LineGraph(),periodicData2,0);
@@ -70,8 +70,8 @@ public class MainFrame extends JFrame {
 
 
 
-       // PreviewChartPanel chartPanel = new PreviewChartPanel(chartWithPreview);
-        ChartPanel chartPanel = new ChartPanel(chart);
+        PreviewChartPanel chartPanel = new PreviewChartPanel(chartWithPreview);
+        //ChartPanel chartPanel = new ChartPanel(chart);
 
         chartPanel.setPreferredSize(new Dimension(500, 500));
         chartPanel.setBackground(Color.BLACK);

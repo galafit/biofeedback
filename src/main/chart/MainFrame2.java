@@ -26,7 +26,7 @@ public class MainFrame2 extends JFrame {
 
         PeriodicData periodicData = new PeriodicData(-1,1);
         Random rand = new Random();
-        for (int i = -35; i <1500 ; i++) {
+        for (int i = -35; i <150 ; i++) {
             periodicData.addData(rand.nextInt(100));
         }
 
@@ -36,7 +36,7 @@ public class MainFrame2 extends JFrame {
         }
         chart.addGraph(new LineGraph(),xyList);
 
-        chart.addGraph(new LineGraph(),new SliceDataList(periodicData));
+        chart.addGraph(new LineGraph(),periodicData);
         //chart.addGraph(new LineGraph(), xyList2, 1,1);
 
       /*  Function2D foo = new Foo();

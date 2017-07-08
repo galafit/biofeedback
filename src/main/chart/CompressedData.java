@@ -10,48 +10,54 @@ import java.util.List;
 /**
  * Created by hdablin on 05.07.17.
  */
-public class CompressedData {
-    private PeriodicData data;
+public class CompressedData extends PeriodicData  {
+    private PeriodicData periodicData;
     private int compressRatio = 1;
-    private List<Double> compressedData;
     private CompressFunction compressFunction;
     private double[] buffer;
 
-    public CompressedData(PeriodicData data, int compressRatio, CompressFunction compressFunction) {
-        this.data = data;
+    public CompressedData(PeriodicData periodicData, int compressRatio, CompressFunction compressFunction) {
+        super(periodicData.getStartValue(), periodicData.getSamplesPerUnit() / compressRatio);
+        this.periodicData = periodicData;
+        if (compressRatio < 1){
+            compressRatio = 1;
+        }
         this.compressRatio = compressRatio;
         this.compressFunction = compressFunction;
         buffer = new double[compressRatio];
         compress();
     }
 
-    public CompressedData(PeriodicData data, int compressRatio){
-        this(data, compressRatio, new SumCompression());
+    public CompressedData(PeriodicData periodicData, int compressRatio){this(periodicData, compressRatio, new SumCompression());
     }
+
 
     public void update(){
         compress();
     }
 
     private void compress(){
-        compressedData = new ArrayList<Double>();
-        List<Double> dataList = data.getDataList();
 
+        List<Double> dataList = periodicData.getDataList();
+        System.out.println("DataListSize = " + dataList.size() + " ratio = " + compressRatio);
+        data = new ArrayList<Double>();
         int count = 0;
         for (int i = 0; i < dataList.size(); i++) {
             buffer[count] = dataList.get(i);
             count++;
             if (count == compressRatio) {
-                compressedData.add(compressFunction.compress(buffer));
+                data.add(compressFunction.compress(buffer));
                 count = 0;
             }
         }
+        //setRange(0,data.size() - 1);
+        startIndex = 0;
+        window = data.size();
+        System.out.println("Data size = " + data.size());
     }
 
-    public DataList getCompressedData() {
-         PeriodicData periodicData = new PeriodicData(compressedData, data.getStartValue(),data.getSamplesPerUnit() / compressRatio);
-         SliceDataList sliceDataList = new SliceDataList(periodicData);
-         sliceDataList.setRange(0,periodicData.size() - 1);
-         return sliceDataList;
+    @Override
+    public void setRange(int startIndex, int window) {
+        //super.setRange(startIndex, window);
     }
 }

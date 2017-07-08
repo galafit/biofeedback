@@ -29,9 +29,8 @@ public class ChartWithPreview implements Drawable {
 
         for (Chart preview : previews) {
             for (int i = 0; i < preview.getGraphsAmoiunt(); i++) {
-                SliceDataList sliceDataList = (SliceDataList)preview.getGraph(i).getDataItemList();
-          //      CompressedData compressedData = (CompressedData)(sliceDataList.getPeriodicData());
-          //      compressedData.update();
+                 CompressedData compressedData = (CompressedData)(preview.getGraph(i).getDataItemList());
+                // compressedData.update();
             }
         }
         setAxisLength(getFullChartWidth());
@@ -97,8 +96,8 @@ public class ChartWithPreview implements Drawable {
         }
         previewWeights.add(weight);
         Chart preview = new Chart();
-       // preview.getXAxis(0).setAutoScale(false);
-       // preview.enableTicksAlignment(false);
+        preview.getXAxis(0).setAutoScale(false);
+        preview.enableTicksAlignment(false);
         previews.add(preview);
     }
 
@@ -107,9 +106,9 @@ public class ChartWithPreview implements Drawable {
     }
 
     public void addPreviewGraph(Graph graph, PeriodicData periodicData, int previewIndex){
-        int compressionRatio = periodicData.size() / SCREEN_WIDTH;
+        int compressionRatio = periodicData.getFullSize() / SCREEN_WIDTH;
         CompressedData compressedData = new CompressedData(periodicData, compressionRatio);
-        previews.get(previewIndex).addGraph(graph,compressedData.getCompressedData());
+        previews.get(previewIndex).addGraph(graph,compressedData);
     }
 
     public void addGraph(Graph graph, DataList dataList, int chartPanelIndex) {

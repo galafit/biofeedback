@@ -7,105 +7,12 @@ import java.util.List;
 /**
  * Created by hdablin on 26.06.17.
  */
-public class SliceDataList extends AbstractList<DataItem> implements DataList{
-   private PeriodicData periodicData;
-   private int window = -1;
-   private int startIndex;
-   private Double yMin = null;
-   private Double yMax = null;
+public interface SliceDataList extends DataList{
 
-    public SliceDataList(PeriodicData periodicData) {
-        this.periodicData = periodicData;
-    }
+    public void setRange(double startValue, double endValue);
 
-    public void setRange(double startValue, double endValue){
-       setRange(getMaxIndex(startValue),getMaxIndex(endValue) - getMaxIndex(startValue));
-       setMinMax();
-   }
+    public void setRange(int startIndex, int window);
 
-   public void setRange(int startIndex, int window){
-        if (startIndex <0){
-            startIndex = 0;
-            window = window + startIndex;
-        }
-        if (startIndex > periodicData.size()){
-            window = -1;
-        }
-        if (window + startIndex > periodicData.size()){
-            window = periodicData.size() - startIndex;
-        }
-        this.startIndex = startIndex;
-        this.window = window;
-        setMinMax();
-   }
+    public int getFullSize() ;
 
-   private void setMinMax(){
-        if(window >0) {
-            double yMin = Double.MAX_VALUE;
-            double yMax = -Double.MAX_VALUE;
-            for (int i = startIndex; i < startIndex + window; i++) {
-                yMin = Math.min(yMin, periodicData.get(i).getY());
-                yMax = Math.max (yMax, periodicData.get(i).getY());
-            }
-            this.yMin = yMin;
-            this.yMax = yMax;
-        } else {
-            yMin = null;
-            yMax = null;
-        }
-
-   }
-
-   private int getMinIndex(double startValue){
-       int index = periodicData.getIndex(startValue) - 1;
-       return Math.max(0,index);
-   }
-
-   private int getMaxIndex(double endValue){
-       int index = periodicData.getIndex(endValue) + 1;
-       return Math.min(index, periodicData.size());
-   }
-
-   public int getFullSize() {
-       return periodicData.size();
-   }
-
-    @Override
-    public DataItem get(int index) {
-        return periodicData.get(startIndex + index);
-    }
-
-    @Override
-    public int size() {
-        if (window <= 0){
-            return 0;
-        }
-        return window;
-    }
-
-    @Override
-    public Double getXmin() {
-        return periodicData.get(0).getX();
-    }
-
-    @Override
-    public Double getXmax() {
-        return periodicData.get(periodicData.size() - 1).getX();
-    }
-
-    @Override
-    public Double getYmin() {
-       if(yMin == null) {
-           setMinMax();
-       }
-       return yMin;
-    }
-
-    @Override
-    public Double getYmax() {
-        if(yMax == null) {
-            setMinMax();
-        }
-        return yMax;
-    }
 }
