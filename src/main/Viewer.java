@@ -8,9 +8,6 @@ import main.graph.GraphViewer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by gala on 04/03/17.
@@ -18,24 +15,34 @@ import java.util.Date;
 public class Viewer extends JFrame {
     GraphViewer graphViewer;
     private final double PREVIEW_TIME_FREQUENCY = 50.0 / 750;
-    private Function lastFunction;
+    private Function lastDataSeries;
+    GraphToAudio graphToAudio;
 
     public Viewer() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton playButton = new JButton("play");
+        JButton stopButton = new JButton("stop");
         JButton showButton = new JButton("show");
         JTextField durationField = new JTextField(3);
         playButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double startTime = graphViewer.getStart();
+             /*   double startTime = graphViewer.getStart();
                 double duration = 3;
                 if(!durationField.getText().isEmpty()) {
                     duration = new Double(durationField.getText());
                 }
                 graphViewer.requestFocusInWindow();
                 validate();
-                StdAudio.play(lastFunction, startTime, duration, 1);
+                StdAudio.play(lastDataSeries, startTime, duration, 0.5);*/
+             graphToAudio.play(graphViewer.getStartIndex());
+            }
+        });
+
+        stopButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                graphToAudio.stop();
             }
         });
 
@@ -53,7 +60,7 @@ public class Viewer extends JFrame {
                 }
                 graphViewer.requestFocusInWindow();
                 validate();
-                double[] graph = lastFunction.toNormalizedArray(startTime, graphViewer.getGraphsSamplingRate(), duration, 1);
+                double[] graph = lastDataSeries.toNormalizedArray(startTime, graphViewer.getGraphsSamplingRate(), duration, 1);
                 GraphViewer viewer = new GraphViewer(true, false);
                 viewer.setPreviewFrequency(PREVIEW_TIME_FREQUENCY);
                 JDialog dialog = new JDialog(Viewer.this);
@@ -69,6 +76,7 @@ public class Viewer extends JFrame {
         controlPanel.add(durationField);
         controlPanel.add(new JLabel("Sec"));
         controlPanel.add(playButton);
+        controlPanel.add(stopButton);
         controlPanel.add(showButton);
         add(controlPanel, BorderLayout.NORTH);
 
@@ -84,23 +92,40 @@ public class Viewer extends JFrame {
         validate();
     }
 
+
     public void addPreview(DataSeries dataSeries) {
         graphViewer.addPreview(dataSeries, GraphType.VERTICAL_LINE, CompressionType.MAX);
     }
 
 
+    public void addGraph(DataSeries dataSeries, boolean isCentered) {
+        graphViewer.addGraphPanel(1, isCentered);
+        graphViewer.addGraph(dataSeries);
+        this.lastDataSeries = dataSeries;
+        graphToAudio = new GraphToAudio(dataSeries, new AudioPositionListener() {
+            @Override
+            public void handleAudioPosition(long position) {
+                graphViewer.setStartIndex(position);
+                graphViewer.repaint();
+            }
+        });
+    }
+
 
     public void addGraph(DataSeries dataSeries) {
-        graphViewer.addGraphPanel(2, true);
-        graphViewer.addGraph(dataSeries);
-        this.lastFunction = dataSeries;
+       addGraph(dataSeries, true);
+    }
+
+    public void addGraph(DataSeries dataSeries, int graphPanelIndex) {
+        graphViewer.addGraph(dataSeries, graphPanelIndex);
+        this.lastDataSeries = dataSeries;
     }
 
     public void addGraph(Function f) {
         double from = 0;
         double sampleRate = 1000;
         double duration = 1000;
-        if(lastFunction != null) {
+        if(lastDataSeries != null) {
             from = graphViewer.getStart();
             sampleRate = graphViewer.getGraphsSamplingRate();
             duration = graphViewer.getGraphsSize() / sampleRate;
@@ -146,7 +171,7 @@ public class Viewer extends JFrame {
         };
         graphViewer.addGraphPanel(2, true);
         graphViewer.addGraph(dataSeries);
-        this.lastFunction = f;
+        this.lastDataSeries = f;
     }
 
 
@@ -188,7 +213,7 @@ public class Viewer extends JFrame {
         };
         graphViewer.addGraphPanel(2, true);
         graphViewer.addGraph(dataSeries);
-        this.lastFunction = f;
+        this.lastDataSeries = f;
     }
 
     public void addGraph(double[] data, double sampleRate) {

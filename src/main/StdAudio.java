@@ -1,6 +1,7 @@
 package main;
 
 import main.functions.Function;
+import main.functions.HarmonicRect;
 
 import javax.sound.sampled.*;
 
@@ -135,6 +136,31 @@ public final class StdAudio {
     public static void play(Function f, double start, double duration, double volume) {
         play(f.toNormalizedArray(start, SAMPLE_RATE, duration, volume));
         //StdAudio.close();
+    }
+
+    // during 0.1 sec
+  /*  public static void play(double frequency, double volume) {
+        int  roundFrequency = (int) (frequency / 10) * 10;
+        HarmonicRect rect = new HarmonicRect(roundFrequency, 0, 0.5);
+        play(rect.toArray(0, SAMPLE_RATE, 0.1));
+    }*/
+
+    public static void play(int frequency, double volume) {
+        // round till 10 nths: 10, 20, 30...
+        frequency = (frequency / 10) * 10;
+
+        //System.out.println("Play frequency: "+frequency);
+
+        int pointsHalfPeriod = SAMPLE_RATE / (2 * frequency);
+        double frequencyRound =  Double.valueOf(SAMPLE_RATE) / (2 * pointsHalfPeriod);
+        int number = (int)(frequencyRound / 10);
+        double duration = Double.valueOf(number)/frequencyRound;
+        HarmonicRect rect = new HarmonicRect(frequency, 0, volume);
+        double[] arr = rect.toArray(0, SAMPLE_RATE, duration);
+        // put last sound to 0,  чтобы на колонках не оставалось напряжения
+        arr[arr.length - 1] = 0;
+        play(arr);
+        //System.out.println("Round frequency: "+frequencyRound+" Duration: "+duration+  "  Points number "+arr.length + " "+arr.length/ Double.valueOf(number));
     }
 
     /**

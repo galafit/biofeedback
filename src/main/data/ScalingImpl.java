@@ -79,7 +79,7 @@ public class ScalingImpl implements Scaling{
     @Override
     public String toString() {
         return "gain: "+dataGain + "  offset: "+dataOffset+"  dimension: "+dataDimension+"\n"
-                +"sampling interval: "+samplingInterval+"  start: "+start +"  isTimeSeries: "+isTimeSeries;
+                +"sampling interval: "+samplingInterval+"  play: "+start +"  isTimeSeries: "+isTimeSeries;
     }
 
     public static boolean isCompatible(Scaling scaling1,  Scaling scaling2) {

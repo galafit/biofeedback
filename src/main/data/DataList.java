@@ -48,11 +48,17 @@ public class DataList  implements DataSeries {
 
     @Override
     public double start() {
+        if(scaling != null) {
+            return scaling.getStart() / 1000.0;
+        }
         return 0;
     }
 
     @Override
     public double sampleRate() {
+        if(scaling != null) {
+            return 1.0 / scaling.getSamplingInterval();
+        }
         return 1;
     }
 }

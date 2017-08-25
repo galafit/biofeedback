@@ -9,4 +9,5 @@ public interface Scaling {
     public double getStart();
     public double getSamplingInterval();
     public boolean isTimeSeries();
+
 }

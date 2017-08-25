@@ -7,7 +7,7 @@ import java.util.List;
 
 class GraphModel {
 
-    // bigger GAP - less precision need slot to start autoScroll
+    // bigger GAP - less precision need slot to play autoScroll
     private static final int AUTO_SCROLL_GAP = 2;
 
     private double compression = 1;

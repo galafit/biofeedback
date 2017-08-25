@@ -9,6 +9,7 @@ import main.functions.HarmonicRect;
 import main.functions.Sin;
 import uk.me.berndporr.iirj.Butterworth;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 
 
@@ -17,13 +18,31 @@ import java.io.File;
  */
 public class Start {
     public static void main(String[] args) {
-       filterTest();
+       filePlayTest();
+        // funcitonTest();
+        //playTest();
+    }
+
+    static void playTest() {
+        StdAudio.play(10, 1);
+        StdAudio.play(11, 1);
+        StdAudio.play(24, 1);
+        StdAudio.play(33, 1);
+
+       /* StdAudio.play(40, 1);
+        StdAudio.play(120, 1);
+        StdAudio.play(130, 1);
+        StdAudio.play(140, 1);
+        StdAudio.play(150, 1);
+        StdAudio.play(2120, 1);
+        StdAudio.play(3120, 1);
+        StdAudio.play(4000, 1);*/
     }
 
     static void edfTest() {
         Viewer viewer = new Viewer();
         File recordsDir = new File(System.getProperty("user.dir"), "records");
-        File fileToRead = new File(recordsDir, "ekgcopy3.edf");
+        File fileToRead = new File(recordsDir, "13_06_2017sasha_night_velik.bdf");
         try {
             EdfData edfData = new EdfData(fileToRead);
             ChannelData eog = edfData.getChannelData(0);
@@ -76,61 +95,61 @@ public class Start {
             }
             return pct;
         };
-        HarmonicPick harmonic = new HarmonicPick(2, pctFunction);
+        HarmonicPick harmonic = new HarmonicPick(10, pctFunction);
 
+        Function rect =  new HarmonicRect(10, 0);
         Viewer viewer = new Viewer();
         viewer.addGraph(harmonic, 6 );
+        viewer.addGraph(rect, 5 );
 
     }
 
     static void filePlayTest() {
         int eogCutOffPeriod = 10; //sec. to remove steady component (cutoff_frequency = 1/cutoff_period )
 
-
         Viewer viewer = new Viewer();
         File recordsDir = new File(System.getProperty("user.dir"), "records");
-        File fileToRead = new File(recordsDir, "devochka.bdf");
+        File fileToRead = new File(recordsDir, "Gena-2017-08-25-manana.bdf");
         try {
             EdfData edfData = new EdfData(fileToRead);
             DataSeries eog_full = edfData.getChannelData(0);
-            DataSeries accX = edfData.getChannelData(2);
-            DataSeries accY = edfData.getChannelData(3);
-            DataSeries accZ = edfData.getChannelData(4);
+            DataSeries accX = edfData.getChannelData(1);
+            DataSeries accY = edfData.getChannelData(2);
+            DataSeries accZ = edfData.getChannelData(3);
+            if(edfData.getNumberOfChannels() == 5) {
+                accX = edfData.getChannelData(2);
+                accY = edfData.getChannelData(3);
+                accZ = edfData.getChannelData(4);
+            }
 
-            DataSeries eog = new HiPassCollectingFilter(eog_full, eogCutOffPeriod);
 
-            DataSeries acc = new AccelerometerMovement(accX, accY, accZ);
+            int resultantFrequency =  50; // hz
+            int eog_divider = (int) eog_full.sampleRate() / resultantFrequency;
 
-            DataSeries alfa = new FilterHiPass(new FilterBandPass_Alfa(eog), 2);
-            DataSeries alfa_contur = new FilterAlfa(eog);
+            DataSeries eog1 = new FrequencyDividingCollectingFilter(eog_full, eog_divider);
 
-            Function alfa_time = (x) -> {
-                double f = alfa_contur.value(x) / 600;
-                if (f > 0.5) {
-                    f = 0.5;
-                }
-                if (f < 0.01) {
-                    f = 0.01;
-                }
-                return f;
-            };
+            DataSeries eog = new HiPassCollectingFilter(eog1, eogCutOffPeriod);
 
-            Function harmoharmonicPickic = new HarmonicPick(10, alfa_time);
-            Function sin = new Sin(200);
+            DataSeries eog_clean = new FilterLowPass(eog, 2.0);
 
-            Function mix = (x) -> {
-                return   alfa.value(x) * sin.value(x);
-            };
-            /* Function2D mix1 = new Function2D() {
-                @Override
-                public double value(double x) {
-                    return eog.value(x) * sin.value(x);
-                }
-            }; */
+
+            int acc_divider = (int) accX.sampleRate() / resultantFrequency;
+            DataSeries acc = new FrequencyDividingCollectingFilter(new AccelerometerMovement(accX, accY, accZ), acc_divider);
+
+
+            DataSeries alfa = new FilterHiPass(new FilterBandPass_Alfa(eog1), 2);
+
             viewer.addGraph(eog);
+            viewer.addGraph(eog_clean);
+            viewer.addGraph(new FilterAbs(new FilterDerivativeAvg(eog)), false);
+         //   viewer.addGraph(new FilterIntegral(new FilterDerivativeAvg(eog)), false);
+
+           // viewer.addGraph(new FilterDerivativeRem(eog));
+          //  viewer.addGraph(new FilterNormalize(eogDerivative, 50));
             viewer.addGraph(alfa);
-            viewer.addGraph(mix);
-            viewer.addPreview(new FilterDerivativeRem(eog));
+           // viewer.addGraph(mix);
+            viewer.addGraph(acc, false);
+            viewer.addPreview(new FilterDerivativeRem(eog1));
 
         } catch (Exception e) {
             e.printStackTrace();

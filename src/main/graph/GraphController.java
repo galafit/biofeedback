@@ -36,6 +36,11 @@ public class GraphController implements GraphEventHandler {
         }
     }
 
+    @Override
+    public void setStartIndex(long startIndex) {
+        graphModel.setStartIndex(startIndex);
+        fireDataUpdated();
+    }
 
     @Override
     public void moveSlotForward() {

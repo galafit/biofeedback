@@ -1,13 +1,9 @@
 package main;
 
 
-import com.biorecorder.edflib.EdfReader;
-import com.biorecorder.edflib.HeaderParsingException;
-import com.biorecorder.edflib.base.SignalConfig;
-import main.data.DataSeries;
-import main.data.Scaling;
-import main.data.ScalingImpl;
-import uk.me.berndporr.iirj.Cascade;
+import com.biorecorder.edflib.EdfFileReader;
+import com.biorecorder.edflib.HeaderConfig;
+import com.biorecorder.edflib.exceptions.EdfHeaderRuntimeException;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,13 +13,15 @@ import java.util.*;
  * Created by hdablin on 04.03.17.
  */
 public class EdfData {
-    private EdfReader edfReader;
+    private EdfFileReader edfReader;
     private List<ChannelData> channelDataList = new ArrayList<>();
+    private HeaderConfig header;
 
 
-    public EdfData(File edfFile) throws IOException, HeaderParsingException {
-        edfReader = new EdfReader(edfFile);
-        edfReader.printHeaderInfo();
+    public EdfData(File edfFile) throws IOException, EdfHeaderRuntimeException {
+        edfReader = new EdfFileReader(edfFile);
+        header = edfReader.getHeader();
+        System.out.println(header);
     }
 
     public ChannelData getChannelData(int channelNumber) {
@@ -37,6 +35,11 @@ public class EdfData {
         channelDataList.add(channelData);
         return channelData;
     }
+
+    public int getNumberOfChannels() {
+        return header.getNumberOfSignals();
+    }
+
 
 
     synchronized private void update() {

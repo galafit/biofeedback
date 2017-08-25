@@ -14,6 +14,7 @@ public interface GraphEventHandler extends SlotListener {
     public void moveSlotBackward();
     public void setDrawingAreaWidth(int drawingAreaWidth);
     public void moveScroll(int scrollPosition);
+    public void setStartIndex(long startIndex);
     public void setGraphFrequency(double graphFrequency);
     public void setPreviewFrequency(double previewFrequency);
 }

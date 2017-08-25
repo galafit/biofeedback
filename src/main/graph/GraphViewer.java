@@ -62,6 +62,7 @@ public class GraphViewer extends JPanel{
 
     }
 
+
     public double getStart() {
         return graphModel.getStart();
     }
@@ -141,6 +142,11 @@ public class GraphViewer extends JPanel{
         addGraph(graph, GraphType.LINE, CompressionType.AVERAGE);
     }
 
+    public void addGraph(final DataSeries graph, int graphPanelIndex) {
+        addGraph(graph, GraphType.LINE, CompressionType.AVERAGE, graphPanelIndex);
+    }
+
+
     public void addPreview(final DataSeries preview,  final CompressionType compressionType) {
         addPreview(preview, GraphType.VERTICAL_LINE, compressionType);
     }
@@ -192,6 +198,19 @@ public class GraphViewer extends JPanel{
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     graphController.autoScroll();
+                }
+            });
+        }
+    }
+
+    public void setStartIndex(long startIndex) {
+        if(SwingUtilities.isEventDispatchThread()) {
+            graphController.setStartIndex(startIndex);
+        }
+        else {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    graphController.setStartIndex(startIndex);
                 }
             });
         }

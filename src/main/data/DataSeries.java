@@ -25,6 +25,13 @@ public interface DataSeries extends Function {
     double start();
     double sampleRate();
 
+    default double getPhysical(long index) {
+        if(getScaling() != null) {
+            return get(index) * getScaling().getDataGain() + getScaling().getDataOffset();
+        }
+        return  get(index);
+    }
+
     default double value(double x) {
         x = ((x - start())  * sampleRate());
         if (x < 0) {

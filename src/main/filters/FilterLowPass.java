@@ -20,8 +20,9 @@ public class FilterLowPass extends Filter {
         super(inputData);
         double frequency = 1;
         if(inputData.getScaling() != null) {
-            frequency = inputData.getScaling().getSamplingInterval();
+            frequency = inputData.sampleRate();
         }
+
         bufferSize = (int) (frequency / cutOffFrequency);
     }
 
